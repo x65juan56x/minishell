@@ -17,17 +17,17 @@
 
 typedef enum e_token_type
 {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
-	TOKEN_REDIRECT_APPEND,
-	TOKEN_HEREDOC,
-	TOKEN_AND,
-	TOKEN_OR,
-	TOKEN_LPAREN,
-	TOKEN_RPAREN,
-	TOKEN_EOF
+	TOKEN_WORD,				// 0 - Palabras
+	TOKEN_PIPE,				// 1 - |
+	TOKEN_REDIRECT_IN,		// 2 - <
+	TOKEN_REDIRECT_OUT,		// 3 - >
+	TOKEN_REDIRECT_APPEND,	// 4 - >>
+	TOKEN_HEREDOC,			// 5 - <<
+	TOKEN_AND,				// 6 - && (bonus)
+	TOKEN_OR,				// 7 - || (bonus)
+	TOKEN_LPAREN,			// 8 - ( (bonus)
+	TOKEN_RPAREN,			// 9 - ) (bonus)
+	TOKEN_EOF				// 10 - Fin de tokens
 }	t_token_type;
 
 typedef struct s_token
@@ -39,14 +39,14 @@ typedef struct s_token
 
 typedef enum e_node_type
 {
-	NODE_COMMAND,
-	NODE_PIPE,
-	NODE_REDIRECT_IN,
-	NODE_REDIRECT_OUT,
-	NODE_REDIRECT_APPEND,
-	NODE_HEREDOC,
-	NODE_AND,		// Bonus
-	NODE_OR			// Bonus
+	NODE_COMMAND,			// 0 - Comando simple
+	NODE_PIPE,				// 1 - Pipe entre comandos
+	NODE_REDIRECT_IN,		// 2 - Redirección entrada
+	NODE_REDIRECT_OUT,		// 3 - Redirección salida
+	NODE_REDIRECT_APPEND,	// 4 - Redirección append
+	NODE_HEREDOC,			// 5 - Here document
+	NODE_AND,				// 6 - AND lógico (bonus)
+	NODE_OR					// 7 - OR lógico (bonus)
 }	t_node_type;
 
 typedef struct s_ast_node

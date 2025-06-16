@@ -2,7 +2,10 @@
 
 int	main(int ac, char **av, char **envp)
 {
-	char    *input;
+	char    	*input;
+	t_token		*tokens;
+	t_ast_node	*ast;
+	int			exit_status;
 
 	(void)ac;
 	(void)av;
@@ -21,26 +24,26 @@ int	main(int ac, char **av, char **envp)
 			free(input);
 			break;
 		}
-        t_token *tokens = tokenize(input);
-        if (!tokens)
-        {
-            printf("Error: Failed to tokenize input\n");
-            free(input);
-            continue;
-        }
-        t_ast_node *ast = parse(tokens);
-        if (!ast)
-        {
-            printf("Error: Failed to parse tokens\n");
-            cleanup_tokens(tokens);
-            free(input);
-            continue;
-        }
-        printf("Executing command...\n");
-        int exit_status = execute_ast(ast, envp);
-        printf("Command finished with exit status: %d\n", exit_status);
-        cleanup_ast(ast);
-        cleanup_tokens(tokens);
+		tokens = tokenize(input);
+		if (!tokens)
+		{
+			printf("Error: Failed to tokenize input\n");
+			free(input);
+			continue;
+		}
+		ast = parse(tokens);
+		if (!ast)
+		{
+			printf("Error: Failed to parse tokens\n");
+			cleanup_tokens(tokens);
+			free(input);
+			continue;
+		}
+		printf("Executing command...\n");
+		exit_status = execute_ast(ast, envp);
+		printf("Command finished with exit status: %d\n", exit_status);
+		cleanup_ast(ast);
+		cleanup_tokens(tokens);
 		free(input);
 	}
 	rl_clear_history();

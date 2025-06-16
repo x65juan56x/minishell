@@ -159,9 +159,9 @@ make re     # Recompile everything
 
 ```bash
 ./minishell
-🐚 MiniShell $ echo "Hello World" | cat > output.txt
-🐚 MiniShell $ ls -l | grep .c
-🐚 MiniShell $ exit
+MiniShell $ echo "Hello World" | cat > output.txt
+MiniShell $ ls -l | grep .c
+MiniShell $ exit
 ```
 
 ## Project Structure
@@ -173,9 +173,9 @@ minishell/
 │   ├── parser/               # Tokenizer and Parser
 │   └── executor/             # Command execution
 ├── include/
-│   └── minishell.h          # Headers
+│   └── minishell.h           # Headers
 ├── libs/
-│   └── libft/               # Custom library
+│   └── libft/                # Custom library
 └── Makefile
 ```
 
