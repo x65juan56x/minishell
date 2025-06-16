@@ -122,3 +122,65 @@ DOCUMENTACIÓN:
 01 TOKENIZER.md
 02 PARSER.md
 03 EXECUTOR.md
+
+/////////////////////////////////////////////////////////////////////
+
+# Minishell
+
+A simple shell implementation in C, built as part of the 42 curriculum.
+
+## Features
+
+- **Tokenizer**: Handles quotes, operators, and word parsing
+- **Parser**: Builds Abstract Syntax Tree (AST) with proper precedence
+- **Executor**: Executes commands, pipes, and redirects
+- **Built-ins**: Essential shell commands (in development)
+
+## Supported Operations
+
+- ✅ Simple commands (`ls`, `echo`, `pwd`)
+- ✅ Pipes (`cmd1 | cmd2`)
+- ✅ Redirects (`>`, `<`, `>>`)
+- ✅ Quoted strings (`"hello world"`, `'single'`)
+- 🔄 Here-documents (`<<`)
+- 🔄 Built-in commands
+- 🔄 Signal handling
+
+## Compilation
+
+```bash
+make        # Compile the project
+make clean  # Remove object files
+make fclean # Remove all generated files
+make re     # Recompile everything
+```
+
+## Usage
+
+```bash
+./minishell
+🐚 MiniShell $ echo "Hello World" | cat > output.txt
+🐚 MiniShell $ ls -l | grep .c
+🐚 MiniShell $ exit
+```
+
+## Project Structure
+
+```
+minishell/
+├── src/
+│   ├── minishell.c           # Main program
+│   ├── parser/               # Tokenizer and Parser
+│   └── executor/             # Command execution
+├── include/
+│   └── minishell.h          # Headers
+├── libs/
+│   └── libft/               # Custom library
+└── Makefile
+```
+
+## Documentation
+
+- [Tokenizer Documentation](src/parser/TOKENIZER.md)
+- [Parser Documentation](src/parser/PARSER.md)
+- [Executor Documentation](src/executor/EXECUTOR.md)

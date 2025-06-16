@@ -1,0 +1,34 @@
+# Archivos compilados
+*.o
+*.a
+minishell
+
+# Directorios de objetos
+obj/
+libs/libft/obj/
+
+# Archivos temporales
+*.tmp
+*.swp
+*~
+
+# Archivos de test
+test.txt
+output.txt
+c_files.txt
+found.txt
+result.txt
+output
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs y debug
+*.log
+debug/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-*
