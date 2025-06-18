@@ -96,9 +96,9 @@ flowchart TD
     TOK_START([🟢 START TOKENIZER<br/>tokenize input])
     TOK_INIT[📋 INICIALIZACIÓN<br/>head = NULL<br/>current = NULL<br/>i = 0]
     
-    TOK_LOOP{💎 input&#91;i&#93; != '\0'?}
-    SKIP_SPACES[🔧 skip_spaces<br/>while input&#91;i&#93; == ' ' i++]
-    CHECK_END{💎 input&#91;i&#93; == '\0'?}
+    TOK_LOOP{💎 input[i] != '\0'?}
+    SKIP_SPACES[🔧 skip_spaces<br/>while input[i] == ' ' i++]
+    CHECK_END{💎 input[i] == '\0'?}
     
     IS_OPERATOR{💎 is_operator_char input&#91;i&#93;?}
     PROC_OPERATOR[⚙️ PROCESS OPERATOR<br/>├─ get_operator_type<br/>├─ &#124; → TOKEN_PIPE<br/>├─ &gt; → TOKEN_REDIRECT_OUT<br/>├─ &lt; → TOKEN_REDIRECT_IN<br/>├─ &gt;&gt; → TOKEN_REDIRECT_APPEND<br/>└─ &lt;&lt; → TOKEN_HEREDOC]
