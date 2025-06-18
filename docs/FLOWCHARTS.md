@@ -93,91 +93,58 @@ flowchart TD
 ## Tokenizer Detallado  
 ```mermaid
 flowchart TD
-    START([🟢 START MINISHELL<br/>main loop])
-    INPUT[📝 INPUT<br/>input = readline PROMPT<br/>ejemplo: echo hello &#124; grep test]
+    TOK_START([🟢 START TOKENIZER<br/>tokenize input])
+    TOK_INIT[📋 INICIALIZACIÓN<br/>head = NULL<br/>current = NULL<br/>i = 0]
     
-    %% Validaciones
-    NULL_CHECK{💎 input == NULL?}
-    EXIT_CHECK{💎 input == exit?}
-    EMPTY_CHECK{💎 input vacio?}
+    TOK_LOOP{💎 input[i] != '\0'?}
+    SKIP_SPACES[🔧 skip_spaces<br/>while input[i] == ' ' i++]
+    CHECK_END{💎 input[i] == '\0'?}
     
-    %% Tokenizer
-    TOKENIZER[⚙️ TOKENIZER<br/>tokenize input<br/>├─ skip_spaces<br/>├─ is_operator_char<br/>├─ process_operator<br/>└─ process_word]
-    TOKEN_ERROR{💎 tokens == NULL?}
-    TOKENS_LIST[📤 TOKENS LIST<br/>echo hello &#124; grep test EOF]
+    IS_OPERATOR{💎 is_operator_char input[i]?}
+    PROC_OPERATOR[⚙️ PROCESS OPERATOR<br/>├─ get_operator_type<br/>├─ &#124; → TOKEN_PIPE<br/>├─ &gt; → TOKEN_REDIRECT_OUT<br/>├─ &lt; → TOKEN_REDIRECT_IN<br/>├─ &gt;&gt; → TOKEN_REDIRECT_APPEND<br/>└─ &lt;&lt; → TOKEN_HEREDOC]
     
-    %% Parser  
-    PARSER[⚙️ PARSER<br/>parse tokens<br/>├─ parse_pipe_expression<br/>├─ parse_redirect_expression<br/>└─ parse_command]
-    PARSE_ERROR{💎 ast == NULL?}
-    AST_TREE[🌳 AST TREE<br/>NODE_PIPE<br/>├─ left: COMMAND echo hello<br/>└─ right: COMMAND grep test]
+    PROC_WORD[⚙️ PROCESS WORD<br/>extract_word_token<br/>├─ find_word_end<br/>├─ skip_quoted_section<br/>├─ process_quoted_string<br/>└─ expand_wildcards ⭐]
     
-    %% Executor
-    EXECUTOR[⚙️ EXECUTOR<br/>execute_ast ast envp<br/>├─ execute_command_node<br/>├─ execute_pipe_node<br/>└─ execute_redirect_node]
-    EXIT_STATUS[📤 EXIT STATUS<br/>exit_status = 0<br/>Command finished]
+    CHECK_TOKEN{💎 new_token == NULL?}
+    ADD_TOKEN[📝 ADD TOKEN<br/>add_token head current new_token]
+    TOK_ERROR([🔴 ERROR CLEANUP<br/>cleanup_tokens<br/>return NULL])
     
-    %% Cleanup
-    CLEANUP[🧹 CLEANUP<br/>├─ cleanup_ast<br/>├─ cleanup_tokens<br/>└─ free input]
+    EOF_TOKEN[🏁 CREATE EOF TOKEN<br/>create_eof_token]
+    TOK_SUCCESS([🟢 RETURN SUCCESS<br/>return head])
     
-    %% Terminaciones
-    EXIT_PROGRAM([🔴 EXIT PROGRAM<br/>rl_clear_history<br/>return 0])
-    PRINT_NULL([🔴 PRINT NEWLINE<br/>printf newline<br/>break])
-    ERROR_TOKEN([🔴 ERROR TOKENIZER<br/>Failed to tokenize])
-    ERROR_PARSE([🔴 ERROR PARSER<br/>Failed to parse])
+    %% Flujo
+    TOK_START --> TOK_INIT
+    TOK_INIT --> TOK_LOOP
+    TOK_LOOP -->|SÍ| SKIP_SPACES
+    SKIP_SPACES --> CHECK_END
+    CHECK_END -->|SÍ| EOF_TOKEN
+    CHECK_END -->|NO| IS_OPERATOR
     
-    %% Historia
-    HISTORY[📚 ADD HISTORY<br/>add_history input]
-
-    %% Flujo principal
-    START --> INPUT
-    INPUT --> NULL_CHECK
+    IS_OPERATOR -->|SÍ| PROC_OPERATOR
+    IS_OPERATOR -->|NO| PROC_WORD
     
-    %% Validaciones de entrada
-    NULL_CHECK -->|SÍ| PRINT_NULL
-    NULL_CHECK -->|NO| EMPTY_CHECK
-    EMPTY_CHECK -->|SÍ| INPUT
-    EMPTY_CHECK -->|NO| HISTORY
-    HISTORY --> EXIT_CHECK
-    EXIT_CHECK -->|SÍ| EXIT_PROGRAM
-    EXIT_CHECK -->|NO| TOKENIZER
+    PROC_OPERATOR --> CHECK_TOKEN
+    PROC_WORD --> CHECK_TOKEN
     
-    %% Flujo de tokenización
-    TOKENIZER --> TOKEN_ERROR
-    TOKEN_ERROR -->|SÍ| ERROR_TOKEN
-    TOKEN_ERROR -->|NO| TOKENS_LIST
-    ERROR_TOKEN --> CLEANUP
+    CHECK_TOKEN -->|SÍ| TOK_ERROR
+    CHECK_TOKEN -->|NO| ADD_TOKEN
     
-    %% Flujo de parsing
-    TOKENS_LIST --> PARSER
-    PARSER --> PARSE_ERROR
-    PARSE_ERROR -->|SÍ| ERROR_PARSE
-    PARSE_ERROR -->|NO| AST_TREE
-    ERROR_PARSE --> CLEANUP
-    
-    %% Flujo de ejecución
-    AST_TREE --> EXECUTOR
-    EXECUTOR --> EXIT_STATUS
-    
-    %% Cleanup y loop
-    EXIT_STATUS --> CLEANUP
-    CLEANUP --> INPUT
-    
-    %% Terminaciones
-    PRINT_NULL --> EXIT_PROGRAM
+    ADD_TOKEN --> TOK_LOOP
+    TOK_LOOP -->|NO| EOF_TOKEN
+    EOF_TOKEN --> TOK_SUCCESS
     
     %% Estilos
     classDef startEnd fill:#4CAF50,stroke:#2E7D32,color:#fff
     classDef process fill:#2196F3,stroke:#1565C0,color:#fff
     classDef decision fill:#FF9800,stroke:#E65100,color:#fff
     classDef error fill:#F44336,stroke:#C62828,color:#fff
-    classDef data fill:#9C27B0,stroke:#6A1B9A,color:#fff
-    classDef cleanup fill:#795548,stroke:#3E2723,color:#fff
+    classDef subprocess fill:#00BCD4,stroke:#00838F,color:#fff
     
-    class START,EXIT_PROGRAM,PRINT_NULL startEnd
-    class TOKENIZER,PARSER,EXECUTOR process
-    class NULL_CHECK,EXIT_CHECK,EMPTY_CHECK,TOKEN_ERROR,PARSE_ERROR decision
-    class ERROR_TOKEN,ERROR_PARSE error
-    class INPUT,TOKENS_LIST,AST_TREE,EXIT_STATUS,HISTORY data
-    class CLEANUP cleanup
+    class TOK_START,TOK_SUCCESS startEnd
+    class TOK_INIT,SKIP_SPACES,ADD_TOKEN,EOF_TOKEN process
+    class TOK_LOOP,CHECK_END,IS_OPERATOR,CHECK_TOKEN decision
+    class TOK_ERROR error
+    class PROC_OPERATOR,PROC_WORD subprocess
 ```
 
 ## Parser Detallado
