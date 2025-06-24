@@ -93,24 +93,24 @@ flowchart TD
 ## Tokenizer Detallado  
 ```mermaid
 flowchart TD
-    TOK_START([🟢 START TOKENIZER<br/>tokenize input])
-    TOK_INIT[📋 INICIALIZACIÓN<br/>head = NULL<br/>current = NULL<br/>i = 0]
+    TOK_START([START TOKENIZER<br/>tokenize input])
+    TOK_INIT[INICIALIZACIÓN<br/>head = NULL<br/>current = NULL<br/>i = 0]
     
-    TOK_LOOP{💎 input#91;i#93; != '\0'?}
-    SKIP_SPACES[🔧 skip_spaces<br/>while input#91;i#93; == ' ' i++]
-    CHECK_END{💎 input#91;i#93; == '\0'?}
+    TOK_LOOP{input#91;i#93; != '\0'?}
+    SKIP_SPACES[skip_spaces<br/>while input#91;i#93; == ' ' i++]
+    CHECK_END{input#91;i#93; == '\0'?}
     
-    IS_OPERATOR{💎 is_operator_char input#91;i#93;?}
-    PROC_OPERATOR[⚙️ PROCESS OPERATOR<br/>├─ get_operator_type<br/>├─ &#124; → TOKEN_PIPE<br/>├─ &gt; → TOKEN_REDIRECT_OUT<br/>├─ &lt; → TOKEN_REDIRECT_IN<br/>├─ &gt;&gt; → TOKEN_REDIRECT_APPEND<br/>└─ &lt;&lt; → TOKEN_HEREDOC]
+    IS_OPERATOR{is_operator_char input#91;i#93;?}
+    PROC_OPERATOR[PROCESS OPERATOR<br/>├─ get_operator_type<br/>├─ #124; → TOKEN_PIPE<br/>├─ &gt; → TOKEN_REDIRECT_OUT<br/>├─ &lt; → TOKEN_REDIRECT_IN<br/>├─ &gt;&gt; → TOKEN_REDIRECT_APPEND<br/>└─ &lt;&lt; → TOKEN_HEREDOC]
     
-    PROC_WORD[⚙️ PROCESS WORD<br/>extract_word_token<br/>├─ find_word_end<br/>├─ skip_quoted_section<br/>├─ process_quoted_string<br/>└─ expand_wildcards ⭐]
+    PROC_WORD[PROCESS WORD<br/>extract_word_token<br/>├─ find_word_end<br/>├─ skip_quoted_section<br/>├─ process_quoted_string<br/>└─ expand_wildcards]
     
-    CHECK_TOKEN{💎 new_token == NULL?}
-    ADD_TOKEN[📝 ADD TOKEN<br/>add_token head current new_token]
-    TOK_ERROR([🔴 ERROR CLEANUP<br/>cleanup_tokens<br/>return NULL])
+    CHECK_TOKEN{new_token == NULL?}
+    ADD_TOKEN[ADD TOKEN<br/>add_token head current new_token]
+    TOK_ERROR([ERROR CLEANUP<br/>cleanup_tokens<br/>return NULL])
     
-    EOF_TOKEN[🏁 CREATE EOF TOKEN<br/>create_eof_token]
-    TOK_SUCCESS([🟢 RETURN SUCCESS<br/>return head])
+    EOF_TOKEN[CREATE EOF TOKEN<br/>create_eof_token]
+    TOK_SUCCESS([RETURN SUCCESS<br/>return head])
     
     %% Flujo
     TOK_START --> TOK_INIT
@@ -150,27 +150,27 @@ flowchart TD
 ## Parser Detallado
 ```mermaid
 flowchart TD
-    PAR_START([🟢 START PARSER<br/>parse tokens])
-    PAR_INIT[📋 INIT PARSER<br/>parser.tokens = tokens<br/>parser.current = tokens<br/>parser.error = 0]
+    PAR_START([START PARSER<br/>parse tokens])
+    PAR_INIT[INIT PARSER<br/>parser.tokens = tokens<br/>parser.current = tokens<br/>parser.error = 0]
     
-    PARSE_EXPR[⚙️ PARSE EXPRESSION<br/>parse_pipe_expression]
+    PARSE_EXPR[PARSE EXPRESSION<br/>parse_pipe_expression]
     
     %% Pipe Expression
-    PIPE_EXPR[🔧 PARSE PIPE<br/>precedencia BAJA<br/>left-associative]
-    REDIR_EXPR[🔧 PARSE REDIRECT<br/>precedencia ALTA<br/>multiple redirects]
-    CMD_EXPR[🔧 PARSE COMMAND<br/>collect_command_args]
+    PIPE_EXPR[PARSE PIPE<br/>precedencia BAJA<br/>left-associative]
+    REDIR_EXPR[PARSE REDIRECT<br/>precedencia ALTA<br/>multiple redirects]
+    CMD_EXPR[PARSE COMMAND<br/>collect_command_args]
     
-    PIPE_CHECK{💎 current.type == TOKEN_PIPE?}
-    REDIR_CHECK{💎 is_redirect_token?}
-    CMD_CHECK{💎 current.type == TOKEN_WORD?}
+    PIPE_CHECK{current.type == TOKEN_PIPE?}
+    REDIR_CHECK{is_redirect_token?}
+    CMD_CHECK{current.type == TOKEN_WORD?}
     
-    CREATE_PIPE[📝 CREATE PIPE NODE<br/>create_binary_node<br/>left = cmd1<br/>right = cmd2]
-    CREATE_REDIR[📝 CREATE REDIRECT NODE<br/>create_redirect_node<br/>left = command<br/>file = filename]
-    CREATE_CMD[📝 CREATE COMMAND NODE<br/>create_ast_node<br/>args = &#91;cmd, arg1, arg2, NULL&#93;]
+    CREATE_PIPE[CREATE PIPE NODE<br/>create_binary_node<br/>left = cmd1<br/>right = cmd2]
+    CREATE_REDIR[CREATE REDIRECT NODE<br/>create_redirect_node<br/>left = command<br/>file = filename]
+    CREATE_CMD[CREATE COMMAND NODE<br/>create_ast_node<br/>args = #91;cmd, arg1, arg2, NULL#93;]
     
-    PAR_ERROR{💎 parser.error == 1?}
-    PAR_CLEANUP([🔴 CLEANUP AST<br/>cleanup_ast<br/>return NULL])
-    PAR_SUCCESS([🟢 RETURN AST<br/>return ast])
+    PAR_ERROR{parser.error == 1?}
+    PAR_CLEANUP([CLEANUP AST<br/>cleanup_ast<br/>return NULL])
+    PAR_SUCCESS([RETURN AST<br/>return ast])
     
     %% Flujo principal
     PAR_START --> PAR_INIT
@@ -219,34 +219,34 @@ flowchart TD
 ## Executor Detallado
 ```mermaid
 flowchart TD
-    EX_START([🟢 START EXECUTOR<br/>execute_ast ast envp])
-    EX_CHECK{💎 ast == NULL?}
-    EX_RETURN_0([🟢 RETURN 0<br/>empty ast])
+    EX_START([START EXECUTOR<br/>execute_ast ast envp])
+    EX_CHECK{ast == NULL?}
+    EX_RETURN_0([RETURN 0<br/>empty ast])
     
-    NODE_TYPE{💎 ast.type?}
+    NODE_TYPE{ast.type?}
     
     %% Tipos de nodos
-    EXEC_CMD[⚙️ EXECUTE COMMAND<br/>execute_command_node<br/>├─ fork<br/>├─ run_cmd_from_args<br/>├─ waitpid<br/>└─ return exit_status]
+    EXEC_CMD[EXECUTE COMMAND<br/>execute_command_node<br/>├─ fork<br/>├─ run_cmd_from_args<br/>├─ waitpid<br/>└─ return exit_status]
     
-    EXEC_PIPE[⚙️ EXECUTE PIPE<br/>execute_pipe_node<br/>├─ pipe<br/>├─ create_pipe_child left<br/>├─ create_pipe_child right<br/>├─ close pipe_fd<br/>└─ wait_pipe_children]
+    EXEC_PIPE[EXECUTE PIPE<br/>execute_pipe_node<br/>├─ pipe<br/>├─ create_pipe_child left<br/>├─ create_pipe_child right<br/>├─ close pipe_fd<br/>└─ wait_pipe_children]
     
-    EXEC_REDIR[⚙️ EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast recursion<br/>└─ waitpid]
+    EXEC_REDIR[EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast recursion<br/>└─ waitpid]
     
     %% Subprocesos
-    FORK_CMD[🔄 FORK COMMAND<br/>pid = fork<br/>if pid == 0:<br/>  run_cmd_from_args<br/>  exit 127]
+    FORK_CMD[FORK COMMAND<br/>pid = fork<br/>if pid == 0:<br/>  run_cmd_from_args<br/>  exit 127]
     
-    FORK_PIPE[🔄 FORK PIPE<br/>Left Child: stdout → pipe<br/>Right Child: stdin ← pipe<br/>Parent: close both ends]
+    FORK_PIPE[FORK PIPE<br/>Left Child: stdout → pipe<br/>Right Child: stdin ← pipe<br/>Parent: close both ends]
     
-    FORK_REDIR[🔄 FORK REDIRECT<br/>Child: dup2 file descriptor<br/>Child: execute command<br/>Parent: wait]
+    FORK_REDIR[FORK REDIRECT<br/>Child: dup2 file descriptor<br/>Child: execute command<br/>Parent: wait]
     
     %% Sistema
-    SYSTEM_PROC[☁️ SYSTEM PROCESSES<br/>execve path args envp<br/>PID tracking<br/>Signal handling]
+    SYSTEM_PROC[SYSTEM PROCESSES<br/>execve path args envp<br/>PID tracking<br/>Signal handling]
     
     %% Exit status
-    WAIT_STATUS[📤 WAIT STATUS<br/>waitpid pid status 0<br/>WIFEXITED → exit_code<br/>WIFSIGNALED → 128+signal]
+    WAIT_STATUS[WAIT STATUS<br/>waitpid pid status 0<br/>WIFEXITED → exit_code<br/>WIFSIGNALED → 128+signal]
     
-    EX_SUCCESS([🟢 RETURN EXIT_STATUS<br/>return status])
-    EX_ERROR([🔴 RETURN ERROR<br/>return 1])
+    EX_SUCCESS([RETURN EXIT_STATUS<br/>return status])
+    EX_ERROR([RETURN ERROR<br/>return 1])
     
     %% Flujo principal
     EX_START --> EX_CHECK
