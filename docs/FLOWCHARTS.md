@@ -3,39 +3,39 @@
 ## Diagrama Principal
 ```mermaid
 flowchart TD
-    START([🟢 START MINISHELL<br/>main loop])
-    INPUT[📝 INPUT<br/>input = readline PROMPT<br/>ejemplo: echo hello &#124; grep test]
+    START([START MINISHELL<br/>main loop])
+    INPUT[INPUT<br/>input = readline PROMPT<br/>ejemplo: echo hello #124; grep test]
     
     %% Validaciones
-    NULL_CHECK{💎 input == NULL?}
-    EXIT_CHECK{💎 input == exit?}
-    EMPTY_CHECK{💎 input vacio?}
+    NULL_CHECK{input == NULL?}
+    EXIT_CHECK{input == exit?}
+    EMPTY_CHECK{input vacio?}
     
     %% Tokenizer
-    TOKENIZER[⚙️ TOKENIZER<br/>tokenize input<br/>├─ skip_spaces<br/>├─ is_operator_char<br/>├─ process_operator<br/>└─ process_word]
-    TOKEN_ERROR{💎 tokens == NULL?}
-    TOKENS_LIST[📤 TOKENS LIST<br/>echo hello &#124; grep test EOF]
+    TOKENIZER[TOKENIZER<br/>tokenize input<br/>├─ skip_spaces<br/>├─ is_operator_char<br/>├─ process_operator<br/>└─ process_word]
+    TOKEN_ERROR{tokens == NULL?}
+    TOKENS_LIST[TOKENS LIST<br/>echo hello &#124; grep test EOF]
     
     %% Parser  
-    PARSER[⚙️ PARSER<br/>parse tokens<br/>├─ parse_pipe_expression<br/>├─ parse_redirect_expression<br/>└─ parse_command]
-    PARSE_ERROR{💎 ast == NULL?}
-    AST_TREE[🌳 AST TREE<br/>NODE_PIPE<br/>├─ left: COMMAND echo hello<br/>└─ right: COMMAND grep test]
+    PARSER[PARSER<br/>parse tokens<br/>├─ parse_pipe_expression<br/>├─ parse_redirect_expression<br/>└─ parse_command]
+    PARSE_ERROR{ast == NULL?}
+    AST_TREE[AST TREE<br/>NODE_PIPE<br/>├─ left: COMMAND echo hello<br/>└─ right: COMMAND grep test]
     
     %% Executor
-    EXECUTOR[⚙️ EXECUTOR<br/>execute_ast ast envp<br/>├─ execute_command_node<br/>├─ execute_pipe_node<br/>└─ execute_redirect_node]
-    EXIT_STATUS[📤 EXIT STATUS<br/>exit_status = 0<br/>Command finished]
+    EXECUTOR[EXECUTOR<br/>execute_ast ast envp<br/>├─ execute_command_node<br/>├─ execute_pipe_node<br/>└─ execute_redirect_node]
+    EXIT_STATUS[EXIT STATUS<br/>exit_status = 0<br/>Command finished]
     
     %% Cleanup
-    CLEANUP[🧹 CLEANUP<br/>├─ cleanup_ast<br/>├─ cleanup_tokens<br/>└─ free input]
+    CLEANUP[CLEANUP<br/>├─ cleanup_ast<br/>├─ cleanup_tokens<br/>└─ free input]
     
     %% Terminaciones
-    EXIT_PROGRAM([🔴 EXIT PROGRAM<br/>rl_clear_history<br/>return 0])
-    PRINT_NULL([🔴 PRINT NEWLINE<br/>printf newline<br/>break])
-    ERROR_TOKEN([🔴 ERROR TOKENIZER<br/>Failed to tokenize])
-    ERROR_PARSE([🔴 ERROR PARSER<br/>Failed to parse])
+    EXIT_PROGRAM([ EXIT PROGRAM<br/>rl_clear_history<br/>return 0])
+    PRINT_NULL([PRINT NEWLINE<br/>printf newline<br/>break])
+    ERROR_TOKEN([ERROR TOKENIZER<br/>Failed to tokenize])
+    ERROR_PARSE([ERROR PARSER<br/>Failed to parse])
     
     %% Historia
-    HISTORY[📚 ADD HISTORY<br/>add_history input]
+    HISTORY[ADD HISTORY<br/>add_history input]
 
     %% Flujo principal
     START --> INPUT
