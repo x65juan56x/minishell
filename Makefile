@@ -16,8 +16,7 @@ SRC_FILES = minishell.c \
 			parser/parser.c \
 			parser/ast_utils.c \
 			parser/parser_commands.c \
-			parser/parser_expressions.c \
-			parser/ast_debug.c
+			parser/parser_expressions.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))

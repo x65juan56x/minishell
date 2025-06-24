@@ -110,6 +110,8 @@ int				execute_redirect_node(t_ast_node *node, char **envp);
 char			*get_path(char *cmd, char **envp);
 
 /* AST DEBUG */
-void			print_ast(t_ast_node *node, int depth);
+// void			print_ast(t_ast_node *node, int depth);
 
 #endif
+
+

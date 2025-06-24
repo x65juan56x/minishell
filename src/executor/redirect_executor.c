@@ -66,3 +66,4 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 		return (128 + WTERMSIG(status));
 	return (1);
 }
+

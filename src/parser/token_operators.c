@@ -62,3 +62,5 @@ t_token_type	get_operator_type(const char *s, int *advance)
 	*advance = 1;
 	return (TOKEN_WORD);
 }
+
+

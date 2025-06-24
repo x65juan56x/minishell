@@ -58,3 +58,5 @@ t_ast_node	*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, ch
     }
     return (node);
 }
+
+

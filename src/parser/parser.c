@@ -53,3 +53,5 @@ void	cleanup_ast(t_ast_node *node)
     cleanup_ast(node->right);
     free(node);
 }
+
+

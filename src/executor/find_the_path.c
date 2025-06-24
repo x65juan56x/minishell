@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 12:57:02 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/14 00:47:40 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/06/24 11:12:56 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,3 +91,5 @@ char	*get_path(char *cmd, char **envp)
 	path = check_dirs(dirs, cmd);
 	return (path);
 }
+
+

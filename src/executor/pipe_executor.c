@@ -76,3 +76,5 @@ int	wait_pipe_children(pid_t left_pid, pid_t right_pid)
 		return (128 + WTERMSIG(left_status));
 	return (1);
 }
+
+
