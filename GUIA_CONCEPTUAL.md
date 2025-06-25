@@ -41,7 +41,7 @@ echo $PWD
 ```
 
 Implementación en la Minishell
-```bash
+```c
 // En find_the_path.c
 static char *paths_in_env(char **envp)
 {
@@ -108,7 +108,7 @@ Built-ins Obligatorios en Minishell:
 Un file descriptor es un número que identifica un archivo abierto en un proceso.
 
 File Descriptors Estándar
-```bash
+```c
 #define STDIN_FILENO  0  // Entrada estándar (teclado)
 #define STDOUT_FILENO 1  // Salida estándar (pantalla)
 #define STDERR_FILENO 2  // Error estándar (pantalla)
@@ -126,7 +126,7 @@ echo "hello" > file.txt  # Salida va al archivo
 ```
 
 Implementación
-```bash
+```c
 // En redirect_executor.c
 int fd = open("file.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 dup2(fd, STDOUT_FILENO);  // stdout ahora apunta al archivo
@@ -135,10 +135,10 @@ close(fd);
 ```
 
 ### Redirección de Entrada (<)
-```bash
+```c
 sort < input.txt  # sort lee desde input.txt en lugar del teclado
 ```
-```bash
+```c
 int fd = open("input.txt", O_RDONLY);
 dup2(fd, STDIN_FILENO);   // stdin ahora lee del archivo
 close(fd);
@@ -148,7 +148,7 @@ close(fd);
 ```bash
 echo "new line" >> file.txt  # Añade al final del archivo
 ```
-```bash
+```c
 int fd = open("file.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
 dup2(fd, STDOUT_FILENO);
 close(fd);
@@ -174,32 +174,32 @@ ls | grep .c | wc -l
 
 Funcionamiento Interno  
 **1. Crear el Pipe**
-```bash
+```c
 int pipe_fd[2];  // [0] = read end, [1] = write end
 pipe(pipe_fd);
 ```
 **2. Crear Procesos**
-```bash
+```c
 pid_t left_pid = fork();   // Para "ls"
 pid_t right_pid = fork();  // Para "grep .c"
 ```
 **3. Configurar File Descriptors**  
 Proceso Izquierdo (ls):
-```bash
+```c
 close(pipe_fd[0]);              // No necesita leer
 dup2(pipe_fd[1], STDOUT_FILENO); // Su salida va al pipe
 close(pipe_fd[1]);
 execve("/bin/ls", args, envp);
 ```
 Proceso Derecho (grep):
-```bash
+```c
 close(pipe_fd[1]);              // No necesita escribir
 dup2(pipe_fd[0], STDIN_FILENO); // Su entrada viene del pipe
 close(pipe_fd[0]);
 execve("/usr/bin/grep", args, envp);
 ```
 Proceso Padre:
-```bash
+```c
 close(pipe_fd[0]);  // Cerrar ambos extremos
 close(pipe_fd[1]);
 waitpid(left_pid, &status1, 0);   // Esperar a ambos
@@ -261,7 +261,7 @@ Redirects (>, <) tienen mayor precedencia que pipes (|)
 Se ejecutan "más cerca" del comando
 
 2. Ejecución Recursiva
-```bash
+```c
 int execute_ast(t_ast_node *ast, char **envp)
 {
     if (ast->type == NODE_COMMAND)
@@ -281,7 +281,7 @@ Se pueden anidar estructuras arbitrariamente:
 ```
 
 **Tipos de nodos**
-```bash
+```c
 typedef enum e_node_type
 {
     NODE_COMMAND,        // Comando simple: echo hello
@@ -299,7 +299,7 @@ typedef enum e_node_type
 ## Gestión de Procesos
 
 **fork()** - Crear Proceso
-```bash
+```c
 pid_t pid = fork();
 if (pid == 0)
 {
@@ -313,13 +313,13 @@ else
 }
 ```
 **execve()** - Reemplazar Proceso
-```bash
+```c
 char *args[] = {"ls", "-l", NULL};
 char *path = "/bin/ls";
 execve(path, args, envp);  // Reemplaza el proceso actual
 ```
 **waitpid()** - Esperar a Proceso Hijo
-```bash
+```c
 int status;
 waitpid(pid, &status, 0);
 if (WIFEXITED(status))
@@ -328,7 +328,7 @@ if (WIFEXITED(status))
 
 **Patrón en Minishell**
 Para Comando Simple:
-```bash
+```c
 pid_t pid = fork();
 if (pid == 0)
 {
@@ -341,7 +341,7 @@ waitpid(pid, &status, 0);
 return WEXITSTATUS(status);
 ```
 Para Pipe:
-```bash
+```c
 int pipe_fd[2];
 pipe(pipe_fd);
 
@@ -389,7 +389,7 @@ Comportamiento: Permite expansión de variables
 Uso: Cuando quieres variables pero preservar espacios
 
 **Procesamiento en el Tokenizer**
-```bash
+```c
 // En token_words.c
 char *process_quoted_string(const char *s, int start, int end)
 {
@@ -434,7 +434,7 @@ Leer líneas: Hasta encontrar una línea que sea exactamente el delimiter
 Crear pipe temporal: Para pasar el texto al comando  
 No actualizar historial: Las líneas del here-doc no van al historial  
 **Ejemplo de implementación de heredoc**
-```bash
+```c
 int create_heredoc(char *delimiter)
 {
     int pipe_fd[2];
