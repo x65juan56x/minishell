@@ -12,13 +12,13 @@ $ ls -l
 # 4. Muestra la salida al usuario
 ```
 
-Variables de Entorno
+##Variables de Entorno
 ¿Qué son?
 Las variables de entorno son valores que están disponibles para todos los procesos del sistema. Almacenan información como rutas, configuraciones, etc.
 
 Variables Importantes
 
-PATH
+**PATH**
 ```bash
 echo $PATH
 # /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -26,7 +26,7 @@ echo $PATH
 Propósito: Lista de directorios donde buscar comandos
 Uso en minishell: Cuando escribes ls, la shell busca el ejecutable en estos directorios
 
-HOME
+**HOME**
 ```bash
 echo $HOME
 # /Users/username
@@ -34,7 +34,7 @@ echo $HOME
 Propósito: Directorio home del usuario
 Uso: Para comandos como cd sin argumentos
 
-PWD (Directorio actual de trabajo)
+**PWD** (Directorio actual de trabajo)
 ```bash
 echo $PWD
 # /current/working/directory
@@ -63,7 +63,7 @@ echo "$USER says hi" # Se expande a "john says hi"
 echo '$USER says hi' # NO se expande: $USER says hi
 ```
 
-Built-ins vs Comandos Externos
+##Built-ins vs Comandos Externos
 
 Comandos Externos (Normales)
 ```bash
@@ -103,7 +103,7 @@ Built-ins Obligatorios en Minishell:
 ◦ exit with no options (Exit Minishell)
 
 
-File Descriptors y Redirección
+##File Descriptors y Redirección
 
 Un file descriptor es un número que identifica un archivo abierto en un proceso.
 
@@ -114,7 +114,7 @@ File Descriptors Estándar
 #define STDERR_FILENO 2  // Error estándar (pantalla)
 ```
 
-Redirección de Salida (>)
+###Redirección de Salida (>)
 Sin Redirección
 ```bash
 echo "hello"  # Salida va a la pantalla (stdout)
@@ -134,7 +134,7 @@ close(fd);
 // Ahora cualquier printf() va al archivo
 ```
 
-Redirección de Entrada (<)
+###Redirección de Entrada (<)
 ```bash
 sort < input.txt  # sort lee desde input.txt en lugar del teclado
 ```
@@ -144,7 +144,7 @@ dup2(fd, STDIN_FILENO);   // stdin ahora lee del archivo
 close(fd);
 ```
 
-Redirección Append (>>)
+###Redirección Append (>>)
 ```bash
 echo "new line" >> file.txt  # Añade al final del archivo
 ```
@@ -166,24 +166,24 @@ Redirección <:
 archivo → stdin (0) → programa
 ```
 
-Pipes
+##Pipes
 Un pipe conecta la salida de un comando con la entrada del siguiente.
 ```bash
 ls | grep .c | wc -l
 ```
 
 Funcionamiento Interno
-1. Crear el Pipe
+**1. Crear el Pipe**
 ```bash
 int pipe_fd[2];  // [0] = read end, [1] = write end
 pipe(pipe_fd);
 ```
-2. Crear Procesos
+**2. Crear Procesos**
 ```bash
 pid_t left_pid = fork();   // Para "ls"
 pid_t right_pid = fork();  // Para "grep .c"
 ```
-3. Configurar File Descriptors
+**3. Configurar File Descriptors**
 Proceso Izquierdo (ls):
 ```bash
 close(pipe_fd[0]);              // No necesita leer
@@ -210,9 +210,10 @@ Diagrama
 ls → [write_fd] PIPE [read_fd] → grep
 ```
 
-Procesamiento de Comandos
+##Procesamiento de Comandos
+
 Fases del Procesamiento
-1. Tokenización - Dividir en Tokens
+**1. Tokenización** - Dividir en Tokens
 ```bash
 echo "hello world" | grep test > output.txt
 ```
@@ -228,16 +229,16 @@ TOKEN_WORD:        "output.txt"
 TOKEN_EOF:         NULL
 ```
 
-2. Parsing - Construir Estructura
+**2. Parsing** - Construir Estructura
 Los tokens se organizan según precedencia y gramática.
 
-3. Ejecución - Ejecutar Comandos
+**3. Ejecución** - Ejecutar Comandos
 El AST se ejecuta recursivamente.
 
-Abstract Syntax Tree (AST)
+##Abstract Syntax Tree (AST)
 Un Abstract Syntax Tree es una representación en árbol de la estructura sintáctica del comando.
 
-Ejemplo Completo
+**Ejemplo Completo**
 Input:
 ```bash
 echo hello | grep h > output.txt
@@ -279,7 +280,7 @@ Se pueden anidar estructuras arbitrariamente:
 (cmd1 | cmd2) > file && (cmd3 < input | cmd4)
 ```
 
-Tipos de nodos
+**Tipos de nodos**
 ```bash
 typedef enum e_node_type
 {
@@ -295,9 +296,9 @@ typedef enum e_node_type
 ```
 
 
-Gestión de Procesos
+##Gestión de Procesos
 
-fork() - Crear Proceso
+**fork()** - Crear Proceso
 ```bash
 pid_t pid = fork();
 if (pid == 0)
@@ -311,13 +312,13 @@ else
     waitpid(pid, &status, 0);
 }
 ```
-execve() - Reemplazar Proceso
+**execve()** - Reemplazar Proceso
 ```bash
 char *args[] = {"ls", "-l", NULL};
 char *path = "/bin/ls";
 execve(path, args, envp);  // Reemplaza el proceso actual
 ```
-waitpid() - Esperar a Proceso Hijo
+**waitpid()** - Esperar a Proceso Hijo
 ```bash
 int status;
 waitpid(pid, &status, 0);
@@ -325,7 +326,7 @@ if (WIFEXITED(status))
     printf("Exit code: %d\n", WEXITSTATUS(status));
 ```
 
-Patrón en Minishell
+**Patrón en Minishell**
 Para Comando Simple:
 ```bash
 pid_t pid = fork();
@@ -371,23 +372,23 @@ waitpid(left, &status1, 0);
 waitpid(right, &status2, 0);
 ```
 
-Manejo de Comillas
-Tipos de Comillas
-Comillas Simples (')
+##Manejo de Comillas
+
+**Comillas Simples (')**
 ```bash
 echo 'Hello $USER'  # Output: Hello $USER (literal)
 ```
 Comportamiento: Todo es literal, no hay expansión
 Uso: Cuando quieres texto exacto
 
-Comillas Dobles (")
+**Comillas Dobles (")**
 ```bash
 echo "Hello $USER"  # Output: Hello john (expansión)
 ```
 Comportamiento: Permite expansión de variables
 Uso: Cuando quieres variables pero preservar espacios
 
-Procesamiento en el Tokenizer
+**Procesamiento en el Tokenizer**
 ```bash
 // En token_words.c
 char *process_quoted_string(const char *s, int start, int end)
@@ -415,10 +416,11 @@ char *process_quoted_string(const char *s, int start, int end)
 ```
 
 
-Here Documents
+##Here Documents
+
 Los here documents permiten pasar texto multi-línea como entrada.
 
-Sintaxis
+**Sintaxis**
 ```bash
 cat << EOF
 Este es un texto
@@ -426,12 +428,12 @@ de múltiples líneas
 que termina cuando encuentra
 EOF
 ```
-Funcionamiento
+**Funcionamiento**
 Detectar delimiter: EOF en el ejemplo
 Leer líneas: Hasta encontrar una línea que sea exactamente el delimiter
 Crear pipe temporal: Para pasar el texto al comando
 No actualizar historial: Las líneas del here-doc no van al historial
-Ejemplo de heredoc
+**Ejemplo de implementación de heredoc**
 ```bash
 int create_heredoc(char *delimiter)
 {
