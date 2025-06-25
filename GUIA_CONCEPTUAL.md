@@ -12,7 +12,7 @@ $ ls -l
 # 4. Muestra la salida al usuario
 ```
 
-##Variables de Entorno
+## Variables de Entorno
 ¿Qué son?
 Las variables de entorno son valores que están disponibles para todos los procesos del sistema. Almacenan información como rutas, configuraciones, etc.
 
@@ -63,7 +63,7 @@ echo "$USER says hi" # Se expande a "john says hi"
 echo '$USER says hi' # NO se expande: $USER says hi
 ```
 
-##Built-ins vs Comandos Externos
+## Built-ins vs Comandos Externos
 
 Comandos Externos (Normales)
 ```bash
@@ -103,7 +103,7 @@ Built-ins Obligatorios en Minishell:
 ◦ exit with no options (Exit Minishell)
 
 
-##File Descriptors y Redirección
+## File Descriptors y Redirección
 
 Un file descriptor es un número que identifica un archivo abierto en un proceso.
 
@@ -114,7 +114,7 @@ File Descriptors Estándar
 #define STDERR_FILENO 2  // Error estándar (pantalla)
 ```
 
-###Redirección de Salida (>)
+### Redirección de Salida (>)
 Sin Redirección
 ```bash
 echo "hello"  # Salida va a la pantalla (stdout)
@@ -134,7 +134,7 @@ close(fd);
 // Ahora cualquier printf() va al archivo
 ```
 
-###Redirección de Entrada (<)
+### Redirección de Entrada (<)
 ```bash
 sort < input.txt  # sort lee desde input.txt en lugar del teclado
 ```
@@ -144,7 +144,7 @@ dup2(fd, STDIN_FILENO);   // stdin ahora lee del archivo
 close(fd);
 ```
 
-###Redirección Append (>>)
+### Redirección Append (>>)
 ```bash
 echo "new line" >> file.txt  # Añade al final del archivo
 ```
@@ -166,7 +166,7 @@ Redirección <:
 archivo → stdin (0) → programa
 ```
 
-##Pipes
+## Pipes
 Un pipe conecta la salida de un comando con la entrada del siguiente.
 ```bash
 ls | grep .c | wc -l
@@ -210,7 +210,7 @@ Diagrama
 ls → [write_fd] PIPE [read_fd] → grep
 ```
 
-##Procesamiento de Comandos
+## Procesamiento de Comandos
 
 Fases del Procesamiento
 **1. Tokenización** - Dividir en Tokens
@@ -235,7 +235,7 @@ Los tokens se organizan según precedencia y gramática.
 **3. Ejecución** - Ejecutar Comandos
 El AST se ejecuta recursivamente.
 
-##Abstract Syntax Tree (AST)
+## Abstract Syntax Tree (AST)
 Un Abstract Syntax Tree es una representación en árbol de la estructura sintáctica del comando.
 
 **Ejemplo Completo**
@@ -296,7 +296,7 @@ typedef enum e_node_type
 ```
 
 
-##Gestión de Procesos
+## Gestión de Procesos
 
 **fork()** - Crear Proceso
 ```bash
@@ -372,7 +372,7 @@ waitpid(left, &status1, 0);
 waitpid(right, &status2, 0);
 ```
 
-##Manejo de Comillas
+## Manejo de Comillas
 
 **Comillas Simples (')**
 ```bash
@@ -416,7 +416,7 @@ char *process_quoted_string(const char *s, int start, int end)
 ```
 
 
-##Here Documents
+## Here Documents
 
 Los here documents permiten pasar texto multi-línea como entrada.
 
