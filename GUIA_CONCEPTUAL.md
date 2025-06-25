@@ -245,13 +245,13 @@ echo hello | grep h > output.txt
 ```
 AST Resultante:
 ```
-        NODE_REDIRECT_OUT
-       /                \
-    NODE_PIPE        file: "output.txt"
-     /                    \
-  NODE_COMMAND        NODE_COMMAND
-    |                      |
-["echo", "hello"]    ["grep", "h"]
+           NODE_REDIRECT_OUT
+          /                \
+         NODE_PIPE        file: "output.txt"
+        /         \
+  NODE_COMMAND     NODE_COMMAND
+       |                 |
+["echo", "hello"]  ["grep", "h"]
 ```
 
 1. Precedencia Natural  
