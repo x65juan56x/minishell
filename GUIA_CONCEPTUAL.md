@@ -13,7 +13,7 @@ $ ls -l
 ```
 
 ## Variables de Entorno
-¿Qué son?
+¿Qué son?  
 Las variables de entorno son valores que están disponibles para todos los procesos del sistema. Almacenan información como rutas, configuraciones, etc.
 
 Variables Importantes
@@ -23,7 +23,7 @@ Variables Importantes
 echo $PATH
 # /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 ```
-Propósito: Lista de directorios donde buscar comandos
+Propósito: Lista de directorios donde buscar comandos  
 Uso en minishell: Cuando escribes ls, la shell busca el ejecutable en estos directorios
 
 **HOME**
@@ -31,7 +31,7 @@ Uso en minishell: Cuando escribes ls, la shell busca el ejecutable en estos dire
 echo $HOME
 # /Users/username
 ```
-Propósito: Directorio home del usuario
+Propósito: Directorio home del usuario  
 Uso: Para comandos como cd sin argumentos
 
 **PWD** (Directorio actual de trabajo)
@@ -94,12 +94,12 @@ pwd      # Ahora estás en /tmp
 ```
 
 Built-ins Obligatorios en Minishell:
-◦ echo with option -n (Print text)
-◦ cd with only a relative or absolute path (Change directory)
-◦ pwd with no options (Print working directory)
-◦ export with no options (Set enviroment variables)
-◦ unset with no options (Remove enviroment variables)
-◦ env with no options or arguments (Display enviroment)
+◦ echo with option -n (Print text)  
+◦ cd with only a relative or absolute path (Change directory)  
+◦ pwd with no options (Print working directory)  
+◦ export with no options (Set enviroment variables)  
+◦ unset with no options (Remove enviroment variables)  
+◦ env with no options or arguments (Display enviroment)  
 ◦ exit with no options (Exit Minishell)
 
 
@@ -172,7 +172,7 @@ Un pipe conecta la salida de un comando con la entrada del siguiente.
 ls | grep .c | wc -l
 ```
 
-Funcionamiento Interno
+Funcionamiento Interno  
 **1. Crear el Pipe**
 ```bash
 int pipe_fd[2];  // [0] = read end, [1] = write end
@@ -183,7 +183,7 @@ pipe(pipe_fd);
 pid_t left_pid = fork();   // Para "ls"
 pid_t right_pid = fork();  // Para "grep .c"
 ```
-**3. Configurar File Descriptors**
+**3. Configurar File Descriptors**  
 Proceso Izquierdo (ls):
 ```bash
 close(pipe_fd[0]);              // No necesita leer
@@ -212,7 +212,7 @@ ls → [write_fd] PIPE [read_fd] → grep
 
 ## Procesamiento de Comandos
 
-Fases del Procesamiento
+Fases del Procesamiento  
 **1. Tokenización** - Dividir en Tokens
 ```bash
 echo "hello world" | grep test > output.txt
@@ -255,9 +255,9 @@ NODE_COMMAND  NODE_COMMAND
  "hello"]      "h"]
 ```
 
-1. Precedencia Natural
-Los operadores tienen precedencia:
-Redirects (>, <) tienen mayor precedencia que pipes (|)
+1. Precedencia Natural  
+Los operadores tienen precedencia:  
+Redirects (>, <) tienen mayor precedencia que pipes (|)  
 Se ejecutan "más cerca" del comando
 
 2. Ejecución Recursiva
@@ -274,7 +274,7 @@ int execute_ast(t_ast_node *ast, char **envp)
 }
 ```
 
-3. Composición Infinita
+3. Composición Infinita  
 Se pueden anidar estructuras arbitrariamente:
 ```bash
 (cmd1 | cmd2) > file && (cmd3 < input | cmd4)
@@ -378,14 +378,14 @@ waitpid(right, &status2, 0);
 ```bash
 echo 'Hello $USER'  # Output: Hello $USER (literal)
 ```
-Comportamiento: Todo es literal, no hay expansión
+Comportamiento: Todo es literal, no hay expansión  
 Uso: Cuando quieres texto exacto
 
 **Comillas Dobles (")**
 ```bash
 echo "Hello $USER"  # Output: Hello john (expansión)
 ```
-Comportamiento: Permite expansión de variables
+Comportamiento: Permite expansión de variables  
 Uso: Cuando quieres variables pero preservar espacios
 
 **Procesamiento en el Tokenizer**
@@ -428,11 +428,11 @@ de múltiples líneas
 que termina cuando encuentra
 EOF
 ```
-**Funcionamiento**
-Detectar delimiter: EOF en el ejemplo
-Leer líneas: Hasta encontrar una línea que sea exactamente el delimiter
-Crear pipe temporal: Para pasar el texto al comando
-No actualizar historial: Las líneas del here-doc no van al historial
+**Funcionamiento**  
+Detectar delimiter: EOF en el ejemplo  
+Leer líneas: Hasta encontrar una línea que sea exactamente el delimiter  
+Crear pipe temporal: Para pasar el texto al comando  
+No actualizar historial: Las líneas del here-doc no van al historial  
 **Ejemplo de implementación de heredoc**
 ```bash
 int create_heredoc(char *delimiter)
