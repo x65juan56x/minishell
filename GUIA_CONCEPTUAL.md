@@ -245,9 +245,9 @@ echo hello | grep h > output.txt
 ```
 AST Resultante:
 ```
-           NODE_REDIRECT_OUT
-          /                \
-         NODE_PIPE        file: "output.txt"
+                  NODE_REDIRECT_OUT
+                 /                \
+         NODE_PIPE                file: "output.txt"
         /         \
   NODE_COMMAND     NODE_COMMAND
        |                 |
