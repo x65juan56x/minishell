@@ -445,25 +445,4 @@ args:         args:
  NULL]         NULL]
 
 
- Ventajas de esta Arquitectura
 
-1. Modularidad:
--Cada nivel de precedencia tiene su propia función
--Fácil añadir nuevos operadores
--Testing individual de componentes
-2. Escalabilidad:
--Preparado para el bonus (&&, ||, paréntesis)
--Extensible a nuevas características
--Mantiene compatibilidad hacia atrás
-3. Robustez:
--Manejo consistente de errores
--Cleanup automático de memoria
--Validación en cada paso
-4. Claridad:
--Estructura refleja la gramática de la shell
--Código auto-documentado
--Fácil debugging y mantenimiento
-5. Eficiencia:
--Una sola pasada sobre los tokens
--Construcción directa del AST
--Sin backtracking innecesario
