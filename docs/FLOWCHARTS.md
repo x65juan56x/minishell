@@ -236,7 +236,7 @@ flowchart TD
         
         EXEC_PIPE[EXECUTE PIPE<br/>execute_pipe_node<br/>├─ pipe<br/>├─ create_pipe_child left<br/>├─ create_pipe_child right<br/>├─ close pipe_fd<br/>└─ wait_pipe_children]
         
-        EXEC_REDIR[EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast (recursión)<br/>└─ waitpid]
+        EXEC_REDIR[EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast recursion<br/>└─ waitpid]
         
         %% Subprocesos
         FORK_CMD[FORK COMMAND<br/>pid = fork<br/>if pid == 0:<br/>  launch_command<br/>  exit 127]
