@@ -3,39 +3,41 @@
 ## Diagrama Principal
 ```mermaid
 flowchart TD
-    START([START MINISHELL<br/>main loop])
-    INPUT[INPUT<br/>input = readline PROMPT<br/>ejemplo: echo hello #124; grep test]
-    
-    %% Validaciones
-    NULL_CHECK{input == NULL?}
-    EXIT_CHECK{input == exit?}
-    EMPTY_CHECK{input vacio?}
-    
-    %% Tokenizer
-    TOKENIZER[TOKENIZER<br/>tokenize input<br/>├─ skip_spaces<br/>├─ is_operator_char<br/>├─ process_operator<br/>└─ process_word]
-    TOKEN_ERROR{tokens == NULL?}
-    TOKENS_LIST[TOKENS LIST<br/>echo hello &#124; grep test EOF]
-    
-    %% Parser  
-    PARSER[PARSER<br/>parse tokens<br/>├─ parse_pipe_expression<br/>├─ parse_redirect_expression<br/>└─ parse_command]
-    PARSE_ERROR{ast == NULL?}
-    AST_TREE[AST TREE<br/>NODE_PIPE<br/>├─ left: COMMAND echo hello<br/>└─ right: COMMAND grep test]
-    
-    %% Executor
-    EXECUTOR[EXECUTOR<br/>execute_ast ast envp<br/>├─ execute_command_node<br/>├─ execute_pipe_node<br/>└─ execute_redirect_node]
-    EXIT_STATUS[EXIT STATUS<br/>exit_status = 0<br/>Command finished]
-    
-    %% Cleanup
-    CLEANUP[CLEANUP<br/>├─ cleanup_ast<br/>├─ cleanup_tokens<br/>└─ free input]
-    
-    %% Terminaciones
-    EXIT_PROGRAM([ EXIT PROGRAM<br/>rl_clear_history<br/>return 0])
-    PRINT_NULL([PRINT NEWLINE<br/>printf newline<br/>break])
-    ERROR_TOKEN([ERROR TOKENIZER<br/>Failed to tokenize])
-    ERROR_PARSE([ERROR PARSER<br/>Failed to parse])
-    
-    %% Historia
-    HISTORY[ADD HISTORY<br/>add_history input]
+    subgraph "Definiciones"
+        START([START MINISHELL<br/>main loop])
+        INPUT[INPUT<br/>input = readline PROMPT<br/>ej: echo hello &#124; grep test]
+        
+        %% Validaciones
+        NULL_CHECK{input == NULL?}
+        EXIT_CHECK{input == "exit"?}
+        EMPTY_CHECK{input vacio?}
+        
+        %% Tokenizer
+        TOKENIZER[TOKENIZER<br/>tokenize input<br/>├─ process_operator<br/>└─ process_word]
+        TOKEN_ERROR{tokens == NULL?}
+        TOKENS_LIST[TOKENS LIST<br/>echo hello &#124; grep test EOF]
+        
+        %% Parser  
+        PARSER[PARSER<br/>parse tokens<br/>├─ parse_pipe_expression<br/>├─ parse_redirect_expression<br/>└─ parse_command]
+        PARSE_ERROR{ast == NULL?}
+        AST_TREE[AST TREE<br/>NODE_PIPE<br/>├─ left: COMMAND echo hello<br/>└─ right: COMMAND grep test]
+        
+        %% Executor
+        EXECUTOR[EXECUTOR<br/>execute_ast ast envp<br/>├─ execute_command_node<br/>├─ execute_pipe_node<br/>└─ execute_redirect_node]
+        EXIT_STATUS[EXIT STATUS<br/>exit_status = 0<br/>Command finished]
+        
+        %% Cleanup
+        CLEANUP[CLEANUP<br/>├─ cleanup_ast<br/>├─ cleanup_tokens<br/>└─ free input]
+        
+        %% Terminaciones
+        EXIT_PROGRAM([ EXIT PROGRAM<br/>rl_clear_history<br/>return exit_status])
+        PRINT_NULL([PRINT NEWLINE<br/>printf newline<br/>break])
+        ERROR_TOKEN([ERROR TOKENIZER<br/>Failed to tokenize])
+        ERROR_PARSE([ERROR PARSER<br/>Failed to parse])
+        
+        %% Historia
+        HISTORY[ADD HISTORY<br/>add_history input]
+    end
 
     %% Flujo principal
     START --> INPUT
@@ -83,55 +85,59 @@ flowchart TD
     classDef cleanup fill:#795548,stroke:#3E2723,color:#fff
     
     class START,EXIT_PROGRAM,PRINT_NULL startEnd
-    class TOKENIZER,PARSER,EXECUTOR process
+    class TOKENIZER,PARSER,EXECUTOR,HISTORY process
     class NULL_CHECK,EXIT_CHECK,EMPTY_CHECK,TOKEN_ERROR,PARSE_ERROR decision
     class ERROR_TOKEN,ERROR_PARSE error
-    class INPUT,TOKENS_LIST,AST_TREE,EXIT_STATUS,HISTORY data
+    class INPUT,TOKENS_LIST,AST_TREE,EXIT_STATUS data
     class CLEANUP cleanup
 ```
 
 ## Tokenizer Detallado  
 ```mermaid
 flowchart TD
-    TOK_START([START TOKENIZER<br/>tokenize input])
-    TOK_INIT[INICIALIZACIÓN<br/>head = NULL<br/>current = NULL<br/>i = 0]
-    
-    TOK_LOOP{input#91;i#93; != '\0'?}
-    SKIP_SPACES[skip_spaces<br/>while input#91;i#93; == ' ' i++]
-    CHECK_END{input#91;i#93; == '\0'?}
-    
-    IS_OPERATOR{is_operator_char input#91;i#93;?}
-    PROC_OPERATOR[PROCESS OPERATOR<br/>├─ get_operator_type<br/>├─ #124; → TOKEN_PIPE<br/>├─ &gt; → TOKEN_REDIRECT_OUT<br/>├─ &lt; → TOKEN_REDIRECT_IN<br/>├─ &gt;&gt; → TOKEN_REDIRECT_APPEND<br/>└─ &lt;&lt; → TOKEN_HEREDOC]
-    
-    PROC_WORD[PROCESS WORD<br/>extract_word_token<br/>├─ find_word_end<br/>├─ skip_quoted_section<br/>├─ process_quoted_string<br/>└─ expand_wildcards]
-    
-    CHECK_TOKEN{new_token == NULL?}
-    ADD_TOKEN[ADD TOKEN<br/>add_token head current new_token]
-    TOK_ERROR([ERROR CLEANUP<br/>cleanup_tokens<br/>return NULL])
-    
-    EOF_TOKEN[CREATE EOF TOKEN<br/>create_eof_token]
-    TOK_SUCCESS([RETURN SUCCESS<br/>return head])
-    
+    subgraph "Definiciones"
+        TOK_START([START TOKENIZER<br/>tokenize input])
+        TOK_INIT[INICIALIZACIÓN<br/>head = NULL<br/>current = NULL]
+        
+        GEN_LIST[GENERATE TOKEN LIST<br/>generate_token_list]
+        
+        TOK_LOOP{input no ha terminado?}
+        
+        IS_OPERATOR{is_operator_char?}
+        PROC_OPERATOR[PROCESS OPERATOR<br/>process_operator<br/>├─ get_operator_type<br/>└─ create_token]
+        
+        PROC_WORD[PROCESS WORD<br/>process_word<br/>├─ extract_word_token<br/>└─ create_token]
+        
+        CHECK_TOKEN{new_token == NULL?}
+        ADD_TOKEN[ADD TOKEN<br/>add_token head current new_token]
+        TOK_ERROR([ERROR CLEANUP<br/>cleanup_tokens<br/>return NULL])
+        
+        ADD_EOF[ADD EOF TOKEN<br/>create_token TOKEN_EOF NULL]
+        TOK_SUCCESS([RETURN SUCCESS<br/>return head])
+    end
+
     %% Flujo
     TOK_START --> TOK_INIT
-    TOK_INIT --> TOK_LOOP
-    TOK_LOOP -->|SÍ| SKIP_SPACES
-    SKIP_SPACES --> CHECK_END
-    CHECK_END -->|SÍ| EOF_TOKEN
-    CHECK_END -->|NO| IS_OPERATOR
+    TOK_INIT --> GEN_LIST
     
-    IS_OPERATOR -->|SÍ| PROC_OPERATOR
-    IS_OPERATOR -->|NO| PROC_WORD
-    
-    PROC_OPERATOR --> CHECK_TOKEN
-    PROC_WORD --> CHECK_TOKEN
-    
-    CHECK_TOKEN -->|SÍ| TOK_ERROR
-    CHECK_TOKEN -->|NO| ADD_TOKEN
-    
-    ADD_TOKEN --> TOK_LOOP
-    TOK_LOOP -->|NO| EOF_TOKEN
-    EOF_TOKEN --> TOK_SUCCESS
+    subgraph "generate_token_list"
+        GEN_LIST --> TOK_LOOP
+        TOK_LOOP -->|SÍ| IS_OPERATOR
+        
+        IS_OPERATOR -->|SÍ| PROC_OPERATOR
+        IS_OPERATOR -->|NO| PROC_WORD
+        
+        PROC_OPERATOR --> CHECK_TOKEN
+        PROC_WORD --> CHECK_TOKEN
+        
+        CHECK_TOKEN -->|SÍ| TOK_ERROR
+        CHECK_TOKEN -->|NO| ADD_TOKEN
+        
+        ADD_TOKEN --> TOK_LOOP
+    end
+
+    TOK_LOOP -->|NO| ADD_EOF
+    ADD_EOF --> TOK_SUCCESS
     
     %% Estilos
     classDef startEnd fill:#4CAF50,stroke:#2E7D32,color:#fff
@@ -141,8 +147,8 @@ flowchart TD
     classDef subprocess fill:#00BCD4,stroke:#00838F,color:#fff
     
     class TOK_START,TOK_SUCCESS startEnd
-    class TOK_INIT,SKIP_SPACES,ADD_TOKEN,EOF_TOKEN process
-    class TOK_LOOP,CHECK_END,IS_OPERATOR,CHECK_TOKEN decision
+    class TOK_INIT,GEN_LIST,ADD_TOKEN,ADD_EOF process
+    class TOK_LOOP,IS_OPERATOR,CHECK_TOKEN decision
     class TOK_ERROR error
     class PROC_OPERATOR,PROC_WORD subprocess
 ```
@@ -150,53 +156,52 @@ flowchart TD
 ## Parser Detallado
 ```mermaid
 flowchart TD
-    PAR_START([START PARSER<br/>parse tokens])
-    PAR_INIT[INIT PARSER<br/>parser.tokens = tokens<br/>parser.current = tokens<br/>parser.error = 0]
-    
-    PARSE_EXPR[PARSE EXPRESSION<br/>parse_pipe_expression]
-    
-    %% Pipe Expression
-    PIPE_EXPR[PARSE PIPE<br/>precedencia BAJA<br/>left-associative]
-    REDIR_EXPR[PARSE REDIRECT<br/>precedencia ALTA<br/>multiple redirects]
-    CMD_EXPR[PARSE COMMAND<br/>collect_command_args]
-    
-    PIPE_CHECK{current.type == TOKEN_PIPE?}
-    REDIR_CHECK{is_redirect_token?}
-    CMD_CHECK{current.type == TOKEN_WORD?}
-    
-    CREATE_PIPE[CREATE PIPE NODE<br/>create_binary_node<br/>left = cmd1<br/>right = cmd2]
-    CREATE_REDIR[CREATE REDIRECT NODE<br/>create_redirect_node<br/>left = command<br/>file = filename]
-    CREATE_CMD[CREATE COMMAND NODE<br/>create_ast_node<br/>args = #91;cmd, arg1, arg2, NULL#93;]
-    
-    PAR_ERROR{parser.error == 1?}
-    PAR_CLEANUP([CLEANUP AST<br/>cleanup_ast<br/>return NULL])
-    PAR_SUCCESS([RETURN AST<br/>return ast])
-    
+    subgraph "Definiciones"
+        PAR_START([START PARSER<br/>parse tokens])
+        PAR_INIT[INIT PARSER<br/>parser.tokens = tokens<br/>parser.current = tokens<br/>parser.error = 0]
+        
+        PARSE_EXPR[PARSE EXPRESSION<br/>parse_pipe_expression]
+        
+        %% Pipe Expression
+        PIPE_EXPR[PARSE PIPE<br/>precedencia BAJA<br/>left-associative]
+        REDIR_EXPR[PARSE REDIRECT<br/>precedencia ALTA<br/>multiple redirects]
+        CMD_EXPR[PARSE COMMAND<br/>collect_command_args]
+        
+        PIPE_CHECK{current.type == TOKEN_PIPE?}
+        REDIR_CHECK{is_redirect_token?}
+        CMD_CHECK{current.type == TOKEN_WORD?}
+        
+        CREATE_PIPE[CREATE PIPE NODE<br/>create_binary_node]
+        CREATE_REDIR[CREATE REDIRECT NODE<br/>create_redirect_node]
+        CREATE_CMD[CREATE COMMAND NODE<br/>create_ast_node]
+        
+        PAR_ERROR{parser.error == 1?}
+        PAR_CLEANUP([CLEANUP AST<br/>cleanup_ast<br/>return NULL])
+        PAR_SUCCESS([RETURN AST<br/>return ast])
+    end
+
     %% Flujo principal
     PAR_START --> PAR_INIT
     PAR_INIT --> PARSE_EXPR
-    PARSE_EXPR --> PIPE_EXPR
     
-    %% Parsing jerárquico
+    %% Parsing jerárquico (Descenso Recursivo)
+    PARSE_EXPR --> PIPE_EXPR
     PIPE_EXPR --> REDIR_EXPR
     REDIR_EXPR --> CMD_EXPR
     
-    %% Decisiones de parsing
-    CMD_EXPR --> CMD_CHECK
-    CMD_CHECK -->|SÍ| CREATE_CMD
-    CMD_CHECK -->|NO| PAR_ERROR
-    
-    CREATE_CMD --> REDIR_CHECK
-    REDIR_CHECK -->|SÍ| CREATE_REDIR
+    %% Lógica de un nivel (ej: parse_redirect_expression)
+    subgraph "Lógica de un Nivel de Expresión"
+        CMD_EXPR -->|Llama a parse_command| CREATE_CMD
+        CREATE_CMD --> REDIR_CHECK
+        REDIR_CHECK -->|SÍ, en bucle| CREATE_REDIR
+        CREATE_REDIR --> REDIR_CHECK
+    end
+
     REDIR_CHECK -->|NO| PIPE_CHECK
-    
-    CREATE_REDIR --> PIPE_CHECK
-    PIPE_CHECK -->|SÍ| CREATE_PIPE
-    PIPE_CHECK -->|NO| PAR_ERROR
-    
-    CREATE_PIPE --> PAR_ERROR
+    PIPE_CHECK -->|SÍ, en bucle| PIPE_EXPR
     
     %% Resultado final
+    PIPE_CHECK -->|NO| PAR_ERROR
     PAR_ERROR -->|SÍ| PAR_CLEANUP
     PAR_ERROR -->|NO| PAR_SUCCESS
     
@@ -219,35 +224,37 @@ flowchart TD
 ## Executor Detallado
 ```mermaid
 flowchart TD
-    EX_START([START EXECUTOR<br/>execute_ast ast envp])
-    EX_CHECK{ast == NULL?}
-    EX_RETURN_0([RETURN 0<br/>empty ast])
-    
-    NODE_TYPE{ast.type?}
-    
-    %% Tipos de nodos
-    EXEC_CMD[EXECUTE COMMAND<br/>execute_command_node<br/>├─ fork<br/>├─ run_cmd_from_args<br/>├─ waitpid<br/>└─ return exit_status]
-    
-    EXEC_PIPE[EXECUTE PIPE<br/>execute_pipe_node<br/>├─ pipe<br/>├─ create_pipe_child left<br/>├─ create_pipe_child right<br/>├─ close pipe_fd<br/>└─ wait_pipe_children]
-    
-    EXEC_REDIR[EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast recursion<br/>└─ waitpid]
-    
-    %% Subprocesos
-    FORK_CMD[FORK COMMAND<br/>pid = fork<br/>if pid == 0:<br/>  run_cmd_from_args<br/>  exit 127]
-    
-    FORK_PIPE[FORK PIPE<br/>Left Child: stdout → pipe<br/>Right Child: stdin ← pipe<br/>Parent: close both ends]
-    
-    FORK_REDIR[FORK REDIRECT<br/>Child: dup2 file descriptor<br/>Child: execute command<br/>Parent: wait]
-    
-    %% Sistema
-    SYSTEM_PROC[SYSTEM PROCESSES<br/>execve path args envp<br/>PID tracking<br/>Signal handling]
-    
-    %% Exit status
-    WAIT_STATUS[WAIT STATUS<br/>waitpid pid status 0<br/>WIFEXITED → exit_code<br/>WIFSIGNALED → 128+signal]
-    
-    EX_SUCCESS([RETURN EXIT_STATUS<br/>return status])
-    EX_ERROR([RETURN ERROR<br/>return 1])
-    
+    subgraph "Definiciones"
+        EX_START([START EXECUTOR<br/>execute_ast ast envp])
+        EX_CHECK{ast == NULL?}
+        EX_RETURN_0([RETURN 0<br/>empty ast])
+        
+        NODE_TYPE{ast.type?}
+        
+        %% Tipos de nodos
+        EXEC_CMD[EXECUTE COMMAND<br/>execute_command_node<br/>├─ fork<br/>├─ launch_command<br/>├─ waitpid<br/>└─ return exit_status]
+        
+        EXEC_PIPE[EXECUTE PIPE<br/>execute_pipe_node<br/>├─ pipe<br/>├─ create_pipe_child left<br/>├─ create_pipe_child right<br/>├─ close pipe_fd<br/>└─ wait_pipe_children]
+        
+        EXEC_REDIR[EXECUTE REDIRECT<br/>execute_redirect_node<br/>├─ fork<br/>├─ setup_redirect<br/>├─ execute_ast (recursión)<br/>└─ waitpid]
+        
+        %% Subprocesos
+        FORK_CMD[FORK COMMAND<br/>pid = fork<br/>if pid == 0:<br/>  launch_command<br/>  exit 127]
+        
+        FORK_PIPE[FORK PIPE<br/>Left Child: stdout → pipe<br/>Right Child: stdin ← pipe<br/>Parent: close both ends]
+        
+        FORK_REDIR[FORK REDIRECT<br/>Child: dup2 file descriptor<br/>Child: execute command<br/>Parent: wait]
+        
+        %% Sistema
+        SYSTEM_PROC[SYSTEM PROCESSES<br/>execve path args envp<br/>PID tracking<br/>Signal handling]
+        
+        %% Exit status
+        WAIT_STATUS[WAIT STATUS<br/>waitpid pid status 0<br/>WIFEXITED → exit_code<br/>WIFSIGNALED → 128+signal]
+        
+        EX_SUCCESS([RETURN EXIT_STATUS<br/>return status])
+        EX_ERROR([RETURN ERROR<br/>return 1])
+    end
+
     %% Flujo principal
     EX_START --> EX_CHECK
     EX_CHECK -->|SÍ| EX_RETURN_0
@@ -284,10 +291,9 @@ flowchart TD
     classDef system fill:#9C27B0,stroke:#6A1B9A,color:#fff
     classDef status fill:#607D8B,stroke:#37474F,color:#fff
     
-    class EX_START,EX_RETURN_0,EX_SUCCESS startEnd
+    class EX_START,EX_RETURN_0,EX_SUCCESS,EX_ERROR startEnd
     class EXEC_CMD,EXEC_PIPE,EXEC_REDIR process
     class EX_CHECK,NODE_TYPE decision
-    class EX_ERROR error
     class FORK_CMD,FORK_PIPE,FORK_REDIR subprocess
     class SYSTEM_PROC system
     class WAIT_STATUS status
