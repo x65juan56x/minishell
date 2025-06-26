@@ -325,7 +325,7 @@ if (WIFEXITED(status))
     printf("Exit code: %d\n", WEXITSTATUS(status));
 ```
 
-**Patrón en Minishell**
+**Patrón en Minishell**  
 Para Comando Simple:
 ```c
 pid_t pid = fork();
