@@ -189,15 +189,20 @@ flowchart TD
     PIPE_EXPR --> REDIR_EXPR
     REDIR_EXPR --> CMD_EXPR
     
-    %% Lógica de un nivel (ej: parse_redirect_expression)
-    CMD_EXPR -->|Llama a parse_command| CREATE_CMD
+    %% Lógica de parse_command
+    CMD_EXPR --> CMD_CHECK
+    CMD_CHECK -->|SÍ| CREATE_CMD
+    CMD_CHECK -->|NO| PAR_ERROR
+
+    %% Lógica de parse_redirect_expression
     CREATE_CMD --> REDIR_CHECK
     REDIR_CHECK -->|SÍ, en bucle| CREATE_REDIR
     CREATE_REDIR --> REDIR_CHECK
 
-    %% Flujo de retorno
+    %% Flujo de retorno y bucle de pipe
     REDIR_CHECK -->|NO| PIPE_CHECK
-    PIPE_CHECK -->|SÍ, en bucle| PIPE_EXPR
+    PIPE_CHECK -->|SÍ| CREATE_PIPE
+    CREATE_PIPE -->|Continúa bucle| REDIR_EXPR
     
     %% Resultado final
     PIPE_CHECK -->|NO| PAR_ERROR
