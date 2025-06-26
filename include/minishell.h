@@ -97,7 +97,7 @@ t_ast_node		*parse_redirect_expression(t_parser *parser);
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char **envp);
-void			run_cmd_from_args(char **args, char **envp);
+void			launch_command(char **args, char **envp);
 
 /* PIPE EXECUTOR */
 pid_t			create_pipe_child(t_ast_node *node, int *pipe_fd, int is_left, char **envp);
@@ -107,7 +107,7 @@ int				wait_pipe_children(pid_t left_pid, pid_t right_pid);
 int				execute_redirect_node(t_ast_node *node, char **envp);
 
 /* PATH FINDER */
-char			*get_path(char *cmd, char **envp);
+char			*find_command_path(char *cmd, char **envp);
 
 /* AST DEBUG */
 // void			print_ast(t_ast_node *node, int depth);

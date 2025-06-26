@@ -9,6 +9,7 @@ static int	is_redirect_token(t_token_type type)
 t_ast_node	*parse_redirect_expression(t_parser *parser)
 {
 	t_ast_node	*left;
+	t_ast_node	*new_node;
 	t_token		*redirect_token;
 	t_token		*file_token;
 
@@ -25,12 +26,17 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 			cleanup_ast(left);
 			return (NULL);
 		}
-		left = create_redirect_node(redirect_token->type, left, file_token->value);
-		if (!left)
-			return (NULL);
+		new_node = create_redirect_node(redirect_token->type, left, file_token->value);
+		if (!new_node)
+			return (cleanup_ast(left), NULL);
+		left = new_node;
 	}
 	return (left);
 }
+
+/*
+La variable temporal "new_node" se crea para que en el caso de fallar "create_direct_node" podamos liberar "left"
+*/
 
 static t_token	*consume_token_type(t_parser *parser, t_token_type type)
 {
@@ -50,6 +56,7 @@ t_ast_node	*parse_pipe_expression(t_parser *parser)
 {
 	t_ast_node	*left;
 	t_ast_node	*right;
+	t_ast_node	*new_node;
 	t_token		*pipe_token;
 
 	left = parse_redirect_expression(parser);
@@ -59,24 +66,17 @@ t_ast_node	*parse_pipe_expression(t_parser *parser)
 	{
 		pipe_token = consume_token_type(parser, TOKEN_PIPE);
 		if (!pipe_token)
-		{
-			cleanup_ast(left);
-			return (NULL);
-		}
+			return (cleanup_ast(left), NULL);
 		right = parse_redirect_expression(parser);
 		if (!right)
-		{
-			cleanup_ast(left);
-			return (NULL);
-		}
-		left = create_binary_node(TOKEN_PIPE, left, right);
+			return (cleanup_ast(left), NULL);
+		new_node = create_binary_node(TOKEN_PIPE, left, right);
 		if (!left)
-		{
-			cleanup_ast(right);
-			return (NULL);
-		}
+			return (cleanup_ast(left), cleanup_ast(right), NULL);
+		left = new_node;
 	}
 	return (left);
 }
-
-
+/*
+La variable temporal "new_node" se crea para que en el caso de fallar "create_binary_node" podamos liberar "left"
+*/

@@ -1,14 +1,3 @@
-Tabla de Contenidos
-¿Qué es el Parsing?
-Concepto de AST
-Arquitectura del Parser
-Estructuras de Datos
-Análisis Detallado por Archivos
-Precedencia y Asociatividad
-Manejo de Errores
-Ejemplos de Parsing
-Ventajas de esta Arquitectura
-¿Qué es el Parsing?
 El parsing (análisis sintáctico) es el segundo paso en el procesamiento de comandos de una shell. Toma la lista de tokens generada por el tokenizador y construye un Abstract Syntax Tree (AST) que representa la estructura jerárquica del comando.
 
 Flujo de Datos:
@@ -72,7 +61,7 @@ Comandos simples (palabras y argumentos)
 Separación de Responsabilidades:
 
 src/parser/
-├── parser.c                  # Coordinación principal
+├── parser.c                 # Coordinación principal
 ├── ast_utils.c              # Creación y gestión de nodos AST
 ├── parser_commands.c        # Parsing de comandos simples
 └── parser_expressions.c     # Parsing de expresiones (pipes, redirects)
@@ -84,7 +73,7 @@ Tipos de Nodos AST:
 
 typedef enum e_node_type
 {
-	NODE_COMMAND,         // Comando simple: echo hello
+	NODE_COMMAND,        // Comando simple: echo hello
 	NODE_PIPE,           // Pipe: cmd1 | cmd2
 	NODE_REDIRECT_IN,    // Redirect entrada: cmd < file
 	NODE_REDIRECT_OUT,   // Redirect salida: cmd > file

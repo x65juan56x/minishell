@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static char	*paths_in_env(char **envp)
+static char	*get_path_from_env(char **envp)
 {
 	int	i;
 
@@ -32,7 +32,7 @@ static char	*build_full_path(char *dir, char *cmd)
 	return (NULL);
 }
 
-static char	*check_dirs(char **dirs, char *cmd)
+static char	*search_cmd_in_dirs(char **dirs, char *cmd)
 {
 	char	*path;
 	int		i;
@@ -56,7 +56,7 @@ static char	*check_dirs(char **dirs, char *cmd)
 	return (NULL);
 }
 
-char	*get_path(char *cmd, char **envp)
+char	*find_command_path(char *cmd, char **envp)
 {
 	char	*path;
 	char	**dirs;
@@ -70,13 +70,13 @@ char	*get_path(char *cmd, char **envp)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	tmp = paths_in_env(envp);
+	tmp = get_path_from_env(envp);
 	if (!tmp)
 		tmp = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
 	dirs = ft_split(tmp, ':');
 	if (!dirs)
 		return (NULL);
-	path = check_dirs(dirs, cmd);
+	path = search_cmd_in_dirs(dirs, cmd);
 	return (path);
 }
 

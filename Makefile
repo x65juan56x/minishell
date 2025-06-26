@@ -4,7 +4,7 @@ OBJ_DIR = obj
 INCLUDE_DIR = include
 
 SRC_FILES = minishell.c \
-			executor/find_the_path.c \
+			executor/path_utils.c \
 			executor/executor.c \
 			executor/pipe_executor.c \
 			executor/redirect_executor.c \

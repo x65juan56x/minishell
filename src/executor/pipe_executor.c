@@ -24,12 +24,12 @@ static void	setup_pipe_child(int *pipe_fd, int is_left_child)
 	}
 }
 
-static void	execute_node_in_child(t_ast_node *node, char **envp)
+static void	child_process_routine(t_ast_node *node, char **envp)
 {
 	if (node->type == NODE_COMMAND)
 	{
 		if (node->args && node->args[0])
-			run_cmd_from_args(node->args, envp);
+			launch_command(node->args, envp);
 	}
 	else
 		execute_ast(node, envp);
@@ -52,7 +52,7 @@ pid_t	create_pipe_child(t_ast_node *node, int *pipe_fd, int is_left, char **envp
 	if (pid == 0)
 	{
 		setup_pipe_child(pipe_fd, is_left);
-		execute_node_in_child(node, envp);
+		child_process_routine(node, envp);
 	}
 	return (pid);
 }

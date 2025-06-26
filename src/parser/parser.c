@@ -6,17 +6,7 @@ static void	init_parser(t_parser *parser, t_token *tokens)
 	parser->current = tokens;
 	parser->error = 0;
 }
-/* 
-static t_token	*advance_token(t_parser *parser)
-{
-	t_token	*current;
 
-	current = parser->current;
-	if (parser->current && parser->current->type != TOKEN_EOF)
-		parser->current = parser->current->next;
-	return (current);
-}
- */
 static t_ast_node	*parse_expression(t_parser *parser)
 {
 	if (!parser->current || parser->error)

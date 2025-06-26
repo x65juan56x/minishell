@@ -27,27 +27,23 @@ int	main(int ac, char **av, char **envp)
 		tokens = tokenize(input);
 		if (!tokens)
 		{
-			printf("Error: Failed to tokenize input\n");
+			ft_putstr_fd("Error: Failed to tokenize input\n", 2);
 			free(input);
 			continue;
 		}
 		ast = parse(tokens);
 		if (!ast)
 		{
-			printf("Error: Failed to parse tokens\n");
+			ft_putstr_fd("Error: Failed to parse tokens\n", 2);
 			cleanup_tokens(tokens);
 			free(input);
 			continue;
 		}
-		printf("Executing command...\n");
 		exit_status = execute_ast(ast, envp);
-		printf("Command finished with exit status: %d\n", exit_status);
 		cleanup_ast(ast);
 		cleanup_tokens(tokens);
 		free(input);
 	}
 	rl_clear_history();
-	return (0);
+	return (exit_status);
 }
-
-

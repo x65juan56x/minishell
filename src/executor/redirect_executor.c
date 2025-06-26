@@ -56,8 +56,10 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 	{
 		if (setup_redirect(node) != 0)
 			exit(1);
-		execute_ast(node->left, envp);
-		exit(1);
+		if (node->left->type == NODE_COMMAND)
+			launch_command(node->left->args, envp);
+		else
+			exit(execute_ast(node->left, envp));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
@@ -66,4 +68,3 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 		return (128 + WTERMSIG(status));
 	return (1);
 }
-

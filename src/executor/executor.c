@@ -12,7 +12,7 @@ static int	execute_command_node(t_ast_node *node, char **envp)
 		return (1);
 	if (pid == 0)
 	{
-		run_cmd_from_args(node->args, envp);
+		launch_command(node->args, envp);
 		exit(127);
 	}
 	waitpid(pid, &status, 0);

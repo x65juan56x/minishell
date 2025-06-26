@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static void	handle_cmd_error(char **args, char *path)
+static void	exit_command_not_found(char **args, char *path)
 {
 	char	*cmd_name;
 
@@ -12,7 +12,7 @@ static void	handle_cmd_error(char **args, char *path)
 	free(cmd_name);
 }
 
-static void	handle_execve_error(char **args, char *path)
+static void	exit_permission_denied(char **args, char *path)
 {
 	char	*cmd_name;
 
@@ -23,17 +23,15 @@ static void	handle_execve_error(char **args, char *path)
 	free(cmd_name);
 }
 
-void	run_cmd_from_args(char **args, char **envp)
+void	launch_command(char **args, char **envp)
 {
 	char	*path;
 
 	if (!args || !args[0] || args[0][0] == '\0')
 		ft_cmd_not_found_exit("");
-	path = get_path(args[0], envp);
+	path = find_command_path(args[0], envp);
 	if (!path)
-		handle_cmd_error(args, path);
+		exit_command_not_found(args, path);
 	execve(path, args, envp);
-	handle_execve_error(args, path);
+	exit_permission_denied(args, path);
 }
-
-
