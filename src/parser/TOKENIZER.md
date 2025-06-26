@@ -1,163 +1,126 @@
-Documentación del Tokenizador de Minishell
-¿Qué es la Tokenización?
-La tokenización es el primer paso en el procesamiento de comandos de una shell. Consiste en dividir una cadena de entrada del usuario en unidades más pequeñas llamadas tokens, cada una con un significado específico.
+# Documentación del Tokenizador de Minishell
 
-Ejemplo Visual:
-Input:  echo "hello world" | grep test > output.txt
+## ¿Qué es la Tokenización?
+La tokenización es el primer paso en el procesamiento de comandos de una shell. Consiste en dividir una cadena de entrada del usuario en unidades más pequeñas llamadas **tokens**, cada una con un significado específico.
 
-Se convierte en:
-TOKEN_WORD:        "echo"
-TOKEN_WORD:        "hello world"    # Sin comillas, contenido procesado
-TOKEN_PIPE:        "|"
-TOKEN_WORD:        "grep" 
-TOKEN_WORD:        "test"
-TOKEN_REDIRECT:    ">"
-TOKEN_WORD:        "output.txt"
-TOKEN_EOF:         (marcador de fin)
+**Ejemplo Visual:**
+Input: `echo "hello world" | grep test > output.txt`
 
-Arquitectura del Tokenizador
-Flujo Principal:
-Entrada: Cadena de texto del usuario
-Procesamiento: Análisis carácter por carácter
-Clasificación: Identificar tipo de cada token
-Extracción: Obtener el valor correcto del token
-Salida: Lista enlazada de tokens
+Se convierte en una lista enlazada de tokens:
+- `TOKEN_WORD`: "echo"
+- `TOKEN_WORD`: "hello world"
+- `TOKEN_PIPE`: "|"
+- `TOKEN_WORD`: "grep" 
+- `TOKEN_WORD`: "test"
+- `TOKEN_REDIRECT_OUT`: ">"
+- `TOKEN_WORD`: "output.txt"
+- `TOKEN_EOF`: (marcador de fin)
 
-Separación de Responsabilidades:
-tokenizer.c: Función principal y flujo de control
-token_utils.c: Creación y gestión de memoria de tokens
-token_operators.c: Identificación de operadores (|, >, <, etc.)
-token_words.c: Extracción de palabras y manejo de comillas
+## Arquitectura del Tokenizador
+El tokenizador está diseñado con una clara separación de responsabilidades para facilitar su mantenimiento y extensión.
 
+- **`tokenizer.c`**: Contiene el flujo principal y las funciones que orquestan el proceso.
+- **`token_utils.c`**: Utilidades para crear, añadir y limpiar la lista de tokens.
+- **`token_operators.c`**: Lógica para identificar operadores como `|`, `>`, `>>`, etc.
+- **`token_words.c`**: Lógica compleja para extraer palabras y manejar strings entrecomillados.
 
-Análisis Detallado por Archivos
+---
 
-1. tokenizer.c - El Conductor Principal
+## Análisis Detallado por Archivos
 
-¿Qué hace?
-Coordina todo el proceso de tokenización
-Itera sobre cada carácter de la entrada
-Delega el trabajo específico a funciones especializadas
+### 1. `tokenizer.c` - El Conductor Principal
+Este archivo coordina todo el proceso, iterando sobre la entrada y delegando la creación de cada token.
 
-Flujo paso a paso:
-Validación: Verifica que input no sea NULL
-Inicialización: Prepara variables de control (head, current, i)
-Bucle principal: Mientras hay caracteres por procesar:
-Salta espacios en blanco
-Identifica si es operador o palabra
-Delega a la función apropiada
-Añade el token a la lista
-Finalización: Añade un token EOF para marcar el final
+#### `t_token *tokenize(const char *input)`
+- **Responsabilidad**: Es la función pública y punto de entrada para la tokenización.
+- **Mecanismo**:
+  1. Inicializa los punteros `head` y `current` de la lista a `NULL`.
+  2. Llama a `generate_token_list` para que construya la lista de tokens.
+  3. Si `generate_token_list` falla, limpia la memoria con `cleanup_tokens` y retorna `NULL`.
+  4. Si tiene éxito, crea y añade un token final `TOKEN_EOF`, que es crucial para el parser.
+  5. Devuelve el puntero al inicio de la lista (`head`).
+- **Llamado por**: `main()`
 
-¿Por qué este diseño?
-Modularidad: Cada tipo de token tiene su lógica separada
-Mantenibilidad: Fácil añadir nuevos tipos de tokens
-Robustez: Manejo centralizado de errores
+#### `static int generate_token_list(...)`
+- **Responsabilidad**: Es el motor principal. Recorre la cadena de entrada y construye la lista de tokens.
+- **Mecanismo**:
+  1. Itera sobre la cadena de entrada `input`.
+  2. En cada iteración, primero salta los espacios en blanco.
+  3. Llama a `is_operator_char()` para decidir si el token es un operador o una palabra.
+  4. Delega la creación del token a `process_operator()` o `process_word()`.
+  5. Añade el nuevo token a la lista con `add_token()`.
+  6. Retorna `1` si falla la creación de un token, `0` si tiene éxito.
 
-Funciones Auxiliares:
-skip_spaces(const char *input, int *i)
+#### `static t_token *process_operator(...)`
+- **Responsabilidad**: Procesar un token de operador (`|`, `>`, `>>`, etc.).
+- **Mecanismo**:
+  1. Llama a `get_operator_type()` para determinar el tipo exacto de operador y su longitud.
+  2. Extrae el valor del operador (ej: ">>") usando `ft_substr`.
+  3. Llama a `create_token()` para ensamblar el token final.
 
-Propósito: Avanza el índice saltando espacios en blanco
-¿Por qué separada? Los espacios son delimitadores, no tokens
-create_eof_token(void)
+#### `static t_token *process_word(...)`
+- **Responsabilidad**: Procesar un token de palabra (un comando, un argumento, etc.).
+- **Mecanismo**:
+  1. Delega la extracción de la palabra y el manejo de comillas a `extract_word_token()`.
+  2. Llama a `create_token()` para crear un token de tipo `TOKEN_WORD`.
 
-Propósito: Crea el token especial que marca el final
-¿Por qué EOF? El parser necesita saber cuándo terminar
-process_operator(const char *input, int *i)
+### 2. `token_utils.c` - Gestión de Memoria y Tokens
 
-Propósito: Maneja operadores como |, >, <<, &&
-Delega a: get_operator_type() para identificación específica
-process_word(const char *input, int *i)
+#### `t_token *create_token(...)`
+- **Responsabilidad**: Crear y alocar memoria para un único nodo de token.
+- **Mecanismo**:
+  1. Usa `malloc` para reservar espacio para la estructura `t_token`.
+  2. Asigna el `type` y el `value` a la nueva estructura.
+  3. Inicializa `next` a `NULL`.
+  4. Si `malloc` falla, libera el `value` (si existe) para evitar fugas.
 
-Propósito: Maneja palabras, argumentos y strings con comillas
-Delega a: extract_word_token() para procesamiento complejo
+#### `void add_token(...)`
+- **Responsabilidad**: Añadir un nuevo token al final de la lista enlazada.
+- **Mecanismo**:
+  - Usa punteros dobles (`**head`, `**current`) para poder modificar los punteros originales en la función que la llama.
+  - Si la lista está vacía, el nuevo token es `head` y `current`.
+  - Si no, enlaza `(*current)->next` al nuevo token y actualiza `current`.
 
+#### `void cleanup_tokens(...)`
+- **Responsabilidad**: Liberar toda la memoria utilizada por una lista enlazada de tokens.
+- **Mecanismo**: Itera por la lista, liberando `current->value` y luego `current` en cada paso.
 
-2. token_utils.c - Gestión de Memoria y Tokens
+### 3. `token_operators.c` - Identificación de Operadores
 
-create_token(t_token_type type, char *value)
-Responsabilidad: Crear un token individual en memoria
-Gestión de errores: Si falla malloc, libera el value para evitar leaks
-¿Por qué separar? Centraliza la creación y hace el código más limpio
+#### `int is_operator_char(char c)`
+- **Responsabilidad**: Comprobar rápidamente si un carácter puede ser el inicio de un operador.
+- **Llamado por**: `generate_token_list()` y `find_word_end()`.
 
-add_token(t_token **head, t_token **current, t_token *new_token)
-Responsabilidad: Añadir token a la lista enlazada
-Casos especiales:
-Si es el primer token → establece head
-Si no → enlaza con el anterior
-¿Por qué punteros dobles? Para modificar las variables del caller
+#### `t_token_type get_operator_type(...)`
+- **Responsabilidad**: Es el dispatcher principal para identificar cualquier operador.
+- **Mecanismo**:
+  - Usa una serie de `if` para comprobar el primer carácter.
+  - Delega a `get_pipe_operator()` y `get_redirect_operator()` para los casos que pueden tener 1 o 2 caracteres (`|` vs `||`, `>` vs `>>`).
+  - Maneja directamente otros casos como `&&`, `(`, `)`.
 
-cleanup_tokens(t_token *tokens)
-Responsabilidad: Liberar toda la memoria de la lista
-Prevención de leaks: Libera tanto el contenido como la estructura
-Uso: Se llama cuando hay errores o al final del procesamiento
-
-
-3. token_operators.c - Identificación de Operadores
-
-is_operator_char(char c)
-Propósito: Identificación rápida de caracteres especiales
-Lista actual: |, <, >, &, (, )
-¿Por qué separar? Se usa en múltiples lugares del código
-
-get_operator_type(const char *s, int *advance)
-Responsabilidad: Determinar el tipo exacto de operador
-Casos complejos:
-| vs || (pipe vs OR lógico)
-< vs << (redirect vs heredoc)
-> vs >> (redirect vs append)
-Parámetro advance: Indica cuántos caracteres consumir (1 o 2)
-
-Funciones auxiliares:
-
-get_pipe_operator(): Distingue | de ||
-get_redirect_operator(): Distingue redirects simples de dobles
-
-¿Por qué esta modularidad?
-Escalabilidad: Fácil añadir nuevos operadores (bonus)
-Claridad: Cada función tiene una responsabilidad específica
-Debugging: Fácil localizar problemas con operadores específicos
-
-
-4. token_words.c - Procesamiento de Palabras y Comillas
-
+### 4. `token_words.c` - Procesamiento de Palabras y Comillas
 Esta es la parte más compleja del tokenizador.
 
-extract_word_token(const char *s, int *i)
-Responsabilidad: Extraer una palabra completa del input
-Proceso:
-Encuentra el inicio de la palabra
-Encuentra el final (respetando comillas)
-Procesa el contenido (quita comillas)
+#### `char *extract_word_token(const char *s, int *i)`
+- **Responsabilidad**: Orquestar la extracción completa de un token de palabra.
+- **Mecanismo**:
+  1. Marca la posición de inicio.
+  2. Llama a `find_word_end()` para determinar dónde termina la palabra.
+  3. Actualiza el índice principal `i` para que el tokenizador continúe desde la posición correcta.
+  4. Llama a `process_quoted_string()` para obtener el valor final procesado (sin comillas externas).
 
-find_word_end(const char *s, int start)
-Responsabilidad: Determinar dónde termina una palabra
-Casos especiales:
-Respeta comillas (no para en espacios dentro de comillas)
-Para en operadores
-Para en espacios fuera de comillas
+#### `static int find_word_end(...)`
+- **Responsabilidad**: Encontrar el índice donde termina una "palabra" en la entrada.
+- **Mecanismo**:
+  1. Itera desde la posición `start`.
+  2. El bucle se detiene si encuentra un espacio, un operador o el final de la cadena.
+  3. Si encuentra una comilla (`'` o `"`), salta toda la sección entrecomillada de una vez, avanzando el índice hasta pasar la comilla de cierre. Esto asegura que los delimitadores dentro de las comillas no terminen la palabra.
 
-process_quoted_string(const char *s, int start, int end)
-Responsabilidad: Procesar el contenido quitando comillas
-Algoritmo:
-Calcula espacio necesario
-Copia contenido sin las comillas delimitadoras
-Mantiene comillas internas
-
-skip_quoted_section(const char *s, int *i)
-Responsabilidad: Saltar una sección entrecomillada completa
-Uso: Durante la búsqueda del final de palabra
-
-Funciones de copia:
-
-copy_quoted_section(): Copia contenido sin las comillas delimitadoras
-copy_unquoted_char(): Copia caracteres normales
-
-Ejemplos de Procesamiento:
-
-Input: echo 'hello "world"' | grep
-
-1. echo → TOKEN_WORD, valor: echo
-2. 'hello "world"' → TOKEN_WORD, valor: hello "world" (sin comillas externas)
-3. | → TOKEN_PIPE, valor: |
-4. grep → TOKEN_WORD, valor: grep
+#### `char *process_quoted_string(...)`
+- **Responsabilidad**: Crear la cadena de valor final para un token de palabra, eliminando las comillas externas que actúan como delimitadores.
+- **Mecanismo**:
+  1. Reserva memoria para la nueva cadena.
+  2. Itera a través de la subcadena original (de `start` a `end`).
+  3. Si encuentra una comilla, copia el contenido interno de la sección entrecomillada, omitiendo las comillas delimitadoras.
+  4. Si encuentra un carácter normal, lo copia directamente.
+  5. El resultado es una cadena "limpia", lista para ser usada. (Ej: `"hello world"` se convierte en `hello world`).
