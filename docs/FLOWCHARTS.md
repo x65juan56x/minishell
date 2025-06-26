@@ -8,9 +8,9 @@ flowchart TD
         INPUT[INPUT<br/>input = readline PROMPT<br/>ej: echo hello &#124; grep test]
         
         %% Validaciones
-        NULL_CHECK{input == NULL?}
-        EXIT_CHECK{input == "exit"?}
-        EMPTY_CHECK{input vacio?}
+        NULL_CHECK{Is input NULL?}
+        EXIT_CHECK{Is input &quot;exit&quot;?}
+        EMPTY_CHECK{Is input empty?}
         
         %% Tokenizer
         TOKENIZER[TOKENIZER<br/>tokenize input<br/>├─ process_operator<br/>└─ process_word]
