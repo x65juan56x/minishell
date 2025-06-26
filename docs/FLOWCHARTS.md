@@ -3,7 +3,7 @@
 ## Diagrama Principal
 ```mermaid
 flowchart TD
-    subgraph
+    subgraph "Definiciones"
         START([START MINISHELL<br/>main loop])
         INPUT[INPUT<br/>input = readline PROMPT<br/>ej: echo hello &#124; grep test]
         
@@ -95,7 +95,7 @@ flowchart TD
 ## Tokenizer Detallado  
 ```mermaid
 flowchart TD
-    subgraph
+    subgraph "Definiciones"
         TOK_START([START TOKENIZER<br/>tokenize input])
         TOK_INIT[INICIALIZACIÓN<br/>head = NULL<br/>current = NULL]
         
@@ -156,7 +156,7 @@ flowchart TD
 ## Parser Detallado
 ```mermaid
 flowchart TD
-    subgraph
+    subgraph "Definiciones"
         PAR_START([START PARSER<br/>parse tokens])
         PAR_INIT[INIT PARSER<br/>parser.tokens = tokens<br/>parser.current = tokens<br/>parser.error = 0]
         
@@ -228,7 +228,7 @@ flowchart TD
 ## Executor Detallado
 ```mermaid
 flowchart TD
-    subgraph
+    subgraph "Definiciones"
         EX_START([START EXECUTOR<br/>execute_ast ast envp])
         EX_CHECK{ast == NULL?}
         EX_RETURN_0([RETURN 0<br/>empty ast])
