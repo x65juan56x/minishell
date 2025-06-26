@@ -190,13 +190,12 @@ flowchart TD
     REDIR_EXPR --> CMD_EXPR
     
     %% Lógica de un nivel (ej: parse_redirect_expression)
-    subgraph "Lógica de un Nivel de Expresión"
-        CMD_EXPR -->|Llama a parse_command| CREATE_CMD
-        CREATE_CMD --> REDIR_CHECK
-        REDIR_CHECK -->|SÍ, en bucle| CREATE_REDIR
-        CREATE_REDIR --> REDIR_CHECK
-    end
+    CMD_EXPR -->|Llama a parse_command| CREATE_CMD
+    CREATE_CMD --> REDIR_CHECK
+    REDIR_CHECK -->|SÍ, en bucle| CREATE_REDIR
+    CREATE_REDIR --> REDIR_CHECK
 
+    %% Flujo de retorno
     REDIR_CHECK -->|NO| PIPE_CHECK
     PIPE_CHECK -->|SÍ, en bucle| PIPE_EXPR
     
