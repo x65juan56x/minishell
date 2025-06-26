@@ -116,26 +116,26 @@ flowchart TD
         TOK_SUCCESS([RETURN SUCCESS<br/>return head])
     end
 
-    %% Flujo
+    %% Flujo de tokenize()
     TOK_START --> TOK_INIT
     TOK_INIT --> GEN_LIST
     
-    subgraph "generate_token_list"
-        GEN_LIST --> TOK_LOOP
-        TOK_LOOP -->|SÍ| IS_OPERATOR
-        
-        IS_OPERATOR -->|SÍ| PROC_OPERATOR
-        IS_OPERATOR -->|NO| PROC_WORD
-        
-        PROC_OPERATOR --> CHECK_TOKEN
-        PROC_WORD --> CHECK_TOKEN
-        
-        CHECK_TOKEN -->|SÍ| TOK_ERROR
-        CHECK_TOKEN -->|NO| ADD_TOKEN
-        
-        ADD_TOKEN --> TOK_LOOP
-    end
+    %% Flujo dentro de generate_token_list()
+    GEN_LIST --> TOK_LOOP
+    TOK_LOOP -->|SÍ| IS_OPERATOR
+    
+    IS_OPERATOR -->|SÍ| PROC_OPERATOR
+    IS_OPERATOR -->|NO| PROC_WORD
+    
+    PROC_OPERATOR --> CHECK_TOKEN
+    PROC_WORD --> CHECK_TOKEN
+    
+    CHECK_TOKEN -->|SÍ| TOK_ERROR
+    CHECK_TOKEN -->|NO| ADD_TOKEN
+    
+    ADD_TOKEN --> TOK_LOOP
 
+    %% Flujo de retorno a tokenize()
     TOK_LOOP -->|NO| ADD_EOF
     ADD_EOF --> TOK_SUCCESS
     
