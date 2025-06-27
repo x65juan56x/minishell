@@ -87,7 +87,7 @@ Este diseño garantiza que `echo hello > file` se agrupe como una unidad *antes*
 El tokenizador produce la siguiente lista enlazada:
 `[WORD:"echo"] -> [WORD:"hello"] -> [REDIRECT_OUT:">"] -> [WORD:"file.txt"] -> [EOF]`
 
-#### 2. Proceso de Parsing (El Viaje)
+#### 2. Proceso de Parsing
 1.  `parse()` llama a `parse_pipe_expression()`.
 2.  `parse_pipe_expression()`:
     -   No ve un `|`, así que para obtener su operando `left`, llama a `parse_redirect_expression()`.
@@ -131,7 +131,7 @@ El tokenizador produce la siguiente lista enlazada:
 #### 1. Tokenización
 `[WORD:"ls"] -> [WORD:"-l"] -> [PIPE:"|"] -> [WORD:"grep"] -> [WORD:".c"] -> [PIPE:"|"] -> [WORD:"wc"] -> [WORD:"-l"] -> [EOF]`
 
-#### 2. Proceso de Parsing (El Viaje)
+#### 2. Proceso de Parsing
 1.  `parse()` llama a `parse_pipe_expression()`.
 2.  `parse_pipe_expression()`:
     -   Llama a `parse_redirect_expression()` -> `parse_command()` y obtiene el nodo para `ls -l`.
@@ -194,7 +194,7 @@ args: ["ls", args: ["grep",
 #### 1. Tokenización
 `[WORD:"cat"] -> [REDIRECT_IN:"<"] -> [WORD:"file.txt"] -> [PIPE:"|"] -> [WORD:"grep"] -> [WORD:"test"] -> [REDIRECT_OUT:">"] -> [WORD:"output.txt"] -> [EOF]`
 
-#### 2. Proceso de Parsing (El Viaje)
+#### 2. Proceso de Parsing
 1.  `parse()` llama a `parse_pipe_expression()`.
 2.  `parse_pipe_expression()`:
     -   Llama a `parse_redirect_expression()` para obtener el `left`.
@@ -249,7 +249,7 @@ Este ejemplo requiere extender el parser para manejar `TOKEN_LPAREN` y `TOKEN_RP
 #### 1. Tokenización
 `[LPAREN:"("] -> [WORD:"ls"] -> [PIPE:"|"] -> [WORD:"wc"] -> [WORD:"-l"] -> [RPAREN:")"] -> [REDIRECT_OUT:">"] -> [WORD:"out.txt"] -> [EOF]`
 
-#### 2. Proceso de Parsing (El Viaje con Paréntesis)
+#### 2. Proceso de Parsing
 *Para manejar esto, se introduce una nueva capa en la jerarquía, `parse_primary_expression()`, que `parse_redirect_expression()` llamaría en lugar de `parse_command()`.*
 
 1.  `parse()` -> `parse_pipe_expression()` -> `parse_redirect_expression()`.
