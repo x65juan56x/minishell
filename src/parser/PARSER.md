@@ -8,6 +8,7 @@
   - [Ejemplo 1: Comando con Redirección](#ejemplo-1-comando-con-redirección)
   - [Ejemplo 2: Pipe Múltiple](#ejemplo-2-pipe-múltiple)
   - [Ejemplo 3: Combinación Compleja](#ejemplo-3-combinación-compleja)
+  - [Ejemplo 4: Agrupación con Paréntesis (Bonus)](#ejemplo-4-agrupación-con-paréntesis-bonus)
 - [Análisis Detallado del Flujo (Por Archivo)](#análisis-detallado-del-flujo-por-archivo)
 - [Manejo de Errores](#manejo-de-errores)
 
@@ -240,9 +241,58 @@ NODE_COMMAND           NODE_COMMAND
 args: ["cat"]          args: ["grep", "test"]
 ```
 
+### Ejemplo 4: Agrupación con Paréntesis (Bonus)
+Este ejemplo requiere extender el parser para manejar `TOKEN_LPAREN` y `TOKEN_RPAREN`, demostrando la flexibilidad del descenso recursivo.
+
+**Input del Usuario:** `(ls | wc -l) > out.txt`
+
+#### 1. Tokenización
+`[LPAREN:"("] -> [WORD:"ls"] -> [PIPE:"|"] -> [WORD:"wc"] -> [WORD:"-l"] -> [RPAREN:")"] -> [REDIRECT_OUT:">"] -> [WORD:"out.txt"] -> [EOF]`
+
+#### 2. Proceso de Parsing (El Viaje con Paréntesis)
+*Para manejar esto, se introduce una nueva capa en la jerarquía, `parse_primary_expression()`, que `parse_redirect_expression()` llamaría en lugar de `parse_command()`.*
+
+1.  `parse()` -> `parse_pipe_expression()` -> `parse_redirect_expression()`.
+2.  `parse_redirect_expression()`:
+    -   Llama a `parse_primary_expression()` para obtener su operando `left`.
+3.  `parse_primary_expression()`:
+    -   Ve el `TOKEN_LPAREN:"("`. ¡Es un grupo!
+    -   Consume el `(`.
+    -   Hace una **llamada recursiva a la cima de la jerarquía**, `parse_pipe_expression()`, para analizar todo lo que hay *dentro* de los paréntesis.
+    -   **Llamada recursiva a `parse_pipe_expression()`**:
+        -   Esta llamada procesa `ls | wc -l` exactamente como en el Ejemplo 2.
+        -   **Retorna el sub-árbol del pipe:**
+            ```
+                NODE_PIPE
+               /         \
+        NODE_COMMAND   NODE_COMMAND
+              |              |
+        args: ["ls"]   args: ["wc", "-l"]
+            ```
+    -   `parse_primary_expression()` recibe este sub-árbol. Ahora espera un `)`.
+    -   Consume el `TOKEN_RPAREN:")"`.
+    -   Retorna el sub-árbol del pipe como una sola unidad.
+4.  De vuelta en `parse_redirect_expression()`:
+    -   Ahora tiene en su variable `left` el árbol completo de `ls | wc -l`.
+    -   Ve el `TOKEN_REDIRECT_OUT:">"`. Lo consume junto con `out.txt`.
+    -   Crea un `NODE_REDIRECT_OUT` que envuelve a todo el sub-árbol del pipe.
+5.  El resto de las funciones retornan el árbol final hacia arriba.
+
+#### 3. Salida: El AST Final
+```
+        NODE_REDIRECT_OUT (file: "out.txt")
+               /
+         NODE_PIPE
+        /         \
+NODE_COMMAND   NODE_COMMAND
+      |              |
+args: ["ls"]   args: ["wc", "-l"]
+```
+*El AST final muestra claramente que la redirección se aplica al resultado de todo el pipe, que es exactamente lo que los paréntesis indican.*
+
 ---
 
-## Análisis Detallado del Flujo
+## Análisis Detallado del Flujo (Por Archivo)
 
 ### 1. `parser.c` - El Coordinador
 
