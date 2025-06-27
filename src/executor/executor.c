@@ -51,5 +51,3 @@ int	execute_ast(t_ast_node *ast, char **envp)
 		return (execute_redirect_node(ast, envp));
 	return (1);
 }
-
-
