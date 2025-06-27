@@ -88,7 +88,6 @@ t_ast_node		*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, c
 
 /* PARSER COMMANDS */
 t_ast_node		*parse_command(t_parser *parser);
-char			**collect_command_args(t_parser *parser);
 t_token			*consume_token(t_parser *parser, t_token_type expected);
 
 /* PARSER EXPRESSIONS */

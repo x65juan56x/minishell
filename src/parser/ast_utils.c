@@ -14,6 +14,18 @@ t_ast_node	*create_ast_node(t_node_type type)
 	node->right = NULL;
 	return (node);
 }
+/*
+ * Propósito: Función de fábrica para crear un nodo de AST, inicializando
+ *            todos sus miembros de forma segura.
+ * Mecanismo:
+ *   1. Aloca memoria para la estructura `t_ast_node`.
+ *   2. Asigna el `type` del nodo.
+ *   3. Inicializa todos los punteros (`args`, `file`, `left`, `right`) a NULL
+ *      para prevenir accesos a memoria inválida y facilitar la limpieza.
+ * Llamado por: `parse_command`, `create_binary_node`, `create_redirect_node`.
+ *              Es la base para la creación de cualquier nodo del árbol.
+ * Llama a: `malloc`.
+*/
 
 static t_node_type	token_to_node_type(t_token_type token_type)
 {
@@ -29,6 +41,14 @@ static t_node_type	token_to_node_type(t_token_type token_type)
 		return (NODE_HEREDOC);
 	return (NODE_COMMAND);
 }
+/*
+ * Propósito: Mapear un tipo de token de operador a su tipo de nodo de AST
+ *            correspondiente.
+ * Mecanismo: Una serie de comparaciones `if` que devuelven el `e_node_type`
+ *            adecuado para un `e_token_type` de operador dado.
+ * Llamado por: `create_binary_node` y `create_redirect_node`, para
+ *              determinar qué tipo de nodo crear.
+*/
 
 t_ast_node	*create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_node *right)
 {
@@ -41,6 +61,16 @@ t_ast_node	*create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_nod
 	node->right = right;
 	return (node);
 }
+/*
+ * Propósito: Función de fábrica especializada para crear nodos de operadores
+ *            binarios (como `|`).
+ * Mecanismo:
+ *   1. Convierte el tipo de token del operador al tipo de nodo AST.
+ *   2. Crea un nodo base con `create_ast_node`.
+ *   3. Asigna los subárboles `left` y `right` a los hijos del nuevo nodo.
+ * Llamado por: `parse_pipe_expression`, para construir los nodos de pipe.
+ * Llama a: `create_ast_node`, `token_to_node_type`.
+*/
 
 t_ast_node	*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, char *file)
 {
@@ -58,3 +88,15 @@ t_ast_node	*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, ch
 	}
 	return (node);
 }
+/*
+ * Propósito: Función de fábrica especializada para crear nodos de redirección.
+ * Mecanismo:
+ *   1. Convierte el tipo de token de redirección al tipo de nodo AST.
+ *   2. Crea un nodo base.
+ *   3. Asigna el subárbol del comando al hijo `left`. El hijo `right` no se usa.
+ *   4. Duplica el string del nombre de archivo y lo asigna al campo `file`.
+ *      La duplicación es clave para que el AST tenga su propia copia.
+ * Llamado por: `parse_redirect_expression`, para construir los nodos de
+ *              redirección.
+ * Llama a: `create_ast_node`, `token_to_node_type`, `ft_strdup`, `free`.
+*/

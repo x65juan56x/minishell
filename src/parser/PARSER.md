@@ -1,437 +1,204 @@
-El parsing (análisis sintáctico) es el segundo paso en el procesamiento de comandos de una shell. Toma la lista de tokens generada por el tokenizador y construye un Abstract Syntax Tree (AST) que representa la estructura jerárquica del comando.
-
-Flujo de Datos:
-Input String → Tokenizer → Lista de Tokens → Parser → AST → Executor
-
-Diferencia con Tokenización:
-Tokenización: Divide el input en unidades significativas (palabras)
-Parsing: Analiza las relaciones y estructura entre esas unidades (gramática)
-Concepto de AST
-Un AST (Abstract Syntax Tree) es una representación en árbol de la estructura sintáctica del comando. Cada nodo representa una operación, y los hijos representan los operandos.
-
-Ejemplo Visual Completo:
-
-Input:
-
-echo hello | grep test > output.txt
-
-Tokens producidos:
-
-TOKEN_WORD: "echo"
-TOKEN_WORD: "hello" 
-TOKEN_PIPE: "|"
-TOKEN_WORD: "grep"
-TOKEN_WORD: "test"
-TOKEN_REDIRECT_OUT: ">"
-TOKEN_WORD: "output.txt"
-TOKEN_EOF: NULL
-
-AST resultante:
-
-			NODE_REDIRECT_OUT
-		   /                \
-	  NODE_PIPE           file: "output.txt"
-	 /         \
-NODE_COMMAND  NODE_COMMAND
-	|             |
-args:         args:
-["echo",      ["grep",
- "hello",      "test",
- NULL]         NULL]
-
-
- ¿Por qué un Árbol?
-Jerarquía Natural: Los operadores tienen precedencia (redirects > pipes)
-Evaluación Recursiva: Se puede ejecutar de manera recursiva
-Extensibilidad: Fácil añadir nuevos operadores y estructuras
-Optimización: Permite optimizaciones futuras
-
-Arquitectura del Parser
-Filosofía de Diseño: Recursive Descent Parser
-El parser utiliza una estrategia de descenso recursivo donde cada función maneja un nivel de precedencia específico.
-
-Jerarquía de Precedencia (de menor a mayor):
-
-Expresiones lógicas (&&, ||) - BONUS
-Pipes (|)
-Redirects (<, >, >>, <<)
-Comandos simples (palabras y argumentos)
-
-
-Separación de Responsabilidades:
-
-src/parser/
-├── parser.c                 # Coordinación principal
-├── ast_utils.c              # Creación y gestión de nodos AST
-├── parser_commands.c        # Parsing de comandos simples
-└── parser_expressions.c     # Parsing de expresiones (pipes, redirects)
-
-
-Estructuras de Datos
-
-Tipos de Nodos AST:
-
-typedef enum e_node_type
-{
-	NODE_COMMAND,        // Comando simple: echo hello
-	NODE_PIPE,           // Pipe: cmd1 | cmd2
-	NODE_REDIRECT_IN,    // Redirect entrada: cmd < file
-	NODE_REDIRECT_OUT,   // Redirect salida: cmd > file
-	NODE_REDIRECT_APPEND,// Append: cmd >> file
-	NODE_HEREDOC,        // Here document: cmd << EOF
-	NODE_AND,            // AND lógico: cmd1 && cmd2 (BONUS)
-	NODE_OR              // OR lógico: cmd1 || cmd2 (BONUS)
-} t_node_type;
-
-Nodo AST:
-
-typedef struct s_ast_node
-{
-	t_node_type         type;    // Tipo de nodo
-	char                **args;  // Para comandos: ["echo", "hello", NULL]
-	char                *file;   // Para redirects: "output.txt"
-	struct s_ast_node   *left;   // Hijo izquierdo
-	struct s_ast_node   *right;  // Hijo derecho
-} t_ast_node;
-
-Estado del Parser:
-
-typedef struct s_parser
-{
-	t_token     *tokens;   // Lista original de tokens
-	t_token     *current;  // Token actual siendo procesado
-	int         error;     // Flag de error
-} t_parser;
-
-
-Análisis Detallado por Archivos
-
-1. parser.c - Coordinador Principal
-
-**Función: parse(t_token *tokens)
-•Responsabilidad: Punto de entrada principal del parser.
-•Flujo:
--Validación: Verifica que la lista de tokens no sea NULL
--Inicialización: Configura el estado del parser
--Parsing: Llama al nivel más alto de precedencia
--Validación final: Verifica que no haya errores
--Cleanup: Limpia memoria en caso de error
-
-Funciones Auxiliares:
-
-**Función: init_parser(t_parser *parser, t_token *tokens)
-•Propósito: Inicializar el estado del parser
-•Configuración: Establece posición inicial y resetea flags de error
-
-**Función: advance_token(t_parser *parser)
-•Propósito: Avanzar al siguiente token
-•Protección: No avanza más allá del token EOF
-
-**Función: parse_expression(t_parser *parser)
-•Propósito: Punto de entrada al parsing de expresiones
-•Delegación: Llama al nivel más alto de precedencia (pipes)
-
-
-2. ast_utils.c - Gestión de Nodos AST
-
-**Función: create_ast_node(t_node_type type)
-•Responsabilidad: Crear un nodo AST básico con inicialización segura.
-
-¿Por qué inicialización completa?
-
--Previene accesos a memoria no inicializada
--Facilita el debugging
--Hace el cleanup más seguro
-
-**Función: create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_node *right)
-•Responsabilidad: Crear nodos para operadores binarios (pipes, lógicos).
-
-Uso típico:
-// Para: cmd1 | cmd2
-pipe_node = create_binary_node(TOKEN_PIPE, cmd1_node, cmd2_node);
-
-**Función: create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, char *file)
-•Responsabilidad: Crear nodos específicos para redirects.
-•Características especiales:
--El comando va en left
--El archivo va en file (string)
--right queda NULL (estructura específica para redirects)
-
-**Función: cleanup_ast(t_ast_node *node)
-•Responsabilidad: Liberar recursivamente todo el árbol AST.
-•Algoritmo:
--Verificación NULL: Protección contra nodos nulos
--Liberar contenido: Arrays de argumentos y strings de archivos
--Recursión: Limpiar hijos izquierdo y derecho
--Liberar nodo: Finalmente liberar la estructura
-
-void cleanup_ast(t_ast_node *node)
-{
-	if (!node)
-		return ;
-	if (node->args)         // Liberar array de argumentos
-		ft_freearr(node->args);
-	if (node->file)         // Liberar string de archivo
-		free(node->file);
-	cleanup_ast(node->left);    // Recursión izquierda
-	cleanup_ast(node->right);   // Recursión derecha
-	free(node);             // Liberar estructura
-}
-
-
-3. parser_commands.c - Parsing de Comandos Simples
-
-**Función: parse_command(t_parser *parser)
-•Responsabilidad: Parsear un comando simple con sus argumentos.
-•Proceso:
--Validación: Verifica que el token actual sea una palabra
--Creación: Crea un nodo de tipo NODE_COMMAND
--Recolección: Recolecta todos los argumentos consecutivos
--Validación final: Verifica que se hayan recolectado argumentos
-
-**Función: collect_command_args(t_parser *parser)
-•Responsabilidad: Recoger todos los argumentos de un comando.
-•Algoritmo detallado:
--Conteo: Cuenta cuántos tokens consecutivos son palabras
--Reserva: Aloca memoria para array de strings (count + 1 para NULL final)
--Recolección: Consume tokens y copia sus valores
--Terminación: Añade NULL al final del array
-
-char **collect_command_args(t_parser *parser)
-{
-	char    **args;
-	int     count;
-	int     i;
-	t_token *token;
-
-	count = count_command_args(parser);     // Contar argumentos
-	if (count == 0)
-		return (NULL);
-	args = malloc(sizeof(char *) * (count + 1));  // Alocar array
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		token = consume_token(parser, TOKEN_WORD);  // Consumir token
-		if (!token)
-			return (ft_freearr(args), NULL);
-		args[i] = ft_strdup(token->value);          // Copiar valor
-		if (!args[i])
-			return (ft_freearr(args), NULL);
-		i++;
-	}
-	args[i] = NULL;                         // Terminar array
-	return (args);
-}
-
-**Función: consume_token(t_parser *parser, t_token_type expected)
-•Responsabilidad: Consumir un token específico y avanzar el parser.
-•Características:
--Validación: Verifica que el token actual sea del tipo esperado
--Avance: Mueve el parser al siguiente token
--Error handling: Establece flag de error si falla
-
-
-4. parser_expressions.c - Parsing de Expresiones
-
-**Función: parse_pipe_expression(t_parser *parser)
-•Responsabilidad: Parsear expresiones con pipes (precedencia más baja).
-•Algoritmo (Left-Associative):
-
-t_ast_node *parse_pipe_expression(t_parser *parser)
-{
-	t_ast_node *left;
-	t_ast_node *right;
-	t_token    *pipe_token;
-
-	left = parse_redirect_expression(parser);  // Parsear lado izquierdo
-	if (!left)
-		return (NULL);
-	
-	// Mientras haya pipes
-	while (parser->current && parser->current->type == TOKEN_PIPE)
-	{
-		pipe_token = consume_token_type(parser, TOKEN_PIPE);
-		if (!pipe_token)
-		{
-			cleanup_ast(left);
-			return (NULL);
-		}
-		right = parse_redirect_expression(parser);  // Parsear lado derecho
-		if (!right)
-		{
-			cleanup_ast(left);
-			return (NULL);
-		}
-		// Crear nodo pipe con left y right
-		left = create_binary_node(TOKEN_PIPE, left, right);
-		if (!left)
-		{
-			cleanup_ast(right);
-			return (NULL);
-		}
-	}
-	return (left);
-}
-
-¿Por qué Left-Associative? Para cmd1 | cmd2 | cmd3, construye:
-
-	PIPE
-   /    \
- PIPE   cmd3
-/    \
-cmd1  cmd2
-
-Esto permite ejecución secuencial de izquierda a derecha.
-
-**Función: parse_redirect_expression(t_parser *parser)
-•Responsabilidad: Parsear expresiones con redirects (precedencia más alta que pipes).
-•Características especiales:
--Múltiples redirects: Un comando puede tener varios redirects
--Orden importante: Se procesan de izquierda a derecha
--Anidamiento: Cada redirect crea un nuevo nivel en el árbol
-Ejemplo:
-
-echo hello > out.txt 2> err.txt
-
-Construye:
-
-	REDIRECT_OUT (2> err.txt)
-	/
-REDIRECT_OUT (> out.txt)
-	/
- COMMAND
-   |
-echo hello
-
-
-** Precedencia y Asociatividad **
-
-Tabla de Precedencia (de menor a mayor):
-
-
-Operador		Precedencia		Asociatividad	Función Parser
-&&,`							`				1
-`				`				2				Left
-<, >, >>, <<	3				Left			parse_redirect_expression()
-comandos		4				N/A				parse_command()
-
-
-¿Por qué esta Precedencia?
--Lógica de Shell: Coincide con el comportamiento de bash
--Intuición: Los redirects se aplican a comandos individuales antes que los pipes
--Ejecución: Permite optimizaciones en el executor
-
-Ejemplo de Precedencia:
-
-echo hello > temp.txt | grep hello
-
-Parsing:
--echo hello > temp.txt se parsea como redirect
--El resultado se usa como lado izquierdo del pipe
--grep hello se parsea como comando simple
-
-AST resultante:
-
-        PIPE
-       /    \
-REDIRECT_OUT  COMMAND
-    /           |
- COMMAND    args: ["grep", "hello"]
-    |
-args: ["echo", "hello"]
-file: "temp.txt"
-
-
-Manejo de Errores
-
-Estrategia de Error Handling:
-
-1. Error Flag Pattern:
-
-typedef struct s_parser
-{
-    t_token *tokens;
-    t_token *current;
-    int     error;      // Flag global de error
-} t_parser;
-
-2. Propagación de Errores:
-
--Cada función retorna NULL en caso de error
--Se establece parser->error = 1 cuando se detecta un problema
--Las funciones caller verifican el estado antes de continuar
-
-3. Cleanup Automático:
-
-if (!new_token)
-{
-    cleanup_ast(left);  // Limpiar trabajo parcial
-    return (NULL);      // Propagar error
-}
-
-Tipos de Errores Detectados:
-
-Errores de Sintaxis:
--Token inesperado (ej: | al inicio)
--Falta archivo después de redirect (echo hello >)
--Comandos vacíos
-
-Errores de Memoria:
--Fallo en malloc
--Fallo en ft_strdup
-
-Errores de Estado:
--Lista de tokens vacía
--Parser en estado inconsistente
-
-Ejemplos de Parsing
-
-*Ejemplo 1: Comando Simple
-•Input: echo hello world
-•Tokens:
-TOKEN_WORD: "echo"
-TOKEN_WORD: "hello"
-TOKEN_WORD: "world"
-TOKEN_EOF: NULL
-•AST:
-NODE_COMMAND
-    |
-args: ["echo", "hello", "world", NULL]
-
-*Ejemplo 2: Pipe Simple
-•Input: ls | grep test
-•AST:
-    NODE_PIPE
-   /         \
-NODE_COMMAND  NODE_COMMAND
-    |             |
-args:         args:
-["ls", NULL]  ["grep", "test", NULL]
-
-*Ejemplo 3: Comando con Redirect
-•Input: echo hello > output.txt
-•AST:
-NODE_REDIRECT_OUT
-    /            \
-NODE_COMMAND   file: "output.txt"
-    |
-args: ["echo", "hello", NULL]
-
-*Ejemplo 4: Combinación Compleja
-•Input: cat file.txt | grep test > result.txt
-•AST:
-        NODE_REDIRECT_OUT
-       /                \
-    NODE_PIPE        file: "result.txt"
-   /         \
-NODE_COMMAND  NODE_COMMAND
-    |             |
-args:         args:
-["cat",       ["grep",
- "file.txt",   "test",
- NULL]         NULL]
-
-
-
+# Documentación del Parser de Minishell
+
+## ¿Qué es el Parsing?
+El parsing (análisis sintáctico) es el segundo paso en el procesamiento de comandos de una shell. Toma la lista de tokens generada por el tokenizador y construye un **Abstract Syntax Tree (AST)** que representa la estructura jerárquica y la gramática del comando.
+
+**Flujo de Datos:**
+`Input String` → **Tokenizer** → `Lista de Tokens` → **Parser** → `AST` → **Executor**
+
+## El Abstract Syntax Tree (AST)
+Un AST es una representación en árbol de la estructura del comando. Cada nodo representa una operación (como un pipe o una redirección), y sus hijos representan los operandos. Este árbol respeta la precedencia de los operadores.
+
+**Ejemplo Visual:**
+
+**Input:** `cat file.txt | grep test > result.txt`
+
+**AST Resultante:**
+```
+        NODE_REDIRECT_OUT (file: "result.txt")
+               /
+         NODE_PIPE
+        /         \
+NODE_COMMAND     NODE_COMMAND
+      |                |
+args: ["cat",     args: ["grep",
+       "file.txt"]      "test"]
+```
+Este árbol muestra que el `pipe` se resuelve primero, y la salida de todo ese `pipe` se redirige a `result.txt`.
+
+## Arquitectura del Parser
+Nuestro parser utiliza una estrategia de **Descenso Recursivo**. Cada nivel de la gramática es manejado por una función específica. Las funciones se llaman entre sí siguiendo el orden de precedencia de los operadores.
+
+**Jerarquía de Precedencia (de menor a mayor):**
+1.  `|` (Pipe) - `parse_pipe_expression()`
+2.  `<`, `>`, `>>`, `<<` (Redirects) - `parse_redirect_expression()`
+3.  `comando y argumentos` (Command) - `parse_command()`
+
+**Separación de Responsabilidades:**
+- **`parser.c`**: Contiene el punto de entrada `parse()` y la limpieza del AST.
+- **`parser_expressions.c`**: Maneja la lógica de operadores (pipes y redirects).
+- **`parser_commands.c`**: Maneja el parsing de comandos simples y sus argumentos.
+- **`ast_utils.c`**: Funciones de fábrica para crear y gestionar nodos del AST.
+
+---
+
+## Análisis Detallado del Flujo
+
+### 1. `parser.c` - El Coordinador
+
+#### `t_ast_node *parse(t_token *tokens)`
+- **Responsabilidad**: Es el punto de entrada principal. Orquesta todo el proceso de parsing.
+- **Mecanismo**:
+  1.  Inicializa una estructura `t_parser` para mantener el estado del análisis (token actual, flag de error).
+  2.  Llama a `parse_pipe_expression()`, la función que maneja el operador de menor precedencia, iniciando así el descenso recursivo.
+  3.  Comprueba si el flag `parser.error` se activó. Si es así, limpia el AST parcialmente construido con `cleanup_ast()` y retorna `NULL`.
+  4.  Si todo fue exitoso, retorna la raíz del AST completo.
+
+### 2. `parser_expressions.c` - Manejo de Operadores
+
+#### `t_ast_node *parse_pipe_expression(t_parser *parser)`
+- **Responsabilidad**: Parsear expresiones de pipe (`|`), que tienen la menor precedencia.
+- **Mecanismo**:
+  1.  Llama a `parse_redirect_expression()` para obtener el subárbol del lado izquierdo.
+  2.  Entra en un bucle `while` que se ejecuta mientras el token actual sea `TOKEN_PIPE`.
+  3.  Dentro del bucle, consume el `|`, llama de nuevo a `parse_redirect_expression()` para obtener el lado derecho, y crea un `NODE_PIPE` que une ambos lados.
+  4.  Esta estructura de bucle maneja correctamente la asociatividad a la izquierda (ej: `a | b | c` se agrupa como `(a | b) | c`).
+
+#### `t_ast_node *parse_redirect_expression(t_parser *parser)`
+- **Responsabilidad**: Parsear expresiones de redirección (`>`, `<`, `>>`, `<<`), que tienen mayor precedencia que los pipes.
+- **Mecanismo**:
+  1.  Primero, llama a `parse_command()` para obtener el nodo de comando base.
+  2.  Entra en un bucle `while` que se ejecuta mientras el token actual sea de redirección.
+  3.  Dentro del bucle, consume el token de redirect (ej: `>`) y el nombre del archivo (`TOKEN_WORD`).
+  4.  Crea un nuevo nodo de redirección que "envuelve" al nodo actual. Esto permite anidar múltiples redirecciones (`cmd > a < b`).
+
+### 3. `parser_commands.c` - La Unidad Fundamental
+
+#### `t_ast_node *parse_command(t_parser *parser)`
+- **Responsabilidad**: Parsear la unidad más simple: un comando y sus argumentos.
+- **Mecanismo**:
+  1.  Verifica que el token actual sea `TOKEN_WORD`. Si no, no hay comando que parsear.
+  2.  Crea un nodo base de tipo `NODE_COMMAND`.
+  3.  Llama a `collect_command_args()` para que recolecte todos los `TOKEN_WORD` consecutivos y los agrupe en un array `char **`.
+
+#### `char **collect_command_args(t_parser *parser)`
+- **Responsabilidad**: Construir un array de strings (terminado en `NULL`) apto para `execve`.
+- **Mecanismo**:
+  1.  Llama a `count_command_args()` para saber cuánta memoria alocar de antemano.
+  2.  Aloca el array de punteros.
+  3.  Itera, consumiendo cada `TOKEN_WORD` y duplicando su valor en el array.
+  4.  Añade el `NULL` terminador.
+
+### 4. `ast_utils.c` - La Fábrica de Nodos
+
+Estas funciones ayudan a crear nodos de forma limpia y segura.
+- **`create_ast_node()`**: Crea un nodo genérico e inicializa todos sus punteros a `NULL`.
+- **`create_binary_node()`**: Crea un nodo para operadores binarios (como `|`), asignando los hijos `left` y `right`.
+- **`create_redirect_node()`**: Crea un nodo para redirecciones. Asigna el comando al hijo `left` y el nombre del archivo al campo `file`. El hijo `right` no se usa.
+
+## Manejo de Errores
+- **Flag de Error**: La estructura `t_parser` contiene un flag `int error`. Cuando una función de parsing encuentra un error de sintaxis (ej: `> ` sin archivo), establece `parser->error = 1`.
+- **Propagación**: Las funciones retornan `NULL` cuando detectan un error o cuando una función a la que llaman retorna `NULL`.
+- **Limpieza Centralizada**: La función `parse()` es la única que revisa el flag `error` al final. Si está activado, llama a `cleanup_ast()` para liberar toda la memoria del árbol parcialmente construido, evitando fugas.
+```# Documentación del Parser de Minishell
+
+## ¿Qué es el Parsing?
+El parsing (análisis sintáctico) es el segundo paso en el procesamiento de comandos de una shell. Toma la lista de tokens generada por el tokenizador y construye un **Abstract Syntax Tree (AST)** que representa la estructura jerárquica y la gramática del comando.
+
+**Flujo de Datos:**
+`Input String` → **Tokenizer** → `Lista de Tokens` → **Parser** → `AST` → **Executor**
+
+## El Abstract Syntax Tree (AST)
+Un AST es una representación en árbol de la estructura del comando. Cada nodo representa una operación (como un pipe o una redirección), y sus hijos representan los operandos. Este árbol respeta la precedencia de los operadores.
+
+**Ejemplo Visual:**
+
+**Input:** `cat file.txt | grep test > result.txt`
+
+**AST Resultante:**
+```
+        NODE_REDIRECT_OUT (file: "result.txt")
+               /
+         NODE_PIPE
+        /         \
+NODE_COMMAND     NODE_COMMAND
+      |                |
+args: ["cat",     args: ["grep",
+       "file.txt"]      "test"]
+```
+Este árbol muestra que el `pipe` se resuelve primero, y la salida de todo ese `pipe` se redirige a `result.txt`.
+
+## Arquitectura del Parser
+Nuestro parser utiliza una estrategia de **Descenso Recursivo**. Cada nivel de la gramática es manejado por una función específica. Las funciones se llaman entre sí siguiendo el orden de precedencia de los operadores.
+
+**Jerarquía de Precedencia (de menor a mayor):**
+1.  `|` (Pipe) - `parse_pipe_expression()`
+2.  `<`, `>`, `>>`, `<<` (Redirects) - `parse_redirect_expression()`
+3.  `comando y argumentos` (Command) - `parse_command()`
+
+**Separación de Responsabilidades:**
+- **`parser.c`**: Contiene el punto de entrada `parse()` y la limpieza del AST.
+- **`parser_expressions.c`**: Maneja la lógica de operadores (pipes y redirects).
+- **`parser_commands.c`**: Maneja el parsing de comandos simples y sus argumentos.
+- **`ast_utils.c`**: Funciones de fábrica para crear y gestionar nodos del AST.
+
+---
+
+## Análisis Detallado del Flujo
+
+### 1. `parser.c` - El Coordinador
+
+#### `t_ast_node *parse(t_token *tokens)`
+- **Responsabilidad**: Es el punto de entrada principal. Orquesta todo el proceso de parsing.
+- **Mecanismo**:
+  1.  Inicializa una estructura `t_parser` para mantener el estado del análisis (token actual, flag de error).
+  2.  Llama a `parse_pipe_expression()`, la función que maneja el operador de menor precedencia, iniciando así el descenso recursivo.
+  3.  Comprueba si el flag `parser.error` se activó. Si es así, limpia el AST parcialmente construido con `cleanup_ast()` y retorna `NULL`.
+  4.  Si todo fue exitoso, retorna la raíz del AST completo.
+
+### 2. `parser_expressions.c` - Manejo de Operadores
+
+#### `t_ast_node *parse_pipe_expression(t_parser *parser)`
+- **Responsabilidad**: Parsear expresiones de pipe (`|`), que tienen la menor precedencia.
+- **Mecanismo**:
+  1.  Llama a `parse_redirect_expression()` para obtener el subárbol del lado izquierdo.
+  2.  Entra en un bucle `while` que se ejecuta mientras el token actual sea `TOKEN_PIPE`.
+  3.  Dentro del bucle, consume el `|`, llama de nuevo a `parse_redirect_expression()` para obtener el lado derecho, y crea un `NODE_PIPE` que une ambos lados.
+  4.  Esta estructura de bucle maneja correctamente la asociatividad a la izquierda (ej: `a | b | c` se agrupa como `(a | b) | c`).
+
+#### `t_ast_node *parse_redirect_expression(t_parser *parser)`
+- **Responsabilidad**: Parsear expresiones de redirección (`>`, `<`, `>>`, `<<`), que tienen mayor precedencia que los pipes.
+- **Mecanismo**:
+  1.  Primero, llama a `parse_command()` para obtener el nodo de comando base.
+  2.  Entra en un bucle `while` que se ejecuta mientras el token actual sea de redirección.
+  3.  Dentro del bucle, consume el token de redirect (ej: `>`) y el nombre del archivo (`TOKEN_WORD`).
+  4.  Crea un nuevo nodo de redirección que "envuelve" al nodo actual. Esto permite anidar múltiples redirecciones (`cmd > a < b`).
+
+### 3. `parser_commands.c` - La Unidad Fundamental
+
+#### `t_ast_node *parse_command(t_parser *parser)`
+- **Responsabilidad**: Parsear la unidad más simple: un comando y sus argumentos.
+- **Mecanismo**:
+  1.  Verifica que el token actual sea `TOKEN_WORD`. Si no, no hay comando que parsear.
+  2.  Crea un nodo base de tipo `NODE_COMMAND`.
+  3.  Llama a `collect_command_args()` para que recolecte todos los `TOKEN_WORD` consecutivos y los agrupe en un array `char **`.
+
+#### `char **collect_command_args(t_parser *parser)`
+- **Responsabilidad**: Construir un array de strings (terminado en `NULL`) apto para `execve`.
+- **Mecanismo**:
+  1.  Llama a `count_command_args()` para saber cuánta memoria alocar de antemano.
+  2.  Aloca el array de punteros.
+  3.  Itera, consumiendo cada `TOKEN_WORD` y duplicando su valor en el array.
+  4.  Añade el `NULL` terminador.
+
+### 4. `ast_utils.c` - La Fábrica de Nodos
+
+Estas funciones ayudan a crear nodos de forma limpia y segura.
+- **`create_ast_node()`**: Crea un nodo genérico e inicializa todos sus punteros a `NULL`.
+- **`create_binary_node()`**: Crea un nodo para operadores binarios (como `|`), asignando los hijos `left` y `right`.
+- **`create_redirect_node()`**: Crea un nodo para redirecciones. Asigna el comando al hijo `left` y el nombre del archivo al campo `file`. El hijo `right` no se usa.
+
+## Manejo de Errores
+- **Flag de Error**: La estructura `t_parser` contiene un flag `int error`. Cuando una función de parsing encuentra un error de sintaxis (ej: `> ` sin archivo), establece `parser->error = 1`.
+- **Propagación**: Las funciones retornan `NULL` cuando detectan un error o cuando una función a la que llaman retorna `NULL`.
+- **Limpieza Centralizada**: La función `parse()` es la única que revisa el flag `error` al final. Si está activado, llama a `cleanup_ast()` para liberar toda la memoria del árbol parcialmente construido, evitando fugas.
