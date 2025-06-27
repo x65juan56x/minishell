@@ -100,4 +100,3 @@ Estas funciones ayudan a crear nodos de forma limpia y segura.
 - **Flag de Error**: La estructura `t_parser` contiene un flag `int error`. Cuando una función de parsing encuentra un error de sintaxis (ej: `> ` sin archivo), establece `parser->error = 1`.
 - **Propagación**: Las funciones retornan `NULL` cuando detectan un error o cuando una función a la que llaman retorna `NULL`.
 - **Limpieza Centralizada**: La función `parse()` es la única que revisa el flag `error` al final. Si está activado, llama a `cleanup_ast()` para liberar toda la memoria del árbol parcialmente construido, evitando fugas.
-```
