@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*   By: jmondon <jmondon@student.42malaga.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 15:30:44 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:58:59 by jmondon          ###   ########.fr       */
+/*   Created: 2024/12/03 21:02:47 by jmondon           #+#    #+#             */
+/*   Updated: 2024/12/03 21:02:50 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
-size_t	ft_strlen(const char *str)
+char	*ft_strdup(const char *s)
 {
-	int	n;
+	char	*d;
+	size_t	i;
 
-	n = 0;
-	while (*str != 0)
+	d = malloc(sizeof(char) * ft_strlen(s) + 1);
+	if (d == NULL)
+		return (NULL);
+	i = 0;
+	while (s[i])
 	{
-		n++;
-		str++;
+		d[i] = s[i];
+		i++;
 	}
-	return (n);
+	d[i] = '\0';
+	return (d);
 }

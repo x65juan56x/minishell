@@ -1,33 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 18:54:09 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:59:20 by jmondon          ###   ########.fr       */
+/*   Created: 2024/12/04 22:33:37 by jmondon           #+#    #+#             */
+/*   Updated: 2024/12/14 14:24:46 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
-	char	chr;
 	char	*str;
 
-	chr = (unsigned char)c;
-	str = (char *)s;
-	i = 0;
-	while (s[i])
+	if (start >= ft_strlen(s))
 	{
-		if (s[i] == chr)
-			return (str + i);
+		str = ft_calloc(1, sizeof(char));
+		if (!str)
+			return (NULL);
+		return (str);
+	}
+	if (ft_strlen(s) - start < len)
+		len = ft_strlen(s) - start;
+	str = (char *)ft_calloc(sizeof(char), len + 1);
+	if (!str)
+		return (NULL);
+	i = start;
+	while (s[i] && ((i - start) < len))
+	{
+		str[i - start] = s[i];
 		i++;
 	}
-	if (chr == s[i])
-		return (str + i);
-	return (NULL);
+	return (str);
 }

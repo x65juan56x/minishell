@@ -8,6 +8,8 @@ SRC_FILES = minishell.c \
 			executor/executor.c \
 			executor/pipe_executor.c \
 			executor/redirect_executor.c \
+			executor/heredoc_executor.c \
+			executor/heredoc_preprocessor.c \
 			executor/cmd_executor.c \
 			parser/tokenizer.c \
 			parser/token_utils.c \
@@ -16,7 +18,8 @@ SRC_FILES = minishell.c \
 			parser/parser.c \
 			parser/ast_utils.c \
 			parser/parser_commands.c \
-			parser/parser_expressions.c
+			parser/parser_expressions.c \
+			parser/parser_redirects.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))

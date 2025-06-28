@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*   By: jmondon <jmondon@student.42malaga.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 15:30:44 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:58:59 by jmondon          ###   ########.fr       */
+/*   Created: 2024/12/05 12:45:32 by jmondon           #+#    #+#             */
+/*   Updated: 2024/12/05 12:45:36 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
-size_t	ft_strlen(const char *str)
+void	ft_putstr_fd(char *s, int fd)
 {
-	int	n;
-
-	n = 0;
-	while (*str != 0)
+	while (*s != 0)
 	{
-		n++;
-		str++;
+		write(fd, s, 1);
+		s++;
 	}
-	return (n);
 }

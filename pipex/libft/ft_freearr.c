@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_freearr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 15:30:44 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:58:59 by jmondon          ###   ########.fr       */
+/*   Created: 2025/05/12 14:30:45 by jmondon           #+#    #+#             */
+/*   Updated: 2025/05/12 14:43:35 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
-size_t	ft_strlen(const char *str)
+void	*ft_freearr(char **arr)
 {
-	int	n;
+	size_t	i;
 
-	n = 0;
-	while (*str != 0)
+	i = 0;
+	while (arr[i])
 	{
-		n++;
-		str++;
+		free(arr[i]);
+		i++;
 	}
-	return (n);
+	free(arr);
+	return (NULL);
 }

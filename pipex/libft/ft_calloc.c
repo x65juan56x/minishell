@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*   By: jmondon <jmondon@student.42malaga.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 15:30:44 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:58:59 by jmondon          ###   ########.fr       */
+/*   Created: 2024/12/03 20:51:30 by jmondon           #+#    #+#             */
+/*   Updated: 2024/12/03 20:51:45 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
-size_t	ft_strlen(const char *str)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	int	n;
+	char	*p;
+	size_t	s;
 
-	n = 0;
-	while (*str != 0)
-	{
-		n++;
-		str++;
-	}
-	return (n);
+	s = nmemb * size;
+	p = malloc(s);
+	if (p == NULL)
+		return (NULL);
+	ft_bzero(p, s);
+	return (p);
 }

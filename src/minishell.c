@@ -14,7 +14,7 @@ int	main(int ac, char **av, char **envp)
 		input = readline(PROMPT);
 		if (!input)
 		{
-			printf("\n");
+			printf("exit\n");
 			break;
 		}
 		if (*input)
@@ -27,14 +27,14 @@ int	main(int ac, char **av, char **envp)
 		tokens = tokenize(input);
 		if (!tokens)
 		{
-			ft_putstr_fd("Error: Failed to tokenize input\n", 2);
 			free(input);
 			continue;
 		}
 		ast = parse(tokens);
 		if (!ast)
 		{
-			ft_putstr_fd("Error: Failed to parse tokens\n", 2);
+			if (tokens->type != TOKEN_EOF)
+                ft_putstr_fd("minishell: syntax error\n", 2);
 			cleanup_tokens(tokens);
 			free(input);
 			continue;
@@ -43,6 +43,7 @@ int	main(int ac, char **av, char **envp)
 		cleanup_ast(ast);
 		cleanup_tokens(tokens);
 		free(input);
+		rl_on_new_line(); // Limpia el estado de readline
 	}
 	rl_clear_history();
 	return (exit_status);

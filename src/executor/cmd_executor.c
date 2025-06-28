@@ -12,14 +12,14 @@ static void	exit_command_not_found(char **args, char *path)
 	free(cmd_name);
 }
 
-static void	exit_permission_denied(char **args, char *path)
+static void	exit_execve_error(char **args, char *path)
 {
 	char	*cmd_name;
 
 	cmd_name = ft_strdup(args[0]);
 	free(path);
 	ft_freearr(args);
-	ft_permission_denied_exit(cmd_name);
+	ft_execve_error_exit(cmd_name);
 	free(cmd_name);
 }
 
@@ -33,5 +33,5 @@ void	launch_command(char **args, char **envp)
 	if (!path)
 		exit_command_not_found(args, path);
 	execve(path, args, envp);
-	exit_permission_denied(args, path);
+	exit_execve_error(args, path);
 }

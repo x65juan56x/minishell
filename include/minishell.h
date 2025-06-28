@@ -65,6 +65,14 @@ typedef struct s_parser
 	int			error;
 }	t_parser;
 
+typedef struct s_pipe_config
+{
+	int		*pipe_fd;
+	int		is_left;
+	int		heredoc_fd;
+	char	**envp;
+}	t_pipe_config;
+
 /* TOKENIZER */
 t_token			*tokenize(const char *input);
 void			cleanup_tokens(t_token *tokens);
@@ -94,23 +102,30 @@ t_token			*consume_token(t_parser *parser, t_token_type expected);
 t_ast_node		*parse_pipe_expression(t_parser *parser);
 t_ast_node		*parse_redirect_expression(t_parser *parser);
 
+/* PARSER REDIRECTS */
+// t_ast_node		*parse_leading_redirects(t_parser *parser);
+// t_ast_node		*apply_trailing_redirects(t_parser *parser, t_ast_node *base);
+// t_ast_node		*merge_redirects(t_ast_node *leading, t_ast_node *final);
+int				is_redirect_token(t_token_type type);
+
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char **envp);
 void			launch_command(char **args, char **envp);
 
 /* PIPE EXECUTOR */
-pid_t			create_pipe_child(t_ast_node *node, int *pipe_fd, int is_left, char **envp);
+pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config);
 int				wait_pipe_children(pid_t left_pid, pid_t right_pid);
 
 /* REDIRECT EXECUTOR */
 int				execute_redirect_node(t_ast_node *node, char **envp);
 
-/* PATH FINDER */
+/* HEREDOC EXECUTOR */
+int				execute_heredoc(char *delimiter);
+
+/* HEREDOC PREPROCESSOR */
+int				preprocess_heredocs(t_ast_node *node);
+
+/* PATH UTILS */
 char			*find_command_path(char *cmd, char **envp);
 
-/* AST DEBUG */
-// void			print_ast(t_ast_node *node, int depth);
-
 #endif
-
-

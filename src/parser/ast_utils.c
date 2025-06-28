@@ -50,7 +50,8 @@ static t_node_type	token_to_node_type(t_token_type token_type)
  *              determinar qué tipo de nodo crear.
 */
 
-t_ast_node	*create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_node *right)
+t_ast_node	*create_binary_node(t_token_type op_type, t_ast_node *left,
+			t_ast_node *right)
 {
 	t_ast_node	*node;
 
@@ -72,7 +73,8 @@ t_ast_node	*create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_nod
  * Llama a: `create_ast_node`, `token_to_node_type`.
 */
 
-t_ast_node	*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd, char *file)
+t_ast_node	*create_redirect_node(t_token_type redirect_type, t_ast_node *cmd,
+			char *file)
 {
 	t_ast_node	*node;
 

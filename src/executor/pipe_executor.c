@@ -24,6 +24,15 @@ static void	setup_pipe_child(int *pipe_fd, int is_left_child)
 	}
 }
 
+static void	setup_heredoc_input(int heredoc_fd)
+{
+	if (heredoc_fd == -1)
+		return ;
+	if (dup2(heredoc_fd, STDIN_FILENO) == -1)
+		exit(1);
+	close(heredoc_fd);
+}
+
 static void	child_process_routine(t_ast_node *node, char **envp)
 {
 	if (node->type == NODE_COMMAND)
@@ -36,23 +45,27 @@ static void	child_process_routine(t_ast_node *node, char **envp)
 	exit(1);
 }
 
-pid_t	create_pipe_child(t_ast_node *node, int *pipe_fd, int is_left, char **envp)
+pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
 	{
-		if (is_left)
-			close(pipe_fd[1]);
+		if (config->is_left)
+			close(config->pipe_fd[1]);
 		else
-			close(pipe_fd[0]);
+			close(config->pipe_fd[0]);
+		if (config->heredoc_fd != -1)
+			close(config->heredoc_fd);
 		return (-1);
 	}
 	if (pid == 0)
 	{
-		setup_pipe_child(pipe_fd, is_left);
-		child_process_routine(node, envp);
+		if (config->is_left)
+			setup_heredoc_input(config->heredoc_fd);
+		setup_pipe_child(config->pipe_fd, config->is_left);
+		child_process_routine(node, config->envp);
 	}
 	return (pid);
 }

@@ -6,11 +6,11 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 21:51:30 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 18:58:16 by jmondon          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:41:38 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../include/pipex.h"
 
 static int	ft_wrdctr(char const *s, char c)
 {

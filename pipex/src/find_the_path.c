@@ -1,6 +1,18 @@
-#include "../../include/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   find_the_path.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/14 12:57:02 by jmondon           #+#    #+#             */
+/*   Updated: 2025/05/14 14:05:30 by jmondon          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static char	*get_path_from_env(char **envp)
+#include "../include/pipex.h"
+
+static char	*paths_in_env(char **envp)
 {
 	int	i;
 
@@ -32,7 +44,7 @@ static char	*build_full_path(char *dir, char *cmd)
 	return (NULL);
 }
 
-static char	*search_cmd_in_dirs(char **dirs, char *cmd)
+static char	*check_dirs(char **dirs, char *cmd)
 {
 	char	*path;
 	int		i;
@@ -56,7 +68,7 @@ static char	*search_cmd_in_dirs(char **dirs, char *cmd)
 	return (NULL);
 }
 
-char	*find_command_path(char *cmd, char **envp)
+char	*get_path(char *cmd, char **envp)
 {
 	char	*path;
 	char	**dirs;
@@ -70,12 +82,12 @@ char	*find_command_path(char *cmd, char **envp)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	tmp = get_path_from_env(envp);
+	tmp = paths_in_env(envp);
 	if (!tmp)
 		tmp = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
 	dirs = ft_split(tmp, ':');
 	if (!dirs)
 		return (NULL);
-	path = search_cmd_in_dirs(dirs, cmd);
+	path = check_dirs(dirs, cmd);
 	return (path);
 }

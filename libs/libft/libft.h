@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2024/12/12 21:52:13 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/06/27 19:35:03 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void	ft_perror_exit(const char *prefix, int exit_code);
 
 void	ft_cmd_not_found_exit(const char *cmd_name);
 
-void	ft_permission_denied_exit(const char *cmd_name);
+void	ft_execve_error_exit(const char *cmd_name);
 
 void	ft_error(void);
 

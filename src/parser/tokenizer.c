@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static t_token  *process_operator(const char *input, int *i)
+static t_token	*process_operator(const char *input, int *i)
 {
 	int				advance;
 	t_token_type	type;
@@ -10,7 +10,7 @@ static t_token  *process_operator(const char *input, int *i)
 	type = get_operator_type(&input[*i], &advance);
 	value = ft_substr(input, *i, advance);
 	if (!value)
-		return(NULL);
+		return (NULL);
 	*i += advance;
 	return (create_token(type, value));
 }
@@ -36,7 +36,7 @@ static t_token	*process_word(const char *input, int *i)
 
 	value = extract_word_token(input, i);
 	if (!value)
-		return(NULL);
+		return (NULL);
 	return (create_token(TOKEN_WORD, value));
 }
 /*
@@ -55,7 +55,8 @@ static t_token	*process_word(const char *input, int *i)
  *   - `create_token`: Para ensamblar el token final.
 */
 
-static int	generate_token_list(const char *input, t_token **head, t_token **current)
+static int	generate_token_list(const char *input, t_token **head,
+			t_token **current)
 {
 	int		i;
 	t_token	*new_token;
@@ -103,7 +104,7 @@ t_token	*tokenize(const char *input)
 	t_token	*new_token;
 
 	if (!input)
-		return(NULL);
+		return (NULL);
 	head = NULL;
 	current = NULL;
 	if (generate_token_list(input, &head, &current) != 0)

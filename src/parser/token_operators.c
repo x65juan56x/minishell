@@ -2,7 +2,7 @@
 
 int	is_operator_char(char c)
 {
-	return (c == '|' || c == '<' || c == '>' || c == '&' 
+	return (c == '|' || c == '<' || c == '>' || c == '&'
 		|| c == '(' || c == ')');
 }
 /*

@@ -7,22 +7,26 @@ static int	count_command_args(t_parser *parser)
 
 	count = 0;
 	temp = parser->current;
-	while (temp && temp->type == TOKEN_WORD)
+	while (temp && temp->type != TOKEN_PIPE && temp->type != TOKEN_EOF)
 	{
-		count++;
+		if (temp->type == TOKEN_WORD)
+			count++;
+		else if (temp->type == TOKEN_REDIRECT_IN || temp->type == TOKEN_REDIRECT_OUT || 
+				temp->type == TOKEN_REDIRECT_APPEND || temp->type == TOKEN_HEREDOC)
+		{
+			// Saltar el operador de redirección
+			temp = temp->next;
+			// Saltar el archivo de la redirección (debe ser TOKEN_WORD)
+			if (temp && temp->type == TOKEN_WORD)
+				temp = temp->next;
+			continue;
+		}
+		else
+			break; // Otro tipo de token que no sabemos manejar
 		temp = temp->next;
 	}
 	return (count);
 }
-/*
- * Propósito: Contar cuántos tokens de tipo `TOKEN_WORD` consecutivos hay a
- *            partir de la posición actual del parser.
- * Mecanismo: Utiliza un puntero temporal para recorrer la lista de tokens sin
- *            modificar el estado del parser. Incrementa un contador por cada
- *            `TOKEN_WORD` hasta que encuentra un token de otro tipo o el final.
- * Llamado por: `collect_command_args`, para saber cuánta memoria necesita
- *              alocar para el array de argumentos, evitando reallocs.
-*/
 
 t_token	*consume_token(t_parser *parser, t_token_type expected)
 {
@@ -55,7 +59,7 @@ static char	**collect_command_args(t_parser *parser)
 	char	**args;
 	int		count;
 	int		i;
-	t_token	*token;
+	t_token	*temp;
 
 	count = count_command_args(parser);
 	if (count == 0)
@@ -63,35 +67,33 @@ static char	**collect_command_args(t_parser *parser)
 	args = malloc(sizeof(char *) * (count + 1));
 	if (!args)
 		return (NULL);
+	temp = parser->current;
 	i = 0;
-	while (i < count)
+	while (i < count && temp && temp->type != TOKEN_PIPE && temp->type != TOKEN_EOF)
 	{
-		token = consume_token(parser, TOKEN_WORD);
-		if (!token)
-			return (ft_freearr(args), NULL);
-		args[i] = ft_strdup(token->value);
-		if (!args[i])
-			return (ft_freearr(args), NULL);
-		i++;
+		if (temp->type == TOKEN_WORD)
+		{
+			args[i] = ft_strdup(temp->value);
+			if (!args[i])
+				return (ft_freearr(args), NULL);
+			i++;
+		}
+		else if (is_redirect_token(temp->type))
+		{
+			temp = temp->next;
+			if (temp && temp->type == TOKEN_WORD)
+				temp = temp->next;
+			continue;
+		}
+		else
+			break;
+		temp = temp->next;
 	}
+	while (parser->current && parser->current->type == TOKEN_WORD)
+		parser->current = parser->current->next;
 	args[i] = NULL;
 	return (args);
 }
-/*
- * Propósito: Recolectar todos los tokens de palabra consecutivos y
- *            construir un array de strings (char **) terminado en NULL,
- *            apto para `execve`.
- * Mecanismo:
- *   1. Llama a `count_command_args` para pre-calcular el tamaño necesario.
- *   2. Aloca la memoria para el array de punteros.
- *   3. Itera `count` veces, consumiendo cada `TOKEN_WORD` y duplicando su
- *      valor (`token->value`) en el array `args`.
- *   4. Añade el `NULL` terminador al final del array.
- * Llamado por: `parse_command`, para obtener la lista de argumentos del
- *              comando.
- * Llama a: `count_command_args`, `malloc`, `consume_token`, `ft_strdup`,
- *          `ft_freearr` (para limpieza en caso de error).
-*/
 
 t_ast_node	*parse_command(t_parser *parser)
 {
@@ -104,11 +106,7 @@ t_ast_node	*parse_command(t_parser *parser)
 		return (NULL);
 	node->args = collect_command_args(parser);
 	if (!node->args)
-	{
-		free(node);
-		parser->error = 1;
-		return (NULL);
-	}
+		return (free(node), NULL);
 	return (node);
 }
 /*
