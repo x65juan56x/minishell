@@ -68,8 +68,7 @@ int	execute_ast(t_ast_node *ast, char **envp)
 	}
 	if (ast->type == NODE_PIPE)
 		return (execute_pipe_node(ast, envp));
-	if (ast->type == NODE_REDIRECT_OUT || ast->type == NODE_REDIRECT_IN
-		|| ast->type == NODE_REDIRECT_APPEND || ast->type == NODE_HEREDOC)
+	if (is_redirect_node(ast->type))
 		return (execute_redirect_node(ast, envp));
 	return (1);
 }
