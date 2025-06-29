@@ -102,11 +102,15 @@ t_token			*consume_token(t_parser *parser, t_token_type expected);
 t_ast_node		*parse_pipe_expression(t_parser *parser);
 t_ast_node		*parse_redirect_expression(t_parser *parser);
 
-/* PARSER REDIRECTS */
-// t_ast_node		*parse_leading_redirects(t_parser *parser);
-// t_ast_node		*apply_trailing_redirects(t_parser *parser, t_ast_node *base);
-// t_ast_node		*merge_redirects(t_ast_node *leading, t_ast_node *final);
+/* PARSER REDIRECT UTILS */
 int				is_redirect_token(t_token_type type);
+int				is_redirect_node(t_node_type type);
+
+/* PARSER UTILS */
+int handle_word_token(t_token **tp, char **args, int *idx);
+void skip_redirect_token(t_token **tp);
+int extract_args(char **args, int max, t_token **tp);
+t_token *consume_token_type(t_parser *parser, t_token_type tp);
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char **envp);
