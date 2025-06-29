@@ -16,22 +16,22 @@ t_ast_node	*parse(t_token *tokens)
 	return (ast);
 }
 /*
- * Propósito: Orquestar todo el proceso de parsing. Es el punto de entrada
- *            principal que convierte una lista de tokens en un Abstract
- *            Syntax Tree (AST).
+ * Propósito: Orquestar el proceso de parsing, convirtiendo una lista plana de
+ *            tokens en un Árbol de Sintaxis Abstracta (AST) que representa la
+ *            estructura jerárquica de los comandos.
  * Mecanismo:
- *   1. Inicializa una estructura `t_parser` para mantener el estado del
- *      análisis (token actual, flag de error).
+ *   1. Inicializa una estructura `t_parser` que mantiene el estado del
+ *      análisis (la lista de tokens, el token actual y un flag de error).
  *   2. Llama a `parse_pipe_expression`, la función que maneja el operador de
- *      menor precedencia, iniciando así el descenso recursivo.
- *   3. Comprueba si el flag `parser.error` se activó durante el proceso.
- *   4. Si hubo un error, limpia el AST parcialmente construido y retorna NULL.
- *   5. Si todo fue exitoso, retorna la raíz del AST completo.
- * Llamado por: `main`, después de que el tokenizador ha generado la lista de
- *              tokens.
+ *      menor precedencia ('|'), iniciando así el descenso recursivo.
+ *   3. Al finalizar, comprueba si el flag `parser.error` se activó. Si es así,
+ *      significa que hubo un error de sintaxis.
+ *   4. En caso de error, libera la memoria del AST parcialmente construido.
+ *   5. Si el parsing fue exitoso, devuelve la raíz del AST completo.
+ * Llamado por: `main`, después de que el tokenizador ha generado la lista.
  * Llama a:
- *   - `parse_pipe_expression`: Para iniciar el análisis sintáctico.
- *   - `cleanup_ast`: Para liberar memoria en caso de error.
+ *   - `parse_pipe_expression`: Para iniciar el análisis de la gramática.
+ *   - `cleanup_ast`: Para liberar memoria en caso de error de sintaxis.
 */
 
 void	cleanup_ast(t_ast_node *node)
@@ -47,16 +47,22 @@ void	cleanup_ast(t_ast_node *node)
 	free(node);
 }
 /*
- * Propósito: Liberar de forma segura toda la memoria asociada a un AST.
+ * Propósito: Liberar de forma segura toda la memoria asociada a un AST y sus
+ *            subárboles para prevenir fugas de memoria.
  * Mecanismo:
- *   - Utiliza un recorrido en post-orden (primero hijos, luego el padre).
- *   - Llama recursivamente a `cleanup_ast` para el hijo izquierdo y derecho.
- *   - Una vez que los subárboles han sido liberados, libera el contenido del
- *     nodo actual (el array `args` y el string `file`).
- *   - Finalmente, libera la estructura del nodo en sí.
+ *   - Utiliza un recorrido en post-orden (hijos primero, luego el nodo padre).
+ *   1. Si el nodo es NULL, no hay nada que hacer y retorna.
+ *   2. Llama recursivamente a `cleanup_ast` para el subárbol izquierdo.
+ *   3. Llama recursivamente a `cleanup_ast` para el subárbol derecho.
+ *   4. Una vez que los hijos han sido liberados, libera los datos del nodo
+ *      actual: el array de argumentos (`args`) y el nombre de archivo (`file`).
+ *   5. Finalmente, libera la estructura del nodo en sí.
  * Llamado por:
- *   - `main`: Después de que el AST ha sido ejecutado, para la limpieza final.
+ *   - `main`: Después de la ejecución, para la limpieza final.
  *   - `parse` y otras funciones del parser: En caso de error, para deshacer
- *     las alocaciones parciales y evitar fugas de memoria.
- * Llama a: `ft_freearr`, `free`, y a sí misma de forma recursiva.
+ *     las alocaciones parciales.
+ * Llama a:
+ *   - `ft_freearr`: Para liberar el array de strings de argumentos.
+ *   - `free`: Para liberar el nombre de archivo y el propio nodo.
+ *   - `cleanup_ast` (a sí misma de forma recursiva).
 */
