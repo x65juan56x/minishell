@@ -3,8 +3,6 @@
 ## Diagrama Principal
 ```mermaid
 flowchart TD
-    %% Bucle principal de minishell
-
     START([START MINISHELL])
     INPUT[input = readline(PROMPT)]
     NULL_CHECK{input == NULL?}
