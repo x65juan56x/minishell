@@ -3,6 +3,9 @@
 ## Diagrama Principal
 ```mermaid
 flowchart TD
+    %% Este diagrama muestra el bucle principal de la aplicación, desde la lectura
+    %% de la entrada del usuario hasta la ejecución y limpieza de recursos.
+
     subgraph "Bucle Principal (main.c)"
         START([START MINISHELL])
         INPUT[/"input = readline(PROMPT)"/]
@@ -56,6 +59,9 @@ flowchart TD
 ## Tokenizer Detallado
 ```mermaid
 flowchart TD
+    %% Este diagrama detalla el proceso de tokenización, que convierte
+    %% una cadena de entrada en una lista enlazada de tokens.
+
     subgraph "tokenize()"
         TOK_START([START tokenize(input)])
         TOK_INIT[head = NULL, current = NULL]
@@ -104,6 +110,10 @@ flowchart TD
 ## Parser Detallado (Descenso Recursivo)
 ```mermaid
 flowchart TD
+    %% Este diagrama ilustra la arquitectura de descenso recursivo del parser,
+    %% que construye el Árbol de Sintaxis Abstracta (AST) respetando la
+    %% precedencia de operadores.
+
     subgraph "parse()"
         PAR_START([START parse(tokens)])
         PAR_INIT[init t_parser]
@@ -166,6 +176,9 @@ flowchart TD
 ## Executor Detallado
 ```mermaid
 flowchart TD
+    %% Este diagrama desglosa cómo el ejecutor recorre el AST para
+    %% crear procesos, pipes y redirecciones.
+
     subgraph "execute_ast()"
         EX_START([START execute_ast(ast)])
         EX_CHECK{ast == NULL?}
