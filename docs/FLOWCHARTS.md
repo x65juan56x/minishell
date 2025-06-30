@@ -157,4 +157,4 @@ flowchart TD
     REDIR_FORK --> REDIR_CHILD
     REDIR_CHILD -- Sí --> REDIR_APPLY --> REDIR_EXEC
     REDIR_CHILD -- No --> REDIR_WAIT --> RETURN_STATUS
-    ```
+```
