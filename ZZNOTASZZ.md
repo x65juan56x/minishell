@@ -65,3 +65,41 @@ yes | ./minishell
 
 ./minishell 1
 
+
+
+Parte Obligatoria
+✅ Completado:
+
+Mostrar un prompt: Implementado en minishell.c con readline(PROMPT).
+Tener un historial funcional: Implementado con add_history() y rl_clear_history() en minishell.c.
+Buscar y lanzar ejecutables (PATH, relativo, absoluto): Perfectamente implementado en path_utils.c y cmd_executor.c. La lógica de find_command_path maneja correctamente los tres casos.
+Redirección de salida >: Implementado. redirect_executor.c abre el fichero con O_TRUNC.
+Redirección de salida en modo append >>: Implementado. redirect_executor.c abre el fichero con O_APPEND.
+Redirección de entrada <: Implementado. redirect_executor.c abre el fichero con O_RDONLY.
+Implementar pipes |: Implementado. La lógica en pipe_executor.c y executor.c crea dos procesos hijos y conecta su stdin/stdout correctamente.
+Manejar << (Here Document): Implementado. heredoc_executor.c lee la entrada hasta el delimitador y heredoc_preprocessor.c lo integra correctamente en los pipes.
+🟡 Parcialmente Implementado / Requiere Ajustes:
+
+Manejar comillas simples ' y dobles ":
+Lo que funciona: El tokenizer (token_words.c) ya identifica correctamente las palabras entrecomilladas como un solo token y elimina las comillas externas (process_quoted_string). Esto es un gran avance.
+Lo que falta: La expansión de variables ($VAR) dentro de las comillas dobles pero no en las simples. Actualmente, no se realiza ninguna expansión.
+No interpretar comillas sin cerrar: El parser actual no tiene una validación explícita para esto. Un echo "hello probablemente se tokenizará de forma extraña y podría dar un error de sintaxis genérico, pero no un error específico de "comillas sin cerrar".
+❌ Pendiente de Implementar:
+
+Manejar variables de entorno ($VAR): No hay lógica de expansión de variables en el parser o executor. Los tokens con $ se tratan como palabras literales.
+Manejar $?: No hay implementación para expandir $? al código de salida del último comando. Necesitas una variable (quizás en una estructura principal) para almacenar exit_status y un mecanismo de expansión que la consulte.
+Manejar ctrl-C, ctrl-D y ctrl-\:
+ctrl-D funciona (porque readline devuelve NULL), pero el resto del manejo de señales (signal, sigaction) no está implementado.
+No hay un manejador de señales que haga que ctrl-C muestre un nuevo prompt o que ctrl-\ no haga nada.
+Implementar los Built-ins: Esta es la parte más grande que falta.
+echo (con -n), cd, pwd, export, unset, env, exit.
+Tu executor.c actual crea un fork() para todos los comandos. Esto no funcionará para cd, export, unset o exit, que deben modificar el proceso de la shell principal. Necesitas añadir una lógica que detecte si un comando es un built-in y lo ejecute en el proceso padre antes de intentar un fork.
+Parte Bonus
+🟡 Parcialmente Implementado / Requiere Ajustes:
+
+&&, || y paréntesis ():
+Lo que funciona: El tokenizer ya reconoce los tokens TOKEN_AND, TOKEN_OR, TOKEN_LPAREN, TOKEN_RPAREN. ¡La base está lista!
+Lo que falta: El parser no tiene la lógica para manejar la precedencia de estos operadores. Necesitas añadir nuevas funciones de parsing (como parse_logical_expression y parse_primary_expression) para construir el AST correctamente. El executor tampoco tiene la lógica de "cortocircuito" para ejecutar && o ||.
+❌ Pendiente de Implementar:
+
+Wildcards *: No hay ninguna implementación para la expansión de wildcards. Esto requeriría una nueva función que, antes de execve, revise los argumentos, y si encuentra un *, lea el directorio actual (opendir, readdir) y reemplace el argumento por los ficheros que coincidan.
