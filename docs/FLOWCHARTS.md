@@ -12,7 +12,7 @@ flowchart TD
         NULL_CHECK{input == NULL?}
         EMPTY_CHECK{*input == '\\0'?}
         HISTORY[add_history(input)]
-        EXIT_CHECK{"ft_strcmp(input, 'exit') == 0"}
+        EXIT_CHECK{'ft_strcmp(input, "exit") == 0'}
         TOKENIZE[tokenize(input)]
         TOKEN_ERROR{tokens == NULL?}
         PARSE[parse(tokens)]
@@ -237,4 +237,3 @@ flowchart TD
     class CMD_FORK,PIPE_PIPE,REDIR_FORK,CMD_WAIT,PIPE_WAIT,REDIR_WAIT process
     class EX_CHECK,NODE_TYPE,CMD_CHILD,REDIR_CHILD decision
     class CMD_EXEC,PIPE_HDOC,PIPE_L_CHILD,PIPE_R_CHILD,PIPE_CLOSE,REDIR_APPLY,REDIR_EXEC subprocess
-```
