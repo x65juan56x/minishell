@@ -7,17 +7,17 @@ flowchart TD
     INPUT["input = readline(PROMPT)"]
     NULL_CHECK{"input == NULL?"}
     EMPTY_CHECK{"input vacío?"}
-    HISTORY[add_history(input)]
+    HISTORY["add_history(input)"]
     EXIT_CHECK{"input es exit?"}
-    TOKENIZE[tokenize(input)]
+    TOKENIZE["tokenize(input)"]
     TOKEN_ERROR{"tokens == NULL?"}
-    PARSE[parse(tokens)]
+    PARSE["parse(tokens)"]
     PARSE_ERROR{"ast == NULL?"}
     EXECUTE["exit_status = execute_ast(ast)"]
     CLEANUP["cleanup_ast, cleanup_tokens, free input"]
     EXIT_PROGRAM([EXIT PROGRAM])
-    PRINT_EXIT_MSG[printf exit]
-    SYNTAX_ERROR[printf syntax error]
+    PRINT_EXIT_MSG["printf exit"]
+    SYNTAX_ERROR["printf syntax error"]
 
     START --> INPUT
     INPUT --> NULL_CHECK
