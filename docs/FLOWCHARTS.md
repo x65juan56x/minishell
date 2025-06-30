@@ -8,7 +8,7 @@ flowchart TD
     NULL_CHECK{"input == NULL?"}
     EMPTY_CHECK{"input vacío?"}
     HISTORY["add_history(input)"]
-    EXIT_CHECK{"input es exit?"}
+    EXIT_CHECK{"input == 'exit'?"}
     TOKENIZE["tokenize(input)"]
     TOKEN_ERROR{"tokens == NULL?"}
     PARSE["parse(tokens)"]
@@ -44,7 +44,7 @@ flowchart TD
     %% Proceso de tokenización
 
     TOK_START([START tokenize])
-    TOK_INIT[init head y current]
+    TOK_INIT["init head/current = NULL"]
     GEN_LIST[generate_token_list]
     ADD_EOF["create_token TOKEN_EOF"]
     TOK_SUCCESS([return head])
@@ -79,38 +79,38 @@ flowchart TD
 
     PAR_START([START parse])
     PAR_INIT[init t_parser]
-    CALL_PIPE["ast = parse_pipe_expression"]
+    CALL_PIPE_EXPR["ast = parse_pipe_expression"]
     CHECK_ERR{"parser.error?"}
     CLEANUP_AST["cleanup_ast y return NULL"]
     PAR_SUCCESS([return ast])
 
-    PIPE_START[parse_redirect_expression]
+    CALL_REDIR_EXPR[parse_redirect_expression]
     PIPE_LOOP{"token es PIPE?"}
-    PIPE_RIGHT[parse_redirect_expression]
+    CALL_REDIR_EXPR_RIGHT[parse_redirect_expression]
     CREATE_PIPE["create_binary_node PIPE"]
 
-    REDIR_LEAD[parse_leading_redirects]
-    REDIR_CMD[parse_command]
-    REDIR_TRAIL[apply_trailing_redirects]
-    REDIR_LINK[link leading y trailing]
+    PARSE_LEADING_REDIRS[parse_leading_redirects]
+    CALL_PARSE_CMD[parse_command]
+    APPLY_TRAILING_REDIRS[apply_trailing_redirects]
+    LINK_REDIRS_TO_CMD[link leading y trailing]
 
-    CMD_CHECK{"token es WORD?"}
-    CREATE_CMD["create_ast_node COMMAND"]
-    COLLECT_ARGS[collect_command_args]
+    IS_WORD_TOKEN{"token es WORD?"}
+    CREATE_CMD_NODE["create_ast_node COMMAND"]
+    COLLECT_CMD_ARGS[collect_command_args]
 
-    PAR_START --> PAR_INIT --> CALL_PIPE
-    CALL_PIPE --> CHECK_ERR
+    PAR_START --> PAR_INIT --> CALL_PIPE_EXPR
+    CALL_PIPE_EXPR --> CHECK_ERR
     CHECK_ERR -- Sí --> CLEANUP_AST
     CHECK_ERR -- No --> PAR_SUCCESS
 
-    CALL_PIPE --> PIPE_START
-    PIPE_START --> REDIR_LEAD
-    REDIR_LEAD --> REDIR_CMD
-    REDIR_CMD --> CMD_CHECK
-    CMD_CHECK -- Sí --> CREATE_CMD --> COLLECT_ARGS --> REDIR_TRAIL
-    REDIR_TRAIL --> REDIR_LINK --> PIPE_LOOP
-    PIPE_LOOP -- Sí --> PIPE_RIGHT --> CREATE_PIPE --> PIPE_LOOP
-    PIPE_LOOP -- No --> CALL_PIPE
+    CALL_PIPE_EXPR --> CALL_REDIR_EXPR
+    CALL_REDIR_EXPR --> PARSE_LEADING_REDIRS
+    PARSE_LEADING_REDIRS --> CALL_PARSE_CMD
+    CALL_PARSE_CMD --> IS_WORD_TOKEN
+    IS_WORD_TOKEN -- Sí --> CREATE_CMD_NODE --> COLLECT_CMD_ARGS --> APPLY_TRAILING_REDIRS
+    APPLY_TRAILING_REDIRS --> LINK_REDIRS_TO_CMD --> PIPE_LOOP
+    PIPE_LOOP -- Sí --> CALL_REDIR_EXPR_RIGHT --> CREATE_PIPE --> PIPE_LOOP
+    PIPE_LOOP -- No --> CALL_PIPE_EXPR
 ```
 
 ## Executor Detallado
