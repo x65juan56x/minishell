@@ -7,6 +7,16 @@ static int	execute_command_node(t_ast_node *node, char **envp)
 	launch_command(node->args, envp);
 	return (127);
 }
+/*
+ * Propósito: Ejecutar un comando simple en un proceso hijo.
+ * Mecanismo:
+ *   1. Si `node` o `node->args` no son válidos, retorna 0.
+ *   2. Llama a `launch_command` (que nunca retorna si tiene éxito).
+ *   3. Si retorna, propaga 127 (no ejecutable).
+ * Llamado por: `execute_ast` cuando `ast->type == NODE_COMMAND`.
+ * Llama a:
+ *   - `launch_command`
+ */
 
 static int	create_pipe_and_execute(t_ast_node *node, char **envp,
 			int heredoc_fd)
@@ -33,6 +43,21 @@ static int	create_pipe_and_execute(t_ast_node *node, char **envp,
 		close(heredoc_fd);
 	return (wait_pipe_children(left_pid, right_pid));
 }
+/*
+ * Propósito: Ejecutar un nodo PIPE conectando dos hijos con tubería.
+ * Mecanismo:
+ *   1. Crea un pipe con `pipe()`.
+ *   2. Configura `left_cfg` y `right_cfg` con fd y heredoc.
+ *   3. Lanza dos hijos con `create_pipe_child`.
+ *   4. Cierra ambos extremos del pipe en el padre.
+ *   5. Cierra `heredoc_fd` si existe.
+ *   6. Espera a los hijos y devuelve el status del derecho o izquierdo.
+ * Llamado por: `execute_pipe_node` y `execute_ast`.
+ * Llama a:
+ *   - `pipe`
+ *   - `create_pipe_child`
+ *   - `wait_pipe_children`
+ */
 
 static int	execute_pipe_node(t_ast_node *node, char **envp)
 {
@@ -41,6 +66,16 @@ static int	execute_pipe_node(t_ast_node *node, char **envp)
 	heredoc_fd = preprocess_heredocs(node->left);
 	return (create_pipe_and_execute(node, envp, heredoc_fd));
 }
+/*
+ * Propósito: Ejecutar un nodo de pipe de alto nivel.
+ * Mecanismo:
+ *   1. Preprocesa here-docs en `node->left` con `preprocess_heredocs`.
+ *   2. Llama a `create_pipe_and_execute` para forzar conectividad.
+ * Llamado por: `execute_ast` cuando `ast->type == NODE_PIPE`.
+ * Llama a:
+ *   - `preprocess_heredocs`
+ *   - `create_pipe_and_execute`
+ */
 
 int	execute_ast(t_ast_node *ast, char **envp)
 {
@@ -72,3 +107,19 @@ int	execute_ast(t_ast_node *ast, char **envp)
 		return (execute_redirect_node(ast, envp));
 	return (1);
 }
+/*
+ * Propósito: Punto único de ejecución del AST completo.
+ * Mecanismo:
+ *   1. Si `ast` es NULL, retorna 0 (nada que hacer).
+ *   2. Si es `NODE_COMMAND`, crea un hijo y ejecuta comando.
+ *   3. Si es `NODE_PIPE`, delega a `execute_pipe_node`.
+ *   4. Si es nodo de redirección, delega a `execute_redirect_node`.
+ *   5. Maneja códigos de salida y señales de cada caso.
+ * Llamado por: `main` en el loop principal.
+ * Llama a:
+ *   - `fork`, `exit`, `waitpid`
+ *   - `execute_command_node`
+ *   - `execute_pipe_node`
+ *   - `execute_redirect_node`
+ *   - `is_redirect_node`
+ */

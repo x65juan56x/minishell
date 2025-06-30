@@ -16,6 +16,20 @@ static int	open_redirect_file(char *file, t_node_type type)
 		perror(file);
 	return (fd);
 }
+/*
+ * Propósito: Abrir el archivo adecuado según el tipo de redirección.
+ * Mecanismo:
+ *   - `<`  abre en O_RDONLY.
+ *   - `>`  abre/crea en O_WRONLY|O_CREAT|O_TRUNC.
+ *   - `>>` abre/crea en O_WRONLY|O_CREAT|O_APPEND.
+ *   1. Llama a `open` con flags según `type`.
+ *   2. Si falla, llama a `perror(file)`.
+ *   3. Devuelve el descriptor o -1.
+ * Llamado por: `setup_redirect_and_get_fd`.
+ * Llama a:
+ *   - `open`
+ *   - `perror`
+ */
 
 static int	setup_redirect_and_get_fd(t_ast_node *node)
 {
@@ -23,6 +37,16 @@ static int	setup_redirect_and_get_fd(t_ast_node *node)
 		return (execute_heredoc(node->file));
 	return (open_redirect_file(node->file, node->type));
 }
+/*
+ * Propósito: Obtener el fd que se usará para la redirección.
+ * Mecanismo:
+ *   1. Si `node->type == NODE_HEREDOC`, invoca `execute_heredoc`.
+ *   2. En otro caso, invoca `open_redirect_file`.
+ * Llamado por: `apply_single_redirect`.
+ * Llama a:
+ *   - `execute_heredoc`
+ *   - `open_redirect_file`
+ */
 
 static int	apply_single_redirect(t_ast_node *r)
 {
@@ -45,8 +69,22 @@ static int	apply_single_redirect(t_ast_node *r)
 	close(fd);
 	return (0);
 }
+/*
+ * Propósito: Redirigir STDIN/STDOUT al archivo o pipe correspondiente.
+ * Mecanismo:
+ *   1. Obtiene fd con `setup_redirect_and_get_fd`.
+ *   2. Si fd < 0, retorna 1 (error).
+ *   3. Determina `target` según tipo de redirección.
+ *   4. Llama a `dup2(fd, target)` y comprueba errores.
+ *   5. Cierra el fd original.
+ * Llamado por: `execute_redirect_node`.
+ * Llama a:
+ *   - `setup_redirect_and_get_fd`
+ *   - `dup2`
+ *   - `perror`
+ *   - `close`
+ */
 
-/* Recolecta en 'arr' las redirecciones encadenadas en 'node'; devuelve el count */
 static int	collect_redirect_nodes(t_ast_node *node, t_ast_node *arr[])
 {
 	int			count;
@@ -61,8 +99,15 @@ static int	collect_redirect_nodes(t_ast_node *node, t_ast_node *arr[])
 	}
 	return (count);
 }
+/*
+ * Propósito: Recolectar nodos de redirección encadenados en un array.
+ * Mecanismo:
+ *   1. Recorre la cadena `node->left->left->…` mientras sean redirects.
+ *   2. Guarda cada nodo en `arr[count++]`.
+ *   3. Devuelve el número total de redirects encontrados.
+ * Llamado por: `execute_redirect_node`.
+ */
 
-/* Aplica N redirects LIFO y ejecuta el comando */
 int	execute_redirect_node(t_ast_node *node, char **envp)
 {
 	t_ast_node	*reds[64];
@@ -73,8 +118,8 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 
 	if (!node || !node->file)
 		return (1);
-	count = collect_redirect_nodes(node, reds);	/* Recolectar nodos de redirección en orden inverso */
-	cmd = reds[--count]->left;	/* El comando es lo que queda tras las redirects */
+	count = collect_redirect_nodes(node, reds);
+	cmd = reds[--count]->left;
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
@@ -91,3 +136,22 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 		return (128 + WTERMSIG(status));
 	return (1);
 }
+/*
+ * Propósito: Ejecutar un comando con todas sus redirecciones.
+ * Mecanismo:
+ *   1. Recolecta nodos de redirect en orden inverso con `collect_redirect_nodes`.
+ *   2. Obtiene el nodo de comando original (`cmd`).
+ *   3. Crea un hijo con `fork()`.
+ *   4. En el hijo:
+ *      a. Aplica cada redirect con `apply_single_redirect` (LIFO).
+ *      b. Llama a `execute_ast(cmd, envp)` y sale.
+ *   5. En el padre, espera al hijo con `waitpid`.
+ *   6. Devuelve el código de salida o 128+ señal.
+ * Llamado por: `execute_ast` cuando `ast->type` es redirect.
+ * Llama a:
+ *   - `collect_redirect_nodes`
+ *   - `fork`
+ *   - `apply_single_redirect`
+ *   - `execute_ast`
+ *   - `waitpid`
+ */
