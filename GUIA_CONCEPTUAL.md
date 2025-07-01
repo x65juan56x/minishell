@@ -12,19 +12,19 @@ $ ls -l
 # 4. Muestra la salida al usuario
 ```
 
-## Variables de Entorno
+## Variables de Entorno  
 ¿Qué son?  
 Las variables de entorno son valores que están disponibles para todos los procesos del sistema. Almacenan información como rutas, configuraciones, etc.
 
 Variables Importantes
 
-**PATH**
+**PATH**  
 ```bash
 echo $PATH
 # /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 ```
 Propósito: Lista de directorios donde buscar comandos  
-Uso en minishell: Cuando escribes ls, la shell busca el ejecutable en estos directorios
+Uso en minishell: Cuando escribes ls, la shell busca el ejecutable en estos directorios  
 
 **HOME**
 ```bash
@@ -210,10 +210,10 @@ Diagrama
 ls → [write_fd] PIPE [read_fd] → grep
 ```
 
-## Procesamiento de Comandos
+## Procesamiento de Comandos  
 
 Fases del Procesamiento  
-**1. Tokenización** - Dividir en Tokens
+**1. Tokenización** - Dividir en Tokens  
 ```bash
 echo "hello world" | grep test > output.txt
 ```
@@ -229,17 +229,17 @@ TOKEN_WORD:        "output.txt"
 TOKEN_EOF:         NULL
 ```
 
-**2. Parsing** - Construir Estructura
+**2. Parsing** - Construir Estructura  
 Los tokens se organizan según precedencia y gramática.
 
-**3. Ejecución** - Ejecutar Comandos
+**3. Ejecución** - Ejecutar Comandos  
 El AST se ejecuta recursivamente.
 
-## Abstract Syntax Tree (AST)
+## Abstract Syntax Tree (AST)  
 Un Abstract Syntax Tree es una representación en árbol de la estructura sintáctica del comando.
 
-**Ejemplo Completo**
-Input:
+**Ejemplo Completo**  
+Input:  
 ```bash
 echo hello | grep h > output.txt
 ```
@@ -259,7 +259,7 @@ Los operadores tienen precedencia:
 Redirects (>, <) tienen mayor precedencia que pipes (|)  
 Se ejecutan "más cerca" del comando
 
-2. Ejecución Recursiva
+2. Ejecución Recursiva  
 ```c
 int execute_ast(t_ast_node *ast, char **envp)
 {
@@ -274,7 +274,7 @@ int execute_ast(t_ast_node *ast, char **envp)
 ```
 
 3. Composición Infinita  
-Se pueden anidar estructuras arbitrariamente:
+Se pueden anidar estructuras arbitrariamente:  
 ```bash
 (cmd1 | cmd2) > file && (cmd3 < input | cmd4)
 ```
