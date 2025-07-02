@@ -21,28 +21,12 @@ static int	create_heredoc_pipe(int *pipe_fd)
  *   - `perror`
  */
 
-static void	write_line_to_pipe(int write_fd, char *line)
-{
-	if (!line)
-		return ;
-	write(write_fd, line, ft_strlen(line));
-	write(write_fd, "\n", 1);
-}
-/*
- * Propósito: Escribir una línea seguida de '\n' en el fd de here-doc.
- * Mecanismo:
- *   1. Si `line` es NULL, retorna.
- *   2. Llama a `write` para la línea y luego escribe el salto de línea.
- * Llamado por: `read_heredoc_input`.
- * Llama a:
- *   - `write`
- *   - `ft_strlen`
- */
-
 static int	read_heredoc_input(char *delimiter, int write_fd)
 {
 	char	*line;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = readline("> ");
@@ -52,7 +36,7 @@ static int	read_heredoc_input(char *delimiter, int write_fd)
 				free(line);
 			break ;
 		}
-		write_line_to_pipe(write_fd, line);
+		ft_putendl_fd(line, write_fd);
 		free(line);
 	}
 	return (0);
@@ -74,12 +58,42 @@ static int	read_heredoc_input(char *delimiter, int write_fd)
 
 int	execute_heredoc(char *delimiter)
 {
-	int	pipe_fd[2];
+	int		pipe_fd[2];
+	int		status;
+	int		stdin_backup;
+	pid_t	pid;
 
 	if (create_heredoc_pipe(pipe_fd) != 0)
 		return (-1);
-	read_heredoc_input(delimiter, pipe_fd[1]);
+	stdin_backup = dup(STDIN_FILENO); // 1. Guardar el stdin original
+	if (stdin_backup < 0)
+		return (perror("dup"), -1);
+	// Ignorar SIGINT en el padre mientras el hijo lee el heredoc
+	signal(SIGINT, SIG_IGN);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), close(stdin_backup), -1);
+	if (pid == 0)
+	{
+		// Proceso hijo: lee la entrada y escribe en el pipe
+		close(stdin_backup); // El hijo no necesita el backup
+		close(pipe_fd[0]); // El hijo no lee del pipe
+		read_heredoc_input(delimiter, pipe_fd[1]);
+		close(pipe_fd[1]);
+		exit(0);
+	}
+	// Proceso padre: espera al hijo y gestiona los descriptores
 	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	signal(SIGINT, sigint_handler);
+	dup2(stdin_backup, STDIN_FILENO); // 2. Restaurar el stdin original
+	close(stdin_backup);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		write(1, "\n", 1);
+		close(pipe_fd[0]);
+		return (-2); // Código especial para indicar interrupción por Ctrl-C
+	}
 	return (pipe_fd[0]);
 }
 /*
