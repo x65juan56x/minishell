@@ -30,8 +30,10 @@ static int	read_heredoc_input(char *delimiter, int write_fd)
 	while (1)
 	{
 		line = readline("> ");
+		printf("[heredoc_executor] readline: '%s'\n", line);
 		if (!line || ft_strcmp(line, delimiter) == 0)
 		{
+			printf("[heredoc_executor] Fin heredoc (line='%s')\n", line);
 			if (line)
 				free(line);
 			break ;
@@ -63,6 +65,7 @@ int	execute_heredoc(char *delimiter)
 	int		stdin_backup;
 	pid_t	pid;
 
+	printf("[heredoc_executor] Ejecutando heredoc para delimitador: %s\n", delimiter);
 	if (create_heredoc_pipe(pipe_fd) != 0)
 		return (-1);
 	stdin_backup = dup(STDIN_FILENO); // 1. Guardar el stdin original

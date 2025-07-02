@@ -5,7 +5,10 @@ static int	find_heredoc_in_node(t_ast_node *node)
 	if (!node)
 		return (-1);
 	if (node->type == NODE_HEREDOC)
+	{
+		printf("[heredoc_preprocessor] Encontrado NODE_HEREDOC, ejecutando heredoc para: %s\n", node->file);
 		return (execute_heredoc(node->file));
+	}
 	return (-1);
 }
 /*
@@ -51,7 +54,10 @@ static int	search_heredoc_recursive(t_ast_node *node)
 
 int	preprocess_heredocs(t_ast_node *node)
 {
-	return (search_heredoc_recursive(node));
+	printf("[heredoc_preprocessor] Entrando en preprocess_heredocs\n");
+	int fd = search_heredoc_recursive(node);
+	printf("[heredoc_preprocessor] fd devuelto: %d\n", fd);
+	return fd;
 }
 /*
  * Propósito: Iniciar el preprocesamiento de here-docs en el AST.

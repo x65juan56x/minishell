@@ -43,6 +43,7 @@ static void	setup_pipe_child(int *pipe_fd, int is_left_child)
 
 static void	setup_heredoc_input(int heredoc_fd)
 {
+	printf("[pipe_executor] setup_heredoc_input: heredoc_fd=%d\n", heredoc_fd);
 	if (heredoc_fd == -1)
 		return ;
 	if (dup2(heredoc_fd, STDIN_FILENO) == -1)
@@ -63,6 +64,7 @@ static void	setup_heredoc_input(int heredoc_fd)
 
 static void	child_process_routine(t_ast_node *node, char **envp)
 {
+	printf("[pipe_executor] child_process_routine: tipo nodo=%d\n", node->type);
 	if (node->type == NODE_COMMAND)
 	{
 		if (node->args && node->args[0])
@@ -102,10 +104,16 @@ pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config)
 	}
 	if (pid == 0)
 	{
+		printf("[pipe_executor] HIJO %s: pid=%d, heredoc_fd=%d\n", config->is_left ? "IZQUIERDO" : "DERECHO", getpid(), config->heredoc_fd);
 		if (config->is_left)
 			setup_heredoc_input(config->heredoc_fd);
 		setup_pipe_child(config->pipe_fd, config->is_left);
 		child_process_routine(node, config->envp);
+	}
+	else
+	{
+		printf("[pipe_executor] PADRE: creado hijo %s pid=%d\n",
+			config->is_left ? "IZQUIERDO" : "DERECHO", pid);
 	}
 	return (pid);
 }

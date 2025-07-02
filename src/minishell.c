@@ -40,7 +40,9 @@ int	main(int ac, char **av, char **envp)
 			free(input);
 			continue;
 		}
+		printf("[main] Ejecutando AST...\n");
 		exit_status = execute_ast(ast, envp);
+		printf("[main] AST ejecutado, exit_status=%d\n", exit_status);
 		cleanup_ast(ast);
 		cleanup_tokens(tokens);
 		free(input);

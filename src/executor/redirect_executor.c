@@ -53,6 +53,7 @@ static int	apply_single_redirect(t_ast_node *r)
 	int	fd;
 	int	target;
 
+	printf("[redirect_executor] apply_single_redirect: tipo=%d, file=%s\n", r->type, r->file);
 	fd = setup_redirect_and_get_fd(r);
 	if (fd < 0)
 		return (1);
