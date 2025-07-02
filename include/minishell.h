@@ -10,6 +10,7 @@
 # include <readline/history.h>
 # include <sys/wait.h>
 # include "../libs/libft/libft.h"
+# include <signal.h>
 
 #define CORAL_BOLD "\033[1;38;5;203m"
 #define RESET_COLOR "\033[0m"
@@ -131,5 +132,9 @@ int				preprocess_heredocs(t_ast_node *node);
 
 /* PATH UTILS */
 char			*find_command_path(char *cmd, char **envp);
+
+/* SIGNALS */
+void	signals();
+void	sigint_handler(int signum);
 
 #endif

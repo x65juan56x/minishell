@@ -11,6 +11,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	while (1)
 	{
+		signals();
 		input = readline(PROMPT);
 		if (!input)
 		{

@@ -20,7 +20,8 @@ SRC_FILES = minishell.c \
 			parser/parser_commands.c \
 			parser/parser_expressions.c \
 			parser/parser_utils.c \
-			parser/parser_redirect_utils.c
+			parser/parser_redirect_utils.c \
+			signals/signals.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
@@ -47,6 +48,7 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/executor
 	@mkdir -p $(OBJ_DIR)/parser
+	@mkdir -p $(OBJ_DIR)/signals
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEAD) | $(OBJ_DIR)
 	@echo "$(GREEN)Compilando $<$(RESET)"
