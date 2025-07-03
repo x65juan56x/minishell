@@ -1,10 +1,12 @@
 #include "../../include/minishell.h"
 
-static int	execute_command_node(t_ast_node *node, char **envp)
+static int	execute_command_node(t_ast_node *node, char ***envp_ptr)
 {
 	if (!node || !node->args || !node->args[0])
 		return (0);
-	launch_command(node->args, envp);
+	if (is_builtin(node->args[0]))
+        return (execute_builtin(node->args, envp_ptr));
+	launch_command(node->args, *envp_ptr);
 	return (127);
 }
 /*
@@ -77,45 +79,50 @@ static int	execute_pipe_node(t_ast_node *node, char **envp)
  *   - `create_pipe_and_execute`
  */
 
-int	execute_ast(t_ast_node *ast, char **envp)
+int	execute_ast(t_ast_node *ast, char ***envp_ptr)
 {
-	pid_t	pid;
-	int		status;
+    pid_t	pid;
+    int		status;
 
-	if (!ast)
-		return (0);
-	if (ast->type == NODE_COMMAND)
-	{
-		pid = fork();
-		if (pid == -1)
-			return (perror("fork"), 1);
-		if (pid == 0)
-		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			execute_command_node(ast, envp);
-			exit(127);
-		}
-		signal(SIGINT, SIG_IGN);
-		waitpid(pid, &status, 0);
-		signal(SIGINT, sigint_handler);
-		if (WIFEXITED(status))
-			return (WEXITSTATUS(status));
-		if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == SIGINT) // Comprueba si la señal SIGINT
-				write(1, "\n", 1);
-			else if ((WTERMSIG(status) == SIGQUIT))
-				write(1, "Quit (core dumped)\n", 20);
-			return (128 + WTERMSIG(status));
-		}
-		return (1);
-	}
-	if (ast->type == NODE_PIPE)
-		return (execute_pipe_node(ast, envp));
-	if (is_redirect_node(ast->type))
-		return (execute_redirect_node(ast, envp));
-	return (1);
+    if (!ast)
+        return (0);
+    if (ast->type == NODE_COMMAND)
+    {
+        // Si es built-in, ejecutar en el proceso padre
+        if (is_builtin(ast->args[0]))
+            return (execute_command_node(ast, envp_ptr));
+        
+        // Si no es built-in, hacer fork
+        pid = fork();
+        if (pid == -1)
+            return (perror("fork"), 1);
+        if (pid == 0)
+        {
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, SIG_DFL);
+            execute_command_node(ast, envp_ptr);
+            exit(127);
+        }
+        signal(SIGINT, SIG_IGN);
+        waitpid(pid, &status, 0);
+        signal(SIGINT, sigint_handler);
+        if (WIFEXITED(status))
+            return (WEXITSTATUS(status));
+        if (WIFSIGNALED(status))
+        {
+            if (WTERMSIG(status) == SIGINT)
+                write(1, "\n", 1);
+            else if (WTERMSIG(status) == SIGQUIT)
+                write(1, "Quit (core dumped)\n", 20);
+            return (128 + WTERMSIG(status));
+        }
+        return (1);
+    }
+    if (ast->type == NODE_PIPE)
+        return (execute_pipe_node(ast, *envp_ptr));
+    if (is_redirect_node(ast->type))
+        return (execute_redirect_node(ast, *envp_ptr));
+    return (1);
 }
 /*
  * Propósito: Punto único de ejecución del AST completo.
