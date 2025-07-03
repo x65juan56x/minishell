@@ -137,4 +137,12 @@ char			*find_command_path(char *cmd, char **envp);
 void	signals();
 void	sigint_handler(int signum);
 
+/* BUILTINS */
+int				is_builtin(char *cmd);
+int				execute_builtin(char **args, char ***envp_ptr);
+int				builtin_echo(char **args);
+int				builtin_pwd(void);
+int				builtin_env(char **envp);
+int				builtin_exit(char **args);
+
 #endif

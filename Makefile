@@ -21,6 +21,8 @@ SRC_FILES = minishell.c \
 			parser/parser_expressions.c \
 			parser/parser_utils.c \
 			parser/parser_redirect_utils.c \
+			builtins/builtin_detector.c \
+			builtins/builtin_implementations.c \
 			signals/signals.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

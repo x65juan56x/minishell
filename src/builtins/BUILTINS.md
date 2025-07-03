@@ -37,3 +37,14 @@ The getcwd() function copies an absolute pathname of the current working directo
 If the length of the absolute pathname of the current working directory, including the terminating null byte, exceeds size bytes, NULL is returned, and errno is set to ERANGE; an application should check for this error, and allocate a larger buffer if necessary.
 
 As an extension to the POSIX.1-2001 standard, Linux (libc4, libc5, glibc) getcwd() allocates the buffer dynamically using malloc(3) if buf is NULL. In this case, the allocated buffer has the length size unless size is zero, when buf is allocated as big as necessary. The caller should free(3) the returned buffer.
+
+
+int chdir(const char *path);
+
+Description
+The chdir() function shall cause the directory named by the pathname pointed to by the path argument to become the current working directory; that is, the starting point for path searches for pathnames not beginning with '/' .
+
+Return Value
+Upon successful completion, 0 shall be returned. Otherwise, -1 shall be returned, the current working directory shall remain unchanged, and errno shall be set to indicate the error.
+
+The chdir() function only affects the working directory of the current process.
