@@ -1,63 +1,54 @@
 #include "../../include/minishell.h"
 
-static int	find_heredoc_in_node(t_ast_node *node)
+static int	process_heredoc_node(t_ast_node **node_ptr)
 {
-	if (!node)
+	t_ast_node	*heredoc_node;
+	t_ast_node	*command_node;
+	int			heredoc_fd;
+
+	heredoc_node = *node_ptr;
+	if (heredoc_node->type != NODE_HEREDOC)
 		return (-1);
-	if (node->type == NODE_HEREDOC)
-	{
-		printf("[heredoc_preprocessor] Encontrado NODE_HEREDOC, ejecutando heredoc para: %s\n", node->file);
-		return (execute_heredoc(node->file));
-	}
-	return (-1);
+	heredoc_fd = execute_heredoc(heredoc_node->file);
+	if (heredoc_fd < 0)
+		return (-1);
+	// Extraer el comando subyacente
+	command_node = heredoc_node->left;
+	heredoc_node->left = NULL; // Desconectar para evitar double-free
+	// Reemplazar el nodo heredoc por el comando
+	*node_ptr = command_node;
+	// Limpiar el nodo heredoc (sin sus hijos)
+	if (heredoc_node->file)
+		free(heredoc_node->file);
+	free(heredoc_node);
+	
+	return (heredoc_fd);
 }
-/*
- * Propósito: Detectar y ejecutar un here-doc en un nodo dado.
- * Mecanismo:
- *   1. Si el nodo es NULL, devuelve -1.
- *   2. Si `node->type == NODE_HEREDOC`, llama a `execute_heredoc`
- *      con el delimitador (`node->file`) y retorna el fd de lectura.
- *   3. Si no es un here-doc, devuelve -1.
- * Llamado por: `search_heredoc_recursive`.
- * Llama a:
- *   - `execute_heredoc`
- */
 
-static int	search_heredoc_recursive(t_ast_node *node)
+static int	search_and_process_heredoc(t_ast_node **node_ptr)
 {
-	int	heredoc_fd;
+	t_ast_node	*node;
+	int			heredoc_fd;
 
-	if (!node)
+	if (!node_ptr || !*node_ptr)
 		return (-1);
-	heredoc_fd = find_heredoc_in_node(node);
-	if (heredoc_fd != -1)
-		return (heredoc_fd);
+	node = *node_ptr;
+	// Si este nodo es un heredoc, procesarlo
+	if (node->type == NODE_HEREDOC)
+		return (process_heredoc_node(node_ptr));
+	// Buscar recursivamente en el hijo izquierdo
 	if (node->left)
 	{
-		heredoc_fd = search_heredoc_recursive(node->left);
+		heredoc_fd = search_and_process_heredoc(&(node->left));
 		if (heredoc_fd != -1)
 			return (heredoc_fd);
 	}
 	return (-1);
 }
-/*
- * Propósito: Recorrer el subárbol para hallar el primer here-doc.
- * Mecanismo:
- *   1. Llama a `find_heredoc_in_node` en el nodo actual.
- *   2. Si retorna fd ≥ 0, lo propaga hacia arriba.
- *   3. Si no, y existe `node->left`, recorre recursivamente a la izquierda.
- *   4. Devuelve -1 si no encuentra ningún here-doc.
- * Llamado por: `preprocess_heredocs`.
- * Llama a:
- *   - `find_heredoc_in_node`
- */
 
-int	preprocess_heredocs(t_ast_node *node)
+int	preprocess_heredocs(t_ast_node **node_ptr)
 {
-	printf("[heredoc_preprocessor] Entrando en preprocess_heredocs\n");
-	int fd = search_heredoc_recursive(node);
-	printf("[heredoc_preprocessor] fd devuelto: %d\n", fd);
-	return fd;
+	return (search_and_process_heredoc(node_ptr));
 }
 /*
  * Propósito: Iniciar el preprocesamiento de here-docs en el AST.

@@ -128,7 +128,7 @@ int				execute_redirect_node(t_ast_node *node, char **envp);
 int				execute_heredoc(char *delimiter);
 
 /* HEREDOC PREPROCESSOR */
-int				preprocess_heredocs(t_ast_node *node);
+int				preprocess_heredocs(t_ast_node **node_ptr);
 
 /* PATH UTILS */
 char			*find_command_path(char *cmd, char **envp);

@@ -27,7 +27,6 @@ static int	create_pipe_and_execute(t_ast_node *node, char **envp,
 	pid_t			left_pid;
 	pid_t			right_pid;
 
-	printf("[executor] PIPE: creando hijos del pipe, heredoc_fd=%d\n", heredoc_fd);
 	if (pipe(pipe_fd) == -1)
 	{
 		if (heredoc_fd != -1)
@@ -64,9 +63,7 @@ static int	execute_pipe_node(t_ast_node *node, char **envp)
 {
 	int	heredoc_fd;
 
-	printf("[executor] PIPE: preprocess_heredocs sobre node->left\n");
-	heredoc_fd = preprocess_heredocs(node->left);
-	printf("[executor] PIPE: heredoc_fd devuelto: %d\n", heredoc_fd);
+	heredoc_fd = preprocess_heredocs(&(node->left)); // Pasar dirección
 	return (create_pipe_and_execute(node, envp, heredoc_fd));
 }
 /*

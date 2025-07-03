@@ -57,7 +57,6 @@ void	launch_command(char **args, char **envp)
 {
 	char	*path;
 
-	printf("[cmd_executor] launch_command: %s\n", args[0]);
 	if (!args || !args[0] || args[0][0] == '\0')
 		ft_cmd_not_found_exit("");
 	path = find_command_path(args[0], envp);
