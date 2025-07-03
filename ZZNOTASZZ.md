@@ -43,8 +43,6 @@ echo $?
 
 exit 5
 
-valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
-
 echo $$  
 
 echo $SHELL    
@@ -129,4 +127,6 @@ MiniShell $ exit
 /home/jmondon/Documents/Git Personal/minishell
 ➜  minishell git:(main)
 
+
 VALGRIND
+valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
