@@ -108,6 +108,8 @@ int	execute_ast(t_ast_node *ast, char **envp)
 		{
 			if (WTERMSIG(status) == SIGINT) // Comprueba si la señal SIGINT
 				write(1, "\n", 1);
+			else if ((WTERMSIG(status) == SIGQUIT))
+				write(1, "Quit (core dumped)\n", 20);
 			return (128 + WTERMSIG(status));
 		}
 		return (1);
