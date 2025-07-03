@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/06/27 19:35:03 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/07/03 16:09:53 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,11 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 void	ft_putchar_fd(char c, int fd);
 
+int		ft_putcharplus_fd(int fd, char c);
+
 void	ft_putstr_fd(char *s, int fd);
+
+int		ft_putstrplus_fd(int fd, const char *str);
 
 void	ft_putendl_fd(char *s, int fd);
 

@@ -34,7 +34,9 @@ SRC_FILES = ft_toupper.c \
 			ft_strmapi.c \
 			ft_striteri.c \
 			ft_putchar_fd.c \
+			ft_putcharplus_fd.c \
 			ft_putstr_fd.c \
+			ft_putstrplus_fd.c \
 			ft_putendl_fd.c \
 			ft_putnbr_fd.c \
 			ft_error.c \
