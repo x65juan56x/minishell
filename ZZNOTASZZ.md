@@ -128,3 +128,5 @@ MiniShell $ exit
 ➜  minishell git:(main) echo "pwd" | bash       
 /home/jmondon/Documents/Git Personal/minishell
 ➜  minishell git:(main)
+
+VALGRIND
