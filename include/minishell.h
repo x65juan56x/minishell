@@ -108,10 +108,10 @@ int				is_redirect_token(t_token_type type);
 int				is_redirect_node(t_node_type type);
 
 /* PARSER UTILS */
-int handle_word_token(t_token **tp, char **args, int *idx);
-void skip_redirect_token(t_token **tp);
-int extract_args(char **args, int max, t_token **tp);
-t_token *consume_token_type(t_parser *parser, t_token_type tp);
+int				handle_word_token(t_token **tp, char **args, int *idx);
+void			skip_redirect_token(t_token **tp);
+int				extract_args(char **args, int max, t_token **tp);
+t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char ***envp_ptr);
@@ -134,8 +134,8 @@ int				preprocess_heredocs(t_ast_node **node_ptr);
 char			*find_command_path(char *cmd, char **envp);
 
 /* SIGNALS */
-void	signals();
-void	sigint_handler(int signum);
+void			signals();
+void			sigint_handler(int signum);
 
 /* BUILTINS */
 int				is_builtin(char *cmd);
@@ -145,5 +145,12 @@ int				builtin_pwd(void);
 int				builtin_env(char **envp);
 int				builtin_exit(char **args);
 int				builtin_cd(char **args, char **envp);
+
+/* SHELL MANAGEMENT */
+char			**init_shell_environment(char **envp);
+char			*get_user_input(void);
+int				handle_input_line(char *input);
+int				process_command_line(char *input, char ***envp_ptr);
+int				run_shell_loop(char ***envp_ptr);
 
 #endif

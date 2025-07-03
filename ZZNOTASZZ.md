@@ -117,3 +117,14 @@ Lo que falta: El parser no tiene la lógica para manejar la precedencia de estos
 ❌ Pendiente de Implementar:  
 
 Wildcards *: No hay ninguna implementación para la expansión de wildcards. Esto requeriría una nueva función que, antes de execve, revise los argumentos, y si encuentra un *, lea el directorio actual (opendir, readdir) y reemplace el argumento por los ficheros que coincidan.
+
+
+
+Checkear de solucionar esto con isatty():
+➜  minishell git:(main) echo "pwd" | ./minishell
+MiniShell $ pwd
+/home/jmondon/Documents/Git Personal/minishell
+MiniShell $ exit
+➜  minishell git:(main) echo "pwd" | bash       
+/home/jmondon/Documents/Git Personal/minishell
+➜  minishell git:(main)
