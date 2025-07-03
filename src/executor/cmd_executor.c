@@ -1,69 +1,46 @@
 #include "../../include/minishell.h"
 
-static void	exit_command_not_found(char **args, char *path)
+static int	printnget_command_error(char *cmd)
 {
-	char	*cmd_name;
-
-	cmd_name = ft_strdup(args[0]);
-	if (path)
-		free(path);
-	ft_freearr(args);
-	ft_cmd_not_found_exit(cmd_name);
-	free(cmd_name);
+	if (ft_strchr(cmd, '/') != NULL) // Es una ruta (relativa o absoluta)
+	{
+		if (access(cmd, F_OK) != 0)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(cmd, STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			return (127);
+		}
+		else if (access(cmd, X_OK) != 0)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(cmd, STDERR_FILENO);
+			ft_putendl_fd(": Permission denied", STDERR_FILENO);
+			return (126);
+		}
+	}
+	else // Es un comando simple
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putendl_fd(": Command not found", STDERR_FILENO);
+		return (127);
+	}
 }
-/*
- * Propósito: Salir con código 127 cuando el comando no existe.
- * Mecanismo:
- *   1. Duplica el nombre de comando (`args[0]`) para el mensaje de error.
- *   2. Libera `path` si se había reservado.
- *   3. Libera el array de argumentos con `ft_freearr`.
- *   4. Llama a `ft_cmd_not_found_exit` para imprimir “command not found” y salir.
- *   5. Libera la copia local `cmd_name`.
- * Llamado por: `launch_command` cuando `find_command_path` devuelve NULL.
- * Llama a:
- *   - `ft_strdup`
- *   - `free`
- *   - `ft_freearr`
- *   - `ft_cmd_not_found_exit`
- */
-
-static void	exit_execve_error(char **args, char *path)
-{
-	char	*cmd_name;
-
-	cmd_name = ft_strdup(args[0]);
-	free(path);
-	ft_freearr(args);
-	ft_execve_error_exit(cmd_name);
-	free(cmd_name);
-}
-/*
- * Propósito: Salir con código 126 cuando `execve` falla.
- * Mecanismo:
- *   1. Duplica el nombre de comando para el mensaje de error.
- *   2. Libera la ruta `path`.
- *   3. Libera el array de argumentos con `ft_freearr`.
- *   4. Llama a `ft_execve_error_exit` que imprime el error de `errno` y sale.
- *   5. Libera la copia local `cmd_name`.
- * Llamado por: `launch_command` si `execve` retorna.
- * Llama a:
- *   - `ft_strdup`
- *   - `free`
- *   - `ft_freearr`
- *   - `ft_execve_error_exit`
- */
 
 void	launch_command(char **args, char **envp)
 {
 	char	*path;
 
 	if (!args || !args[0] || args[0][0] == '\0')
-		ft_cmd_not_found_exit("");
+		exit(127);
 	path = find_command_path(args[0], envp);
 	if (!path)
-		exit_command_not_found(args, path);
+		exit(printnget_command_error(args[0]));
 	execve(path, args, envp);
-	exit_execve_error(args, path);
+	perror("minishell: execve"); // Si execve retorna, es un error
+	free(path);
+	exit(126);
 }
 /*
  * Propósito: Resolver y ejecutar un comando externo.

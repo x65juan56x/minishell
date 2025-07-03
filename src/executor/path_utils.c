@@ -85,17 +85,28 @@ static char	*search_cmd_in_dirs(char **dirs, char *cmd)
  * Llama a:    build_full_path, ft_freearr
  */
 
+static int	check_direct_path(char *cmd)
+{
+	if (access(cmd, F_OK) != 0)
+		return (127); //Archivo no existe
+	if (access(cmd, X_OK) != 0)
+		return (126); //Archivo existe pero no tiene permiso de ejecución
+	return (0); //Todo OK
+}
+
 char	*find_command_path(char *cmd, char **envp)
 {
 	char	*path;
 	char	**dirs;
 	char	*tmp;
+	int		status;
 
 	if (!cmd)
 		return (NULL);
 	if (ft_strchr(cmd, '/') != NULL)
 	{
-		if (access(cmd, X_OK) == 0)
+		status = check_direct_path(cmd);
+		if (status == 0)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
