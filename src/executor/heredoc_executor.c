@@ -25,8 +25,6 @@ static int	read_heredoc_input(char *delimiter, int write_fd)
 {
 	char	*line;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = readline("> ");

@@ -78,6 +78,16 @@ Redirección de salida en modo append >>: Implementado. redirect_executor.c abre
 Redirección de entrada <: Implementado. redirect_executor.c abre el fichero con O_RDONLY.
 Implementar pipes |: Implementado. La lógica en pipe_executor.c y executor.c crea dos procesos hijos y conecta su stdin/stdout correctamente.
 Manejar << (Here Document): Implementado. heredoc_executor.c lee la entrada hasta el delimitador y heredoc_preprocessor.c lo integra correctamente en los pipes.
+Manejar ctrl-C, ctrl-D y ctrl-\:
+	ctrl-D funciona (porque readline devuelve NULL), pero el resto del manejo de señales (signal, sigaction) no está implementado.
+	Durante ejecución del shell (modo prompt)
+ 		Ignorar SIGQUIT (^\\) → No debe cerrar el shell.
+		Capturar SIGINT (^C) → Debe: Cancelar la línea actual.Mostrar un nuevo prompt limpio.No salir del shell.
+	Durante ejecución de un proceso hijo (comando externo)
+ 		SIGINT debe terminar el proceso hijo, y el shell debe mostrar un salto de línea.
+		SIGQUIT debe mostrar el mensaje Quit (core dumped) si aplica, y finalizar el hijo.
+
+
 🟡 Parcialmente Implementado / Requiere Ajustes:
 
 Manejar comillas simples ' y dobles ":
@@ -88,9 +98,6 @@ No interpretar comillas sin cerrar: El parser actual no tiene una validación ex
 
 Manejar variables de entorno ($VAR): No hay lógica de expansión de variables en el parser o executor. Los tokens con $ se tratan como palabras literales.
 Manejar $?: No hay implementación para expandir $? al código de salida del último comando. Necesitas una variable (quizás en una estructura principal) para almacenar exit_status y un mecanismo de expansión que la consulte.
-Manejar ctrl-C, ctrl-D y ctrl-\:
-ctrl-D funciona (porque readline devuelve NULL), pero el resto del manejo de señales (signal, sigaction) no está implementado.
-No hay un manejador de señales que haga que ctrl-C muestre un nuevo prompt o que ctrl-\ no haga nada.
 Implementar los Built-ins: Esta es la parte más grande que falta.
 echo (con -n), cd, pwd, export, unset, env, exit.
 Tu executor.c actual crea un fork() para todos los comandos. Esto no funcionará para cd, export, unset o exit, que deben modificar el proceso de la shell principal. Necesitas añadir una lógica que detecte si un comando es un built-in y lo ejecute en el proceso padre antes de intentar un fork.
