@@ -23,6 +23,7 @@ SRC_FILES = minishell.c \
 			parser/parser_redirect_utils.c \
 			builtins/builtin_detector.c \
 			builtins/builtin_implementations.c \
+			builtins/builtin_cd.c \
 			signals/signals.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
@@ -51,6 +52,7 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/executor
 	@mkdir -p $(OBJ_DIR)/parser
 	@mkdir -p $(OBJ_DIR)/signals
+	@mkdir -p $(OBJ_DIR)/builtins
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEAD) | $(OBJ_DIR)
 	@echo "$(GREEN)Compilando $<$(RESET)"

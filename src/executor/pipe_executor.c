@@ -18,7 +18,7 @@ static void	child_process_routine(t_ast_node *node, t_pipe_config *config)
     close(config->pipe_fd[1]);
     if (config->heredoc_fd != -1)
         close(config->heredoc_fd);
-    exit_code = execute_ast(node, config->envp);
+    exit_code = execute_ast(node, &(config->envp));
     exit(exit_code);
 }
 

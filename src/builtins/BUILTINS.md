@@ -48,3 +48,6 @@ Return Value
 Upon successful completion, 0 shall be returned. Otherwise, -1 shall be returned, the current working directory shall remain unchanged, and errno shall be set to indicate the error.
 
 The chdir() function only affects the working directory of the current process.
+
+
+Las nuevas funciones en la libft ft_putstrplus_fd() y ft_putcharplus_fd() implementan la gestión de errores en caso de que falle la escritura, las usamos en builtin_env para que sea mas robusta

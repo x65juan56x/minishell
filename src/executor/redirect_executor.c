@@ -127,7 +127,7 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 	{
 		while (count >= 0)
 			apply_single_redirect(reds[count--]);
-		exit(execute_ast(cmd, envp));
+		exit(execute_ast(cmd, &envp));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

@@ -114,7 +114,7 @@ int extract_args(char **args, int max, t_token **tp);
 t_token *consume_token_type(t_parser *parser, t_token_type tp);
 
 /* EXECUTOR */
-int				execute_ast(t_ast_node *ast, char **envp);
+int				execute_ast(t_ast_node *ast, char ***envp_ptr);
 void			launch_command(char **args, char **envp);
 
 /* PIPE EXECUTOR */
@@ -144,5 +144,6 @@ int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int				builtin_env(char **envp);
 int				builtin_exit(char **args);
+int				builtin_cd(char **args, char **envp);
 
 #endif
