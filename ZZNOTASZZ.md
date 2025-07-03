@@ -86,7 +86,7 @@ Manejar ctrl-C, ctrl-D y ctrl-\:
 	Durante ejecución de un proceso hijo (comando externo)  
  		SIGINT debe terminar el proceso hijo, y el shell debe mostrar un salto de línea.  
 		SIGQUIT debe mostrar el mensaje Quit (core dumped) si aplica, y finalizar el hijo.  
-Builtins: echo, pwd, env, exit
+Builtins: echo, pwd, env, exit, cd
 
 
 🟡 Parcialmente Implementado / Requiere Ajustes:
@@ -101,8 +101,8 @@ No interpretar comillas sin cerrar: El parser actual no tiene una validación ex
 
 Manejar variables de entorno ($VAR): No hay lógica de expansión de variables en el parser o executor. Los tokens con $ se tratan como palabras literales.  
 Manejar $?: No hay implementación para expandir $? al código de salida del último comando. Necesitas una variable (quizás en una estructura principal) para almacenar exit_status y un mecanismo de expansión que la consulte.  
-Implementar los Built-ins: Esta es la parte más grande que falta.  
-cd, export, unset, exit.  
+Implementar los Built-ins:  
+export, unset.  
 
 
 
