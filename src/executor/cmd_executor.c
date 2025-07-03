@@ -24,8 +24,8 @@ static int	printnget_command_error(char *cmd)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": Command not found", STDERR_FILENO);
-		return (127);
 	}
+	return (127);
 }
 
 void	launch_command(char **args, char **envp)
