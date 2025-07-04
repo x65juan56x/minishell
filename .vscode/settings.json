@@ -1,12 +1,13 @@
 {
     "files.associations": {
-        "*.dbclient-js": "javascript",
-        "konxitah.h": "c",
-        "pipex.h": "c",
-        "minishell.h": "c",
-        "stdio.h": "c",
-        "libft.h": "c",
-        "string.h": "c"
-    },
+		"*.dbclient-js": "javascript",
+		"konxitah.h": "c",
+		"pipex.h": "c",
+		"minishell.h": "c",
+		"stdio.h": "c",
+		"libft.h": "c",
+		"string.h": "c",
+		"termios.h": "c"
+	},
     "makefile.configureOnOpen": false
 }

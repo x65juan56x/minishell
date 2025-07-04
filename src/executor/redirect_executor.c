@@ -121,19 +121,31 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 	count = collect_redirect_nodes(node, reds);
 	cmd = reds[--count]->left;
 	pid = fork();
+	signals_parent();
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGINT, SIG_IGN);
 		while (count >= 0)
-			apply_single_redirect(reds[count--]);
+		{
+			if (apply_single_redirect(reds[count--]) == 1)
+				exit(-2);
+		}
 		exit(execute_ast(cmd, &envp));
 	}
+	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	signal(SIGINT, sigint_handler);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT) // Comprueba si la señal SIGINT
+			write(1, "\n", 1);
 		return (128 + WTERMSIG(status));
+	}
 	return (1);
 }
 /*

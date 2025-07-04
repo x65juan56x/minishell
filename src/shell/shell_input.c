@@ -4,7 +4,7 @@ char	*get_user_input(void)
 {
 	char	*input;
 
-	signals();
+	signals_parent();
 	input = readline(PROMPT);
 	if (!input)
 	{

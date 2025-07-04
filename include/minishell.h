@@ -11,6 +11,7 @@
 # include <sys/wait.h>
 # include "../libs/libft/libft.h"
 # include <signal.h>
+# include <termios.h>
 
 #define CORAL_BOLD "\033[1;38;5;203m"
 #define RESET_COLOR "\033[0m"
@@ -134,8 +135,10 @@ int				preprocess_heredocs(t_ast_node **node_ptr);
 char			*find_command_path(char *cmd, char **envp);
 
 /* SIGNALS */
-void			signals();
-void			sigint_handler(int signum);
+void	signals_parent();
+void	signals_ignored();
+void	signals_default();
+void	sigint_handler(int signum);
 
 /* BUILTINS */
 int				is_builtin(char *cmd);

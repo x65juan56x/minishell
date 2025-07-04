@@ -95,8 +95,7 @@ int	execute_ast(t_ast_node *ast, char ***envp_ptr)
 			return (perror("fork"), 1);
 		if (pid == 0)
 		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
+			signals_default();
 			execute_command_node(ast, envp_ptr);
 			exit(127);
 		}

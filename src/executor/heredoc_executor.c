@@ -60,19 +60,22 @@ int	execute_heredoc(char *delimiter)
 	int		status;
 	int		stdin_backup;
 	pid_t	pid;
+	struct termios	orig_termios;
 
+	tcgetattr(STDIN_FILENO, &orig_termios);
 	if (create_heredoc_pipe(pipe_fd) != 0)
 		return (-1);
 	stdin_backup = dup(STDIN_FILENO); // 1. Guardar el stdin original
 	if (stdin_backup < 0)
 		return (perror("dup"), -1);
 	// Ignorar SIGINT en el padre mientras el hijo lee el heredoc
-	signal(SIGINT, SIG_IGN);
+	signals_ignored();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), close(stdin_backup), -1);
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		// Proceso hijo: lee la entrada y escribe en el pipe
 		close(stdin_backup); // El hijo no necesita el backup
 		close(pipe_fd[0]); // El hijo no lee del pipe
@@ -81,16 +84,21 @@ int	execute_heredoc(char *delimiter)
 		exit(0);
 	}
 	// Proceso padre: espera al hijo y gestiona los descriptores
+	signal(SIGINT, SIG_IGN);
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
 	signal(SIGINT, sigint_handler);
 	dup2(stdin_backup, STDIN_FILENO); // 2. Restaurar el stdin original
 	close(stdin_backup);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+	if (WIFSIGNALED(status))
 	{
-		write(1, "\n", 1);
-		close(pipe_fd[0]);
-		return (-2); // Código especial para indicar interrupción por Ctrl-C
+		if (WTERMSIG(status) == SIGINT)
+		{
+			close(pipe_fd[0]);
+			write(1, "\n", 1);
+			return (-2); // Señal: heredoc cancelado
+		}
 	}
 	return (pipe_fd[0]);
 }

@@ -9,6 +9,7 @@ int	run_shell_loop(char ***envp_ptr)
 	exit_status = 0;
 	while (1)
 	{
+		//signals_parent();
 		input = get_user_input();
 		if (!input)
 			break ;
