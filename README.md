@@ -156,6 +156,7 @@ MiniShell $ exit
 minishell/
 ├── src/
 │   ├── minishell.c           # Main program
+│   ├── shell/                # Main auxiliar functions
 │   ├── parser/               # Tokenizer and Parser
 │   ├── signals/              # Signal handling
 │   ├── builtins/             # Builtins implementations

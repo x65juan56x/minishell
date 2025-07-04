@@ -25,6 +25,7 @@ SRC_FILES = minishell.c \
 			builtins/builtin_detector.c \
 			builtins/builtin_implementations.c \
 			builtins/builtin_cd.c \
+			builtins/builtin_env_utils.c \
 			shell/shell_init.c \
 			shell/shell_input.c \
 			shell/shell_process.c \
