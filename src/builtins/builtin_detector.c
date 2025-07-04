@@ -29,10 +29,10 @@ int	execute_builtin(char **args, char ***envp_ptr)
 		return (builtin_cd(args));
 	if (ft_strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
-	// if (ft_strcmp(args[0], "export") == 0)
-	// 	return (builtin_export(args, envp_ptr));
-	// if (ft_strcmp(args[0], "unset") == 0)
-	// 	return (builtin_unset(args, envp_ptr));
+	if (ft_strcmp(args[0], "export") == 0)
+		return (builtin_export(args, envp_ptr));
+	if (ft_strcmp(args[0], "unset") == 0)
+		return (builtin_unset(args, envp_ptr));
 	if (ft_strcmp(args[0], "env") == 0)
 		return (builtin_env(*envp_ptr));
 	if (ft_strcmp(args[0], "exit") == 0)

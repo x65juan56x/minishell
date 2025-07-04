@@ -66,11 +66,11 @@ int	builtin_unset(char **args, char ***envp_ptr)
 	if (!new_envp)
 		return (1);
 	i = -1;
-	j = -1;
+	j = 0;
 	while ((*envp_ptr)[++i])
 		if (ft_strncmp((*envp_ptr)[i], args[1], ft_strlen(args[1])) != 0
 			|| (*envp_ptr)[i][ft_strlen(args[1])] != '=')
-			new_envp[++j] = ft_strdup((*envp_ptr)[i]);
+			new_envp[j++] = ft_strdup((*envp_ptr)[i]);
 	new_envp[j] = NULL;
 	ft_freearr(*envp_ptr);
 	*envp_ptr = new_envp;
