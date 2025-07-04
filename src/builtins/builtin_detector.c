@@ -26,7 +26,7 @@ int	execute_builtin(char **args, char ***envp_ptr)
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
 	if (ft_strcmp(args[0], "cd") == 0)
-		return (builtin_cd(args, *envp_ptr));
+		return (builtin_cd(args));
 	if (ft_strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
 	// if (ft_strcmp(args[0], "export") == 0)

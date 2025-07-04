@@ -1,28 +1,12 @@
 #include "../../include/minishell.h"
 
-static char	*get_env_var(char **envp, char *var)
-{
-	int	i;
-	int	len;
-
-	len = ft_strlen(var);
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], var, len) == 0 && envp[i][len] == '=')
-			return (envp[i] + len + 1);
-		i++;
-	}
-	return (NULL);
-}
-
-int	builtin_cd(char **args, char **envp)
+int	builtin_cd(char **args)
 {
 	char	*path;
 
 	if (!args[1])
 	{
-		path = get_env_var(envp, "HOME");
+		path = getenv("HOME");
 		if (!path)
 		{
 			ft_putendl_fd("minishell: cd: HOME not set", 2);

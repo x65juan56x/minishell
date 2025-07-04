@@ -144,7 +144,7 @@ int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int				builtin_env(char **envp);
 int				builtin_exit(char **args);
-int				builtin_cd(char **args, char **envp);
+int				builtin_cd(char **args);
 
 /* SHELL MANAGEMENT */
 char			**init_shell_environment(char **envp);
