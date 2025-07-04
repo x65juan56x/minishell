@@ -148,6 +148,8 @@ int				builtin_pwd(void);
 int				builtin_env(char **envp);
 int				builtin_exit(char **args);
 int				builtin_cd(char **args);
+int				builtin_export(char **args, char ***envp_ptr);
+int				builtin_unset(char **args, char ***envp_ptr);
 
 /* SHELL MANAGEMENT */
 char			**init_shell_environment(char **envp);
