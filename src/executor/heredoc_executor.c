@@ -96,7 +96,7 @@ int	execute_heredoc(char *delimiter)
 		if (WTERMSIG(status) == SIGINT)
 		{
 			close(pipe_fd[0]);
-			write(1, "\n", 1);
+			write(STDOUT_FILENO, "^C\n", 3);
 			return (-2); // Señal: heredoc cancelado
 		}
 	}
