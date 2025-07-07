@@ -148,10 +148,7 @@ char	*get_user_input(void)
     signals_parent();
     input = readline(PROMPT);
     if (!input)
-    {
-        printf("exit\n");
-        return (NULL);
-    }
+        return (printf("exit\n"), NULL);
     return (input);
 }
 ```
@@ -192,7 +189,6 @@ int	process_command_line(char *input, char ***envp_ptr)
     tokens = tokenize(input);
     if (!tokens)
         return (0);
-    
     ast = parse(tokens);
     if (!ast)
     {
@@ -200,7 +196,6 @@ int	process_command_line(char *input, char ***envp_ptr)
         cleanup_tokens(tokens);
         return (exit_status);
     }
-    
     exit_status = execute_ast(ast, envp_ptr);
     cleanup_ast(ast);
     cleanup_tokens(tokens);
@@ -621,7 +616,8 @@ Entrada original: "cat << EOF | sort > out.txt"
 
 Lista de tokens generada:
 ```c
-t_token *tokens = {
+t_token *tokens =
+{
     {TOKEN_WORD, "cat", next→},
     {TOKEN_HEREDOC, "<<", next→},
     {TOKEN_WORD, "EOF", next→},
@@ -1265,20 +1261,25 @@ parse_pipe_expression()
 
 **AST construido:**
 ```c
-t_ast_node *ast = {
+t_ast_node *ast =
+{
     type: NODE_PIPE,
-    left: {
+    left:
+    {
         type: NODE_HEREDOC,
         file: "EOF",
-        left: {
+        left:
+        {
             type: NODE_COMMAND,
             args: ["cat", NULL]
         }
     },
-    right: {
+    right:
+    {
         type: NODE_REDIRECT_OUT,
         file: "out.txt", 
-        left: {
+        left:
+        {
             type: NODE_COMMAND,
             args: ["sort", NULL]
         }
