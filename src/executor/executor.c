@@ -66,6 +66,8 @@ static int	execute_pipe_node(t_ast_node *node, char **envp)
 	int	heredoc_fd;
 
 	heredoc_fd = preprocess_heredocs(&(node->left)); // Pasar dirección
+	if (heredoc_fd < 0)
+		return (130); // código común para Ctrl-C
 	return (create_pipe_and_execute(node, envp, heredoc_fd));
 }
 /*
