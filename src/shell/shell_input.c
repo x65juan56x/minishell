@@ -7,10 +7,7 @@ char	*get_user_input(void)
 	signals_parent();
 	input = readline(PROMPT);
 	if (!input)
-	{
-		printf("exit\n");
-		return (NULL);
-	}
+		return (printf("exit\n"), NULL);
 	return (input);
 }
 

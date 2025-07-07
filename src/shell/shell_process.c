@@ -16,7 +16,6 @@ int	process_command_line(char *input, char ***envp_ptr)
 	tokens = tokenize(input);
 	if (!tokens)
 		return (0);
-	
 	ast = parse(tokens);
 	if (!ast)
 	{
@@ -24,7 +23,6 @@ int	process_command_line(char *input, char ***envp_ptr)
 		cleanup_tokens(tokens);
 		return (exit_status);
 	}
-	
 	exit_status = execute_ast(ast, envp_ptr);
 	cleanup_ast(ast);
 	cleanup_tokens(tokens);
