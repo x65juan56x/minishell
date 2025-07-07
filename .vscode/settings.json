@@ -7,7 +7,8 @@
 		"stdio.h": "c",
 		"libft.h": "c",
 		"string.h": "c",
-		"termios.h": "c"
+		"termios.h": "c",
+		"cstdlib": "c"
 	},
     "makefile.configureOnOpen": false
 }
