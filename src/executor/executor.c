@@ -66,7 +66,7 @@ static int	execute_pipe_node(t_ast_node *node, char **envp)
 	int	heredoc_fd;
 
 	heredoc_fd = preprocess_heredocs(&(node->left)); // Pasar dirección
-	if (heredoc_fd < 0)
+	if (heredoc_fd == -2)
 		return (130); // código común para Ctrl-C
 	return (create_pipe_and_execute(node, envp, heredoc_fd));
 }
@@ -88,6 +88,23 @@ int	execute_ast(t_ast_node *ast, char ***envp_ptr)
 
 	if (!ast)
 		return (0);
+
+	// printf("DEBUG: Executing node type: %d\n", ast->type);
+
+	if (ast->type == NODE_OR) // Manejar operadores lógicos
+	{
+		status = execute_ast(ast->left, envp_ptr);
+		if (status == 0)  // Si el comando izquierdo tuvo éxito, no ejecutar el derecho
+			return (0);
+		return (execute_ast(ast->right, envp_ptr));
+	}
+	if (ast->type == NODE_AND)
+	{
+		status = execute_ast(ast->left, envp_ptr);
+		if (status != 0)  // Si el comando izquierdo falló, no ejecutar el derecho
+			return (status);
+		return (execute_ast(ast->right, envp_ptr));
+	}
 	if (ast->type == NODE_COMMAND)
 	{
 		if (is_builtin(ast->args[0])) // Si es built-in, ejecutar en el proceso padre

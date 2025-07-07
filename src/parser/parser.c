@@ -10,7 +10,7 @@ t_ast_node	*parse(t_token *tokens)
 	parser.tokens = tokens;
 	parser.current = tokens;
 	parser.error = 0;
-	ast = parse_pipe_expression(&parser);
+	ast = parse_or_expression(&parser);
 	if (parser.error)
 		return (cleanup_ast(ast), NULL);
 	return (ast);

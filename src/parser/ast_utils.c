@@ -31,6 +31,10 @@ static t_node_type	token_to_node_type(t_token_type token_type)
 {
 	if (token_type == TOKEN_PIPE)
 		return (NODE_PIPE);
+	if (token_type == TOKEN_OR)
+		return (NODE_OR);
+	if (token_type == TOKEN_AND)
+		return (NODE_AND);
 	if (token_type == TOKEN_REDIRECT_IN)
 		return (NODE_REDIRECT_IN);
 	if (token_type == TOKEN_REDIRECT_OUT)

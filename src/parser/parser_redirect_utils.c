@@ -34,3 +34,8 @@ int	is_redirect_node(t_node_type type)
  * Llamado por: `parse_redirect_expression`, para saber hasta dónde recorrer
  *              la lista de nodos de redirección iniciales.
 */
+
+int	is_logical_node(t_node_type type)
+{
+	return (type == NODE_AND || type == NODE_OR);
+}

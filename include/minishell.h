@@ -13,8 +13,8 @@
 # include <signal.h>
 # include <termios.h>
 
-#define CORAL_BOLD "\033[1;38;5;203m"
-#define RESET_COLOR "\033[0m"
+#define CORAL_BOLD "\001\033[1;38;5;203m\002"
+#define RESET_COLOR "\001\033[0m\002"
 #define PROMPT CORAL_BOLD "MiniShell" RESET_COLOR " $ "
 
 typedef enum e_token_type
@@ -101,12 +101,17 @@ t_ast_node		*parse_command(t_parser *parser);
 t_token			*consume_token(t_parser *parser, t_token_type expected);
 
 /* PARSER EXPRESSIONS */
+t_ast_node		*parse_or_expression(t_parser *parser);
+t_ast_node		*parse_and_expression(t_parser *parser);
 t_ast_node		*parse_pipe_expression(t_parser *parser);
+t_ast_node		*parse_primary_expression(t_parser *parser);
+t_ast_node		*parse_parenthesis_expression(t_parser *parser);
 t_ast_node		*parse_redirect_expression(t_parser *parser);
 
 /* PARSER REDIRECT UTILS */
 int				is_redirect_token(t_token_type type);
 int				is_redirect_node(t_node_type type);
+int				is_logical_node(t_node_type type);
 
 /* PARSER UTILS */
 int				handle_word_token(t_token **tp, char **args, int *idx);
@@ -135,10 +140,10 @@ int				preprocess_heredocs(t_ast_node **node_ptr);
 char			*find_command_path(char *cmd, char **envp);
 
 /* SIGNALS */
-void	signals_parent();
-void	signals_ignored();
-void	signals_default();
-void	sigint_handler(int signum);
+void			signals_parent();
+void			signals_ignored();
+void			signals_default();
+void			sigint_handler(int signum);
 
 /* BUILTINS */
 int				is_builtin(char *cmd);
