@@ -1257,7 +1257,7 @@ parse_pipe_expression()
     (args=["cat"])        (args=["sort"])
 ```
 
-### 29. Estado cuando sale del parser
+### 27. Estado cuando sale del parser
 
 **Entrada original:** `"cat << EOF | sort > out.txt"`
 
