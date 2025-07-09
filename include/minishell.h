@@ -126,6 +126,9 @@ void			launch_command(char **args, char **envp);
 
 /* EXPANDER */
 void	is_expand_needed (char *s, int quoted, t_token *token);
+char	*expander_var(t_token *token_list);
+char	*do_expand(t_token *token, int *i);
+
 
 /* PIPE EXECUTOR */
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config);
