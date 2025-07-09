@@ -33,11 +33,19 @@ static t_token	*process_operator(const char *input, int *i)
 static t_token	*process_word(const char *input, int *i)
 {
 	char	*value;
+	t_token	*token;
+	int		quoted;
 
-	value = extract_word_token(input, i);
+	quoted = 0;
+	value = extract_word_token(input, i, &quoted);
+	printf("value: %s\n", value);
+	printf("quoted: %i\n", quoted);
 	if (!value)
 		return (NULL);
-	return (create_token(TOKEN_WORD, value));
+	token = create_token(TOKEN_WORD, value);
+	is_expand_needed (value, quoted, token);
+	printf("token->expand: %i\n", token->expand);
+	return (token);
 }
 /*
  * Propósito: Procesar un token de palabra (un comando, un argumento, etc.).

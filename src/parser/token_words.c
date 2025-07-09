@@ -38,7 +38,7 @@ static int	find_word_end(const char *s, int start)
  * Llama a: `is_operator_char`.
 */
 
-char	*process_quoted_string(const char *s, int start, int end)
+char	*process_quoted_string(const char *s, int start, int end, int *quoted)
 {
 	char	*result;
 	int		j;
@@ -54,6 +54,10 @@ char	*process_quoted_string(const char *s, int start, int end)
 	{
 		if (s[k] == '\'' || s[k] == '"')
 		{
+			if(s[k] == '"')
+				*quoted = 1;
+			if(s[k] == '\'' )
+				*quoted = 2;
 			quote = s[k++];
 			while (k < end && s[k] != quote)
 				result[j++] = s[k++];
@@ -81,7 +85,7 @@ char	*process_quoted_string(const char *s, int start, int end)
  * Llama a: `malloc`.
 */
 
-char	*extract_word_token(const char *s, int *i)
+char	*extract_word_token(const char *s, int *i, int *quoted)
 {
 	int	start;
 	int	end;
@@ -89,7 +93,7 @@ char	*extract_word_token(const char *s, int *i)
 	start = *i;
 	end = find_word_end(s, start);
 	*i = end;
-	return (process_quoted_string(s, start, end));
+	return (process_quoted_string(s, start, end, quoted));
 }
 /*
  * Propópisto: Orquestar la extracción completa de un token de palabra.

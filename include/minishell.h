@@ -37,6 +37,7 @@ typedef struct s_token
 	t_token_type	type;
 	char			*value;
 	struct s_token	*next;
+	int				expand;
 }	t_token;
 
 typedef enum e_node_type
@@ -86,8 +87,8 @@ t_token_type	get_operator_type(const char *s, int *advance);
 int				is_operator_char(char c);
 
 /* TOKEN WORDS */
-char			*extract_word_token(const char *s, int *i);
-char			*process_quoted_string(const char *s, int start, int end);
+char			*extract_word_token(const char *s, int *i, int *quoted);
+char			*process_quoted_string(const char *s, int start, int end, int *quoted);
 
 /* PARSER AST */
 t_ast_node		*parse(t_token *tokens);
@@ -122,6 +123,9 @@ t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char ***envp_ptr);
 void			launch_command(char **args, char **envp);
+
+/* EXPANDER */
+void	is_expand_needed (char *s, int quoted, t_token *token);
 
 /* PIPE EXECUTOR */
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config);
