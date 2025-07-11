@@ -55,33 +55,31 @@ char 	*extract_var_name(char *str, int *i)
 char	*do_expand(t_token *token, int *i)
 {
 	char	*variable;
-	//int	value_len;
-	char	*expanded_var;
-	//int	env_var_len;
+	char	*env_value;
 
-	//value_len = ft_strlen(token->value) - 1;
 	while (token->value[*i] != '\0')
 	{
 		if (token->value[*i] == '$')
 			return(expand_pid(i));
 /* 		else if(token->value[*i] == '?')
-		{
-			//$? expands to the exit status of the most recently executed foreground pipeline.
-		} */
+			//$? expands to the exit status of the most recently executed foreground pipeline.*/
 		else if(ft_isalpha(token->value[*i]) || token->value[*i] == '_')
 		{
-			//variable = malloc(value_len * sizeof(char)); 
 			variable = extract_var_name(token->value, i);
 			*i = *i + ft_strlen(variable);
-			//env_var_len = ft_strlen(getenv(variable));
-			expanded_var = ft_strdup(getenv(variable));
-			return (expanded_var);
+			env_value = getenv(variable);
+			free(variable);
+			if (env_value)
+				return(ft_strdup(env_value));
+			return (ft_strdup(""));
 		}
 		else
-			 return ("");
-		(*i)++; /*?*/
+		{
+			i++;
+			return (ft_strdup(""));
+		}
 	}
-	return "";
+	return (ft_strdup(""));
 }
 
 char	*copy_non_expanded(char *value, int *i, char *var_expanded)
@@ -100,16 +98,15 @@ void	expander_var(t_token *token_list)
 {
 	t_token *tmp;
 	char *var_expanded;
-	int i = 0;
+	int i;
 	char *temp_string;
 	char *original_value;
-	//int original_len;
-	char *expanded;
+	char *tmp_expanded;
 
 	tmp = token_list;
 
 	while (tmp != NULL)
-	{	//recorrer el token
+	{
 		if (tmp->expand != 1)
 		{
 			tmp = tmp->next;
@@ -118,20 +115,16 @@ void	expander_var(t_token *token_list)
 		var_expanded = ft_strdup("");
 		i = 0;
 		original_value = tmp->value;
-		//original_len = ft_strlen(original_value); 
 		while (i < (int)ft_strlen(original_value) && original_value[i] != '\0')
 		{
-			//si $ do expand;
 			if (original_value[i] == '$')
 			{
 				i++;
-				expanded = do_expand(tmp, &i);
-				if (!expanded)
-					expanded = ft_strdup("");
-				temp_string = ft_strjoin(var_expanded, expanded);
+				tmp_expanded = do_expand(tmp, &i);
+				temp_string = ft_strjoin(var_expanded, tmp_expanded);
 				free(var_expanded);
 				var_expanded = temp_string;
-				free(expanded);
+				free(tmp_expanded);
 				//i++;
 			}
 			else 
