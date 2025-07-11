@@ -38,13 +38,10 @@ static t_token	*process_word(const char *input, int *i)
 
 	quoted = 0;
 	value = extract_word_token(input, i, &quoted);
-	printf("value: %s\n", value);
-	printf("quoted: %i\n", quoted);
 	if (!value)
 		return (NULL);
 	token = create_token(TOKEN_WORD, value);
 	is_expand_needed (value, quoted, token);
-	printf("token->expand: %i\n", token->expand);
 	return (token);
 }
 /*

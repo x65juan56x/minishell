@@ -29,114 +29,119 @@ void	is_expand_needed(char *s, int quoted, t_token *token)
 	}
 }
 
-char	*expand_pid()
+char	*expand_pid(int *i)
 {
+	pid_t pid;
 	char *pid_str;
-	pid_t	pid;
 
 	pid = getpid();
 	pid_str = ft_itoa(pid);
-	return (pid_str);
+	*i = *i + 2; 
+	return pid_str;
 }
+
+char 	*extract_var_name(char *str, int *i)
+{
+	int	len;
+
+	len = 0;
+	while (str[(*i )+ len] && (ft_isalnum(str[(*i )+ len] ) || str[(*i )+ len]  == '_'))
+	{
+		len++;
+	}	
+	return(ft_substr(str, *i, len));
+}
+
 char	*do_expand(t_token *token, int *i)
 {
-	//int length = 0;
-	char *pid;
-	printf("entra\n");
-	printf("i: %i\n", *i);
+	char	*variable;
+	//int	value_len;
+	char	*expanded_var;
+	//int	env_var_len;
+
+	//value_len = ft_strlen(token->value) - 1;
 	while (token->value[*i] != '\0')
 	{
-		(*i)++;
-		printf("i: %i\n", *i);
 		if (token->value[*i] == '$')
+			return(expand_pid(i));
+/* 		else if(token->value[*i] == '?')
 		{
-			pid = expand_pid();
-			//token->value = pid;
-			printf("token->value: %s\n", token->value);
-			return (pid);
-		}
-/* 		else if (token->value[i] == '?')
+			//$? expands to the exit status of the most recently executed foreground pipeline.
+		} */
+		else if(ft_isalpha(token->value[*i]) || token->value[*i] == '_')
 		{
-			//devolver ultimo comando;
+			//variable = malloc(value_len * sizeof(char)); 
+			variable = extract_var_name(token->value, i);
+			*i = *i + ft_strlen(variable);
+			//env_var_len = ft_strlen(getenv(variable));
+			expanded_var = ft_strdup(getenv(variable));
+			return (expanded_var);
 		}
-		if (ft_isalpha(s[i]) || s[i] == '_')
-		{
-			while (ft_isalnum(s[i]) || s[i] == '_')
-				i++;
-			token->expand = 1;
-		}
-		//else (caracter no valido) */
-		(*i)++;
+		else
+			 return ("");
+		(*i)++; /*?*/
 	}
-	return("NULO\n");
+	return "";
 }
 
-void print_list(t_token *head)
+char	*copy_non_expanded(char *value, int *i, char *var_expanded)
 {
-    t_token *current = head;
-    int token_count = 0;
-
-    printf("--- Lista de Tokens ---\n");
-    if (current == NULL)
-    {
-        printf("La lista está vacía.\n");
-        printf("-----------------------\n");
-        return;
-    }
-
-    while (current != NULL)
-    {
-        printf("Token %d:\n", token_count);
-        printf("  Value: \"%s\"\n", current->value ? current->value : "(NULL)");
-        printf("  Expand: %d\n", current->expand);
-        current = current->next;
-        token_count++;
-    }
-    printf("-----------------------\n");
+	char	char_to_string[2];
+	char	*temp_string;
+	char_to_string[0] = value[*i];
+	char_to_string[1] = '\0';
+	temp_string = ft_strjoin(var_expanded, char_to_string);
+	free(var_expanded);
+	var_expanded = temp_string;
+	(*i)++;
+	return (var_expanded);
 }
-char*	expander_var(t_token *token_list)
+void	expander_var(t_token *token_list)
 {
 	t_token *tmp;
 	char *var_expanded;
 	int i = 0;
 	char *temp_string;
-	char char_to_string[2];
-	//printf("EXPANDER_VAR\n");
-	//printf("EXPANDER_VAR\n");
+	char *original_value;
+	//int original_len;
+	char *expanded;
+
 	tmp = token_list;
-	var_expanded = ft_strdup("");
-	//printf("EXPANDER_VAR\n");
-	//recorrer la lista enlazada
+
 	while (tmp != NULL)
 	{	//recorrer el token
-		if (token_list->expand != 1)
-			tmp = tmp->next;
-		i = 0;
-		while (tmp->value[i] != '\0')
+		if (tmp->expand != 1)
 		{
-			printf("EXPANDER_VAR token->value: %s\n", tmp->value);
-			//si empieza por $$ do expand;
-			if (tmp->value[i] == '$')
+			tmp = tmp->next;
+			continue;
+		}
+		var_expanded = ft_strdup("");
+		i = 0;
+		original_value = tmp->value;
+		//original_len = ft_strlen(original_value); 
+		while (i < (int)ft_strlen(original_value) && original_value[i] != '\0')
+		{
+			//si $ do expand;
+			if (original_value[i] == '$')
 			{
-				var_expanded = do_expand(tmp, &i);
-				printf("i: %i\n", i);
-				tmp->value = var_expanded;
-				return var_expanded;
-			}
-				//else copia tal cual
-			else
-			{
-				char_to_string[0] = tmp->value[i];
-				char_to_string[1] = '\0';
-				temp_string = ft_strjoin(var_expanded, char_to_string);
+				i++;
+				expanded = do_expand(tmp, &i);
+				if (!expanded)
+					expanded = ft_strdup("");
+				temp_string = ft_strjoin(var_expanded, expanded);
 				free(var_expanded);
 				var_expanded = temp_string;
-				// DUDA free(temp_string);
-				i++;
+				free(expanded);
+				//i++;
 			}
+			else 
+				var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 		}
+		free(tmp->value);
+		tmp->value = var_expanded;
 		tmp = tmp->next;
 	}
-	
-	return var_expanded;
+	return ;
 }
+
+//PROBLEMA DE SEGMENTATION FAULT CUANDO ES UN ENV_VAR INCORRECTO
