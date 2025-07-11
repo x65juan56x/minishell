@@ -132,6 +132,8 @@ void	ft_error(void);
 
 void	*ft_freearr(char **arr);
 
+char	*ft_mini_gnl_char(int fd);
+
 int		ft_mini_gnl(char **line);
 
 char	**ft_split_args(char const *s);

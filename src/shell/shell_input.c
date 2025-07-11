@@ -5,17 +5,15 @@ char	*get_user_input(void)
 	char	*input;
 	char	*prompt;
 
-	if (isatty(STDIN_FILENO))
-		prompt = PROMPT;
-	else
-		prompt = "";
-	input = readline(prompt);
-	if (!input)
+	if (isatty(STDIN_FILENO)) // Modo Interactivo
 	{
-		if (isatty(STDIN_FILENO))
-			ft_putstr_fd("exit\n", STDOUT_FILENO);
-		return (NULL);
+		prompt = PROMPT;
+		input = readline(prompt); // Usamos readline para tener el prompt y el historial
+		if (!input) // Ctrl+D
+			return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
+	else // Modo No Interactivo
+		input = ft_mini_gnl_char(STDIN_FILENO); // Usamos ft_mini_gnl para leer del pipe sin imprimir nada
 	return (input);
 }
 
