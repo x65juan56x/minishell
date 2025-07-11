@@ -107,19 +107,22 @@ Wildcards *: No hay ninguna implementación para la expansión de wildcards. Est
 
 
 
-Checkear de solucionar esto con isatty():
-➜  minishell git:(main) echo "pwd" | ./minishell
-MiniShell $ pwd
-/home/jmondon/Documents/Git Personal/minishell
-MiniShell $ exit
-➜  minishell git:(main) echo "pwd" | bash       
-/home/jmondon/Documents/Git Personal/minishell
-➜  minishell git:(main)
-
-
 VALGRIND
 valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
 
 
 checkear:
  cat | input.txt
+ falta salto de linea luego de hacer ^C para salir del error y recuperar el prompt
+
+ cat << EOF | sort
+    ctrl + C :x:
+    ctrl + C mientras esta en heredoc :x:
+
+
+cat << EOF
+    ctrl + C no hay salto de linea, pero si promt
+
+cat
+    ctrl + C :white_check_mark:
+    ctrl + \ :white_check_mark:
