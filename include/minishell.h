@@ -124,6 +124,7 @@ int				handle_word_token(t_token **tp, char **args, int *idx);
 void			skip_redirect_token(t_token **tp);
 int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
+int				are_quotes_unclosed(const char *s);
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, char ***envp_ptr);

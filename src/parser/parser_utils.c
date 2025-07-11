@@ -112,3 +112,21 @@ t_token	*consume_token_type(t_parser *parser, t_token_type type)
  * Llamado por: `parse_pipe_expression`, para consumir específicamente el
  *              token de `|`.
 */
+
+int	are_quotes_unclosed(const char *s)
+{
+	char	in_quote; // 0 = no, '\'' = en comilla simple, '"' = en comilla doble
+
+	in_quote = 0;
+	while (*s)
+	{
+		if (*s == '\'' && in_quote == 0)
+			in_quote = '\'';
+		else if (*s == '"' && in_quote == 0)
+			in_quote = '"';
+		else if (*s == in_quote)
+			in_quote = 0; // Se cierra la comilla
+		s++;
+	}
+	return (in_quote);
+}
