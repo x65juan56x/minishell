@@ -84,33 +84,22 @@ Manejar ctrl-C, ctrl-D y ctrl-\:
 	Durante ejecución de un proceso hijo (comando externo)  
  		SIGINT debe terminar el proceso hijo, y el shell debe mostrar un salto de línea.  
 		SIGQUIT debe mostrar el mensaje Quit (core dumped) si aplica, y finalizar el hijo.  
-Builtins: echo, pwd, env, exit, cd
+Builtins: echo, pwd, env, exit, cd, export, unset.
+La expansión de variables ($VAR) dentro de las comillas dobles pero no en las simples.
+
 
 
 🟡 Parcialmente Implementado / Requiere Ajustes:
 
 Manejar comillas simples ' y dobles ":  
 Lo que funciona: El tokenizer (token_words.c) ya identifica correctamente las palabras entrecomilladas como un solo token y elimina las comillas externas (process_quoted_string). Esto es un gran avance.  
-Lo que falta: La expansión de variables ($VAR) dentro de las comillas dobles pero no en las simples. Actualmente, no se realiza ninguna expansión.  
-No interpretar comillas sin cerrar: El parser actual no tiene una validación explícita para esto. Un echo "hello probablemente se tokenizará de forma extraña y podría dar un error de sintaxis genérico, pero no un error específico de "comillas sin cerrar".  
+No interpretar comillas sin cerrar: El parser actual no tiene una validación explícita para esto. Un echo "hello probablemente se tokenizará de forma extraña y podría dar un error de sintaxis genérico, pero no un error específico de "comillas sin cerrar".
 
 
 ❌ Pendiente de Implementar:  
-
-Manejar variables de entorno ($VAR): No hay lógica de expansión de variables en el parser o executor. Los tokens con $ se tratan como palabras literales.  
 Manejar $?: No hay implementación para expandir $? al código de salida del último comando. Necesitas una variable (quizás en una estructura principal) para almacenar exit_status y un mecanismo de expansión que la consulte.  
-Implementar los Built-ins:  
-export, unset.  
-
-
 
 Parte Bonus  
-🟡 Parcialmente Implementado / Requiere Ajustes:  
-
-&&, || y paréntesis ():  
-Lo que funciona: El tokenizer ya reconoce los tokens TOKEN_AND, TOKEN_OR, TOKEN_LPAREN, TOKEN_RPAREN. ¡La base está lista!  
-Lo que falta: El parser no tiene la lógica para manejar la precedencia de estos operadores. Necesitas añadir nuevas funciones de parsing (como parse_logical_expression y parse_primary_expression) para construir el AST correctamente. El executor tampoco tiene la lógica de "cortocircuito" para ejecutar && o ||.  
-
 
 ❌ Pendiente de Implementar:  
 
@@ -130,3 +119,7 @@ MiniShell $ exit
 
 VALGRIND
 valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
+
+
+checkear:
+ cat | input.txt
