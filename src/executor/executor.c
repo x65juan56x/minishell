@@ -20,7 +20,7 @@ static int	execute_command_node(t_ast_node *node, char ***envp_ptr)
  *   - `launch_command`
  */
 
-static int	create_pipe_and_execute(t_ast_node *node, char **envp,
+static int	create_pipe_and_execute(t_ast_node *node, char ***envp_ptr,
 			int heredoc_fd)
 {
 	int				pipe_fd[2];
@@ -35,8 +35,8 @@ static int	create_pipe_and_execute(t_ast_node *node, char **envp,
 			close(heredoc_fd);
 		return (1);
 	}
-	left_config = (t_pipe_config){pipe_fd, 1, heredoc_fd, envp};
-	right_config = (t_pipe_config){pipe_fd, 0, -1, envp};
+	left_config = (t_pipe_config){pipe_fd, 1, heredoc_fd, envp_ptr};
+	right_config = (t_pipe_config){pipe_fd, 0, -1, envp_ptr};
 	left_pid = create_pipe_child(node->left, &left_config);
 	right_pid = create_pipe_child(node->right, &right_config);
 	close(pipe_fd[0]);
@@ -61,14 +61,14 @@ static int	create_pipe_and_execute(t_ast_node *node, char **envp,
  *   - `wait_pipe_children`
  */
 
-static int	execute_pipe_node(t_ast_node *node, char **envp)
+static int	execute_pipe_node(t_ast_node *node, char ***envp_ptr)
 {
 	int	heredoc_fd;
 
 	heredoc_fd = preprocess_heredocs(&(node->left)); // Pasar dirección
 	if (heredoc_fd == -2)
 		return (130); // código común para Ctrl-C
-	return (create_pipe_and_execute(node, envp, heredoc_fd));
+	return (create_pipe_and_execute(node, envp_ptr, heredoc_fd));
 }
 /*
  * Propósito: Ejecutar un nodo de pipe de alto nivel.
@@ -88,9 +88,6 @@ int	execute_ast(t_ast_node *ast, char ***envp_ptr)
 
 	if (!ast)
 		return (0);
-
-	// printf("DEBUG: Executing node type: %d\n", ast->type);
-
 	if (ast->type == NODE_OR) // Manejar operadores lógicos
 	{
 		status = execute_ast(ast->left, envp_ptr);
@@ -114,29 +111,29 @@ int	execute_ast(t_ast_node *ast, char ***envp_ptr)
 			return (perror("fork"), 1);
 		if (pid == 0)
 		{
-			signals_default();
+			// El hijo restaura las señales a su comportamiento por defecto.
+			setup_child_signals();
 			execute_command_node(ast, envp_ptr);
 			exit(127);
 		}
-		signal(SIGINT, SIG_IGN);
+		ignore_signals();
 		waitpid(pid, &status, 0);
-		signal(SIGINT, sigint_handler);
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
 		if (WIFSIGNALED(status))
 		{
 			if (WTERMSIG(status) == SIGINT)
-				write(1, "\n", 1);
+				write(STDOUT_FILENO, "\n", 1);
 			else if (WTERMSIG(status) == SIGQUIT)
-				write(1, "Quit (core dumped)\n", 20);
+				write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 			return (128 + WTERMSIG(status));
 		}
 		return (1);
 	}
 	if (ast->type == NODE_PIPE)
-		return (execute_pipe_node(ast, *envp_ptr));
+		return (execute_pipe_node(ast, envp_ptr));
 	if (is_redirect_node(ast->type))
-		return (execute_redirect_node(ast, *envp_ptr));
+		return (execute_redirect_node(ast, envp_ptr));
 	return (1);
 }
 /*

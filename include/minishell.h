@@ -17,6 +17,11 @@
 #define RESET_COLOR "\001\033[0m\002"
 #define PROMPT CORAL_BOLD "MiniShell" RESET_COLOR " $ "
 
+// La única variable global permitida, para el estado de la señal.
+// 'volatile' evita que el compilador la optimice incorrectamente.
+// 'sig_atomic_t' garantiza que su acceso sea una operación indivisible.
+extern volatile sig_atomic_t	g_signal_status;
+
 typedef enum e_token_type
 {
 	TOKEN_WORD,				// 0 - Palabras
@@ -73,7 +78,7 @@ typedef struct s_pipe_config
 	int		*pipe_fd;
 	int		is_left;
 	int		heredoc_fd;
-	char	**envp;
+	char	***envp_ptr;
 }	t_pipe_config;
 
 /* TOKENIZER */
@@ -135,7 +140,7 @@ pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config);
 int				wait_pipe_children(pid_t left_pid, pid_t right_pid);
 
 /* REDIRECT EXECUTOR */
-int				execute_redirect_node(t_ast_node *node, char **envp);
+int				execute_redirect_node(t_ast_node *node, char ***envp_ptr);
 
 /* HEREDOC EXECUTOR */
 int				execute_heredoc(char *delimiter);
@@ -147,10 +152,10 @@ int				preprocess_heredocs(t_ast_node **node_ptr);
 char			*find_command_path(char *cmd, char **envp);
 
 /* SIGNALS */
-void			signals_parent();
-void			signals_ignored();
-void			signals_default();
-void			sigint_handler(int signum);
+void			setup_interactive_signals(void);
+void			setup_child_signals(void);
+void			setup_heredoc_signals(void);
+void			ignore_signals(void);
 
 /* BUILTINS */
 int				is_builtin(char *cmd);

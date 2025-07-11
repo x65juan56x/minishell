@@ -108,7 +108,7 @@ static int	collect_redirect_nodes(t_ast_node *node, t_ast_node *arr[])
  * Llamado por: `execute_redirect_node`.
  */
 
-int	execute_redirect_node(t_ast_node *node, char **envp)
+int	execute_redirect_node(t_ast_node *node, char ***envp_ptr)
 {
 	t_ast_node	*reds[64];
 	t_ast_node	*cmd;
@@ -121,29 +121,26 @@ int	execute_redirect_node(t_ast_node *node, char **envp)
 	count = collect_redirect_nodes(node, reds);
 	cmd = reds[--count]->left;
 	pid = fork();
-	signals_parent();
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGINT, SIG_IGN);
+		setup_child_signals();
 		while (count >= 0)
 		{
 			if (apply_single_redirect(reds[count--]) == 1)
-				exit(-2);
+				exit(1);
 		}
-		exit(execute_ast(cmd, &envp));
+		exit(execute_ast(cmd, envp_ptr));
 	}
-	signal(SIGINT, SIG_IGN);
+	ignore_signals();
 	waitpid(pid, &status, 0);
-	signal(SIGINT, sigint_handler);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
 	{
-		if (WTERMSIG(status) == SIGINT) // Comprueba si la señal SIGINT
-			write(1, "\n", 1);
+		if (WTERMSIG(status) == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
 		return (128 + WTERMSIG(status));
 	}
 	return (1);
