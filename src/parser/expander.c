@@ -75,7 +75,7 @@ char	*do_expand(t_token *token, int *i)
 		}
 		else
 		{
-			i++;
+			(*i)++;
 			return (ft_strdup(""));
 		}
 	}

@@ -51,43 +51,12 @@ int	extract_args(char **args, int max, t_token **token)
 
 	i = 0;
 	temp_token = *token;
-	while (i < max && temp_token && temp_token->type != TOKEN_PIPE && temp_token->type != TOKEN_EOF)
-	{
-		if (temp_token->type == TOKEN_WORD)
-		{
-			if (handle_word_token(&temp_token, args, &i) < 0)
-				return (-1);
-			continue ;
-		}
-		if (is_redirect_token(temp_token->type))
-		{
-			skip_redirect_token(&temp_token);
-			continue ;
-		}
-		break ;
-	}
+	while (i < max && temp_token && temp_token->type == TOKEN_WORD)
+		if (handle_word_token(&temp_token, args, &i) < 0)
+			return (-1);
 	*token = temp_token;
 	return (i);
 }
-/*
- * Propósito: Llenar un array `args` con un máximo de `max` argumentos,
- *            extrayéndolos de la lista de tokens y saltando las redirecciones.
- * Mecanismo:
- *   1. Itera sobre los tokens mientras no se alcance el máximo de argumentos
- *      y no se encuentre un pipe o el final de la lista.
- *   2. Si el token es `TOKEN_WORD`, llama a `handle_word_token` para añadirlo
- *      al array.
- *   3. Si el token es de redirección, llama a `skip_redirect_token` para
- *      ignorarlo a él y a su archivo.
- *   4. Si es cualquier otro token, detiene la extracción.
- *   5. Actualiza el puntero `token` para que apunte al primer token no consumido.
- *   6. Devuelve el número de argumentos extraídos.
- * Llamado por: `collect_command_args`.
- * Llama a:
- *   - `handle_word_token`: Para procesar palabras.
- *   - `skip_redirect_token`: Para ignorar redirecciones.
- *   - `is_redirect_token`: Para identificar operadores de redirección.
-*/
 
 t_token	*consume_token_type(t_parser *parser, t_token_type type)
 {

@@ -64,16 +64,23 @@ int	builtin_exit(char **args)
 {
 	int	exit_code;
 
-	exit_code = 0;
-	if (args[1])
-	{
-		exit_code = ft_atoi(args[1]);
-		if(args[2]) // Demasiados argumentos
-		{
-			ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-			return (1); // NO hace exit, solo retorna error
-		}
-	}
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	exit(exit_code); // Esta función nunca retorna
+	if (!args[1])
+		exit(0);
+	if (!ft_isnumstr(args[1])) // Non-numeric argument: print error and exit with 255.
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		exit(255);
+	}
+	if (args[2]) // Numeric argument followed by another: print error and *do not exit*.
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		return (1);
+	}
+	exit_code = ft_atoi(args[1]); // Valid numeric argument, and it's the only one.
+	// The exit code is an 8-bit unsigned value (0-255).
+	// Casting to unsigned char correctly wraps the value.
+	exit((unsigned char)exit_code);
 }

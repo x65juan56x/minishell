@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/03 16:09:53 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/07/13 12:36:39 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int		ft_isascii(int c);
 int		ft_isdigit(int c);
 
 int		ft_isprint(int c);
+
+int		ft_isnumstr(const char *s);
 
 char	*ft_strchr(const char *s, int c);
 

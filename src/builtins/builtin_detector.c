@@ -26,7 +26,7 @@ int	execute_builtin(char **args, char ***envp_ptr)
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
 	if (ft_strcmp(args[0], "cd") == 0)
-		return (builtin_cd(args));
+		return (builtin_cd(args, envp_ptr));
 	if (ft_strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
 	if (ft_strcmp(args[0], "export") == 0)
@@ -38,4 +38,19 @@ int	execute_builtin(char **args, char ***envp_ptr)
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (builtin_exit(args));
 	return (1);
+}
+
+int is_builtin_parent(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
 }

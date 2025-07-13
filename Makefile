@@ -4,13 +4,19 @@ OBJ_DIR = obj
 INCLUDE_DIR = include
 
 SRC_FILES = minishell.c \
-			executor/path_utils.c \
 			executor/executor.c \
+			executor/executor_utils.c \
+			executor/executor_redirects.c \
+			executor/execute_command.c \
 			executor/pipe_executor.c \
-			executor/redirect_executor.c \
+			executor/pipe_executor_utils.c \
+			executor/create_pipe_child.c \
+			executor/wait_pipe_children.c \
 			executor/heredoc_executor.c \
+			executor/heredoc_utils.c \
 			executor/heredoc_preprocessor.c \
-			executor/cmd_executor.c \
+			executor/command_launcher.c \
+			executor/path_utils.c \
 			parser/tokenizer.c \
 			parser/token_utils.c \
 			parser/token_operators.c \

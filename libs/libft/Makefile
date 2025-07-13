@@ -10,6 +10,7 @@ SRC_FILES = ft_toupper.c \
 			ft_isascii.c \
 			ft_strchr.c \
 			ft_isprint.c \
+			ft_isnumstr.c \
 			ft_strrchr.c \
 			ft_strlen.c \
 			ft_strcmp.c \

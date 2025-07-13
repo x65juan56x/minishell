@@ -81,6 +81,16 @@ typedef struct s_pipe_config
 	char	***envp_ptr;
 }	t_pipe_config;
 
+typedef struct s_pipe_state
+{
+    pid_t		*pids;
+    int			num_cmds;
+    int			i;
+    int			prev_pipe_fd;
+    t_ast_node	*curr;
+    char		***envp_ptr;
+}	t_pipe_state;
+
 /* TOKENIZER */
 t_token			*tokenize(const char *input);
 void			cleanup_tokens(t_token *tokens);
@@ -126,28 +136,40 @@ int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
 
+/* EXPANDER */
+void			is_expand_needed (char *s, int quoted, t_token *token);
+void			expander_var(t_token *token_list);
+char			*do_expand(t_token *token, int *i);
+
 /* EXECUTOR */
-int				execute_ast(t_ast_node *ast, char ***envp_ptr);
+int				execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr);
+int				execute_simple_command(t_ast_node *node, char ***envp_ptr);
 void			launch_command(char **args, char **envp);
 
-/* EXPANDER */
-void	is_expand_needed (char *s, int quoted, t_token *token);
-void	expander_var(t_token *token_list);
-char	*do_expand(t_token *token, int *i);
-
+/* EXECUTOR UTILS */
+void			print_signal_message(int signal_num);
+int				analyze_child_status(int status);
+int				apply_redirections(t_ast_node *node);
 
 /* PIPE EXECUTOR */
-pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config);
-int				wait_pipe_children(pid_t left_pid, pid_t right_pid);
+int				execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr);
+int				wait_for_all_children(pid_t *pids, int num_cmds);
 
-/* REDIRECT EXECUTOR */
-int				execute_redirect_node(t_ast_node *node, char ***envp_ptr);
+/* PIPE EXECUTOR UTILS */
+int				count_pipe_commands(t_ast_node *ast);
+void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr);
+int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
+pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr);
 
 /* HEREDOC EXECUTOR */
-int				execute_heredoc(char *delimiter);
+int				execute_heredoc(char *delimiter, int *heredoc_id_ptr);
+
+/* HEREDOC UTILS */
+void			disable_ctrl_echo(struct termios *orig_termios);
+char			*create_heredoc_temp_file(char *delimiter, int heredoc_id_ptr);
 
 /* HEREDOC PREPROCESSOR */
-int				preprocess_heredocs(t_ast_node **node_ptr);
+int				preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr);
 
 /* PATH UTILS */
 char			*find_command_path(char *cmd, char **envp);
@@ -160,12 +182,13 @@ void			ignore_signals(void);
 
 /* BUILTINS */
 int				is_builtin(char *cmd);
+int				is_builtin_parent(char *cmd);
 int				execute_builtin(char **args, char ***envp_ptr);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int				builtin_env(char **envp);
 int				builtin_exit(char **args);
-int				builtin_cd(char **args);
+int				builtin_cd(char **args, char ***envp_ptr);
 int				builtin_export(char **args, char ***envp_ptr);
 int				builtin_unset(char **args, char ***envp_ptr);
 

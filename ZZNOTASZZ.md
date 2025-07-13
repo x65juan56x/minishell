@@ -91,9 +91,8 @@ La expansión de variables ($VAR) dentro de las comillas dobles pero no en las s
 
 🟡 Parcialmente Implementado / Requiere Ajustes:
 
-Manejar comillas simples ' y dobles ":  
-Lo que funciona: El tokenizer (token_words.c) ya identifica correctamente las palabras entrecomilladas como un solo token y elimina las comillas externas (process_quoted_string). Esto es un gran avance.  
-No interpretar comillas sin cerrar: El parser actual no tiene una validación explícita para esto. Un echo "hello probablemente se tokenizará de forma extraña y podría dar un error de sintaxis genérico, pero no un error específico de "comillas sin cerrar".
+
+
 
 
 ❌ Pendiente de Implementar:  
@@ -116,13 +115,10 @@ checkear:
  falta salto de linea luego de hacer ^C para salir del error y recuperar el prompt
 
  cat << EOF | sort
-    ctrl + C :x:
-    ctrl + C mientras esta en heredoc :x:
-
-
+	ctrl + C ❌
+	ctrl + C mientras esta en heredoc ❌
 cat << EOF
-    ctrl + C no hay salto de linea, pero si promt
-
+	ctrl + C no hay salto de linea, pero si promt
 cat
-    ctrl + C :white_check_mark:
-    ctrl + \ :white_check_mark:
+	ctrl + C ✅
+	ctrl + \ ✅

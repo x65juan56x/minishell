@@ -1,0 +1,88 @@
+#include "../../include/minishell.h"
+
+void	disable_ctrl_echo(struct termios *orig_termios)
+{
+	struct termios	new_termios;
+
+	if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
+		return ;
+	new_termios = *orig_termios;
+	new_termios.c_lflag &= ~ECHOCTL; // Desactivar el bit ECHOCTL
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &new_termios) == -1)
+		return ;
+}
+/**
+ * Desactiva el eco de caracteres de control (ej. ^C) en la terminal.
+ * orig_termios Puntero para guardar la configuración original.
+ */
+
+int	read_heredoc_input(char *delimiter, int write_fd)
+{
+	char	*line;
+
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+			line = readline("> ");
+		else
+			line = ft_mini_gnl_char(STDIN_FILENO);
+		if (!line)
+		{
+			if (isatty(STDIN_FILENO))
+				ft_putstr_fd("minishell: warning: here-docu", STDERR_FILENO);
+			if (isatty(STDIN_FILENO))
+				ft_putstr_fd("ment delimited by end-of-file\n", STDERR_FILENO);
+			return (1);
+		}
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		ft_putendl_fd(line, write_fd);
+		free(line);
+	}
+	return (0);
+}
+/*
+ * Propósito: Leer líneas hasta encontrar el delimitador y volcar al pipe.
+ * Mecanismo:
+ *   1. Bucle infinito llamando a `readline("> ")`.
+ *   2. Si `line` es NULL o coincide con `delimiter`, sale del bucle.
+ *   3. En caso contrario, escribe la línea en `write_fd` y repite.
+ *   4. Libera cada `line` después de usarla.
+ * Llamado por: `execute_heredoc`.
+ * Llama a:
+ *   - `readline`
+ *   - `ft_strcmp`
+ *   - `write_line_to_pipe`
+ *   - `free`
+ */
+
+ // Esta función devuelve el *nombre* del fichero temporal, no un fd.
+char	*create_heredoc_temp_file(char *delimiter, int heredoc_id)
+{
+	char	*filename;
+	char	*pid_str;
+	char	*id_str;
+	char	*temp;
+	int		fd;
+
+	pid_str = ft_itoa(getpid());
+	id_str = ft_itoa(heredoc_id);
+	temp = ft_strjoin("/tmp/minishell-", pid_str);
+	free(pid_str);
+	if (!temp)
+		return (free(id_str), NULL);
+	filename = ft_strjoin(temp, id_str);
+	free(temp);
+	free(id_str);
+	if (!filename)
+		return (NULL);
+	fd = open(filename, O_CREAT | O_EXCL | O_WRONLY, 0600);
+	if (fd < 0)
+		return (perror("minishell: heredoc"), free(filename), NULL);
+	read_heredoc_input(delimiter, fd);
+	close(fd);
+	return (filename);
+}

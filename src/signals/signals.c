@@ -2,9 +2,10 @@
 
 volatile sig_atomic_t	g_signal_status = 0;
 
-static void	interactive_sigint_handler(int signum)
+static void interactive_sigint_handler(int signum)
 {
-	g_signal_status = signum;
+	(void)signum;
+	g_signal_status = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -18,22 +19,24 @@ static void	interactive_sigint_handler(int signum)
  * funciones seguras de readline para refrescar el prompt.
  */
 
-void	setup_interactive_signals(void)
+void setup_interactive_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
+	struct sigaction sa;
 
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = SA_RESTART;
-	sa_int.sa_handler = interactive_sigint_handler;
-	if (sigaction(SIGINT, &sa_int, NULL) == -1)
-		perror("sigaction");
-
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sa_quit.sa_handler = SIG_IGN;
-	if (sigaction(SIGQUIT, &sa_quit, NULL) == -1)
-		perror("sigaction");
+	/* Ctrl+C  */
+	ft_bzero(&sa, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags   = SA_RESTART;
+	sa.sa_handler = interactive_sigint_handler;
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+		perror("minishell: sigaction");
+	/* Ctrl+\  => ignorado en el prompt (bash no imprime nada) */
+	ft_bzero(&sa, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags   = SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	if (sigaction(SIGQUIT, &sa, NULL) == -1)
+		perror("minishell: sigaction");
 }
 /**
  * Configura las señales para el modo interactivo (el prompt principal).
@@ -48,13 +51,14 @@ void	setup_child_signals(void)
 {
 	struct sigaction	sa;
 
+	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
+	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = SIG_DFL; // DFL = Default action
 	if (sigaction(SIGINT, &sa, NULL) == -1)
-		perror("sigaction");
+		perror("minishell: sigaction");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		perror("sigaction");
+		perror("minishell: sigaction");
 }
 /**
  * Configura las señales para los procesos hijos (comandos externos).
@@ -72,15 +76,24 @@ static void	heredoc_sigint_handler(int signum)
  * Manejador de señal para el proceso hijo del heredoc.
  */
 
-void	setup_heredoc_signals(void)
+void setup_heredoc_signals(void)
 {
-	struct sigaction	sa_int;
+	struct sigaction sa;
 
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sa_int.sa_handler = heredoc_sigint_handler;
-	if (sigaction(SIGINT, &sa_int, NULL) == -1)
-		perror("sigaction");
+	/* Ctrl+C mata el heredoc child */
+	ft_bzero(&sa, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags   = SA_RESTART;
+	sa.sa_handler = heredoc_sigint_handler;
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+		perror("minishell: sigaction");
+	/* Ctrl+\ ignorado, no queremos imprimir nada */
+	ft_bzero(&sa, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags   = SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	if (sigaction(SIGQUIT, &sa, NULL) == -1)
+		perror("minishell: sigaction");
 }
 /**
  * Configura las señales para el proceso hijo que lee un here-document.
@@ -93,13 +106,14 @@ void	ignore_signals(void)
 {
 	struct sigaction	sa;
 
+	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
+	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = SIG_IGN; // IGN = Ignore
-	if (sigaction(SIGINT, &sa, NULL) == -1)
-		perror("sigaction");
+	if (sigaction(SIGINT,  &sa, NULL) == -1)
+		perror("minishell: sigaction");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		perror("sigaction");
+		perror("minishell: sigaction");
 }
 /**
  * Ignora las señales temporalmente.

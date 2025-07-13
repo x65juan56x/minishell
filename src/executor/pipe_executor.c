@@ -1,61 +1,61 @@
 #include "../../include/minishell.h"
 
-static void	child_process_routine(t_ast_node *node, t_pipe_config *config)
+static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast, char ***envp_ptr)
 {
-    int	exit_code;
-
-    setup_child_signals();
-    if (config->is_left)
-    {
-        if (config->heredoc_fd != -1)
-            dup2(config->heredoc_fd, STDIN_FILENO);
-        dup2(config->pipe_fd[1], STDOUT_FILENO);
-    }
-    else
-    {
-        dup2(config->pipe_fd[0], STDIN_FILENO);
-    }
-    close(config->pipe_fd[0]);
-    close(config->pipe_fd[1]);
-    if (config->heredoc_fd != -1)
-        close(config->heredoc_fd);
-    exit_code = execute_ast(node, config->envp_ptr);
-    exit(exit_code);
+	st->num_cmds = count_pipe_commands(ast);
+	st->pids = malloc(sizeof(pid_t) * st->num_cmds);
+	if (!st->pids)
+		return (perror("minishell: malloc"), 1);
+	st->i = 0;
+	st->curr = ast;
+	st->prev_pipe_fd = -1;
+	st->envp_ptr = envp_ptr;
+	return (0);
 }
 
-pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config)
+static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr)
 {
-    pid_t	pid;
+	int	pipe_fd[2];
 
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        return (-1);
-    }
-    if (pid == 0)
-    {
-        child_process_routine(node, config);
-    }
-    return (pid);
+	if (pipe(pipe_fd) == -1)
+		return (perror("minishell: pipe"), 1);
+	st->pids[st->i] = fork();
+	if (st->pids[st->i] == -1)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		return (perror("minishell: fork"), 1);
+	}
+	if (st->pids[st->i] == 0)
+		child_process_logic(st, pipe_fd, 0, heredoc_id_ptr);
+	parent_process_logic(st, pipe_fd);
+	return (0);
 }
 
-int	wait_pipe_children(pid_t left_pid, pid_t right_pid)
+static int	execute_last_command(t_pipe_state *st, int *heredoc_id_ptr)
 {
-    int	left_status;
-    int	right_status;
+	st->pids[st->i] = fork();
+	if (st->pids[st->i] == -1)
+		return (perror("minishell: fork"), 1);
+	if (st->pids[st->i] == 0)
+		child_process_logic(st, NULL, 1, heredoc_id_ptr);
+	if (st->prev_pipe_fd != -1)
+		close(st->prev_pipe_fd);
+	return (0);
+}
 
-    if (left_pid > 0)
-        waitpid(left_pid, &left_status, 0);
-    if (right_pid > 0)
-        waitpid(right_pid, &right_status, 0);
-    if (right_pid > 0 && WIFEXITED(right_status))
-        return (WEXITSTATUS(right_status));
-    if (right_pid > 0 && WIFSIGNALED(right_status))
-        return (128 + WTERMSIG(right_status));
-    if (left_pid > 0 && WIFEXITED(left_status))
-        return (WEXITSTATUS(left_status));
-    if (left_pid > 0 && WIFSIGNALED(left_status))
-        return (128 + WTERMSIG(left_status));
-    return (1);
+int	execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr)
+{
+	t_pipe_state	st;
+
+	if (init_pipe_state(&st, ast, envp_ptr) != 0)
+		return (1);
+	while (st.curr->type == NODE_PIPE)
+	{
+		if (execute_pipe_segment(&st, heredoc_id_ptr) != 0)
+			return (free(st.pids), 1);
+	}
+	if (execute_last_command(&st, heredoc_id_ptr) != 0)
+		return (free(st.pids), 1);
+	return (wait_for_all_children(st.pids, st.num_cmds));
 }
