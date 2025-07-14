@@ -31,13 +31,26 @@ void	is_expand_needed(char *s, int quoted, t_token *token)
 
 char	*expand_pid(int *i)
 {
-	pid_t pid;
-	char *pid_str;
+	pid_t	pid;
+	char	*pid_str;
 
 	pid = getpid();
 	pid_str = ft_itoa(pid);
 	*i = *i + 2; 
 	return pid_str;
+}
+
+char 	*expand_status(int *i, t_shell_context **shell_context)
+{
+	int		status;
+	char	*status_str;
+	int		len;
+
+	status = (*shell_context)->exit_status;
+	status_str = ft_itoa(status);
+	len = ft_strlen(status_str);
+	*i = *i + len;
+	return(status_str);
 }
 
 char 	*extract_var_name(char *str, int *i)
@@ -52,7 +65,7 @@ char 	*extract_var_name(char *str, int *i)
 	return(ft_substr(str, *i, len));
 }
 
-char	*do_expand(t_token *token, int *i)
+char	*do_expand(t_token *token, int *i, t_shell_context **shell_context)
 {
 	char	*variable;
 	char	*env_value;
@@ -61,8 +74,11 @@ char	*do_expand(t_token *token, int *i)
 	{
 		if (token->value[*i] == '$')
 			return(expand_pid(i));
-/* 		else if(token->value[*i] == '?')
-			//$? expands to the exit status of the most recently executed foreground pipeline.*/
+ 		else if(token->value[*i] == '?')
+		{
+			return(expand_status(i, shell_context));
+		}
+		//$? expands to the exit status of the most recently executed foreground pipeline.
 		else if(ft_isalpha(token->value[*i]) || token->value[*i] == '_')
 		{
 			variable = extract_var_name(token->value, i);
@@ -94,7 +110,7 @@ char	*copy_non_expanded(char *value, int *i, char *var_expanded)
 	(*i)++;
 	return (var_expanded);
 }
-void	expander_var(t_token *token_list)
+void	expander_var(t_token *token_list, t_shell_context **shell_context)
 {
 	t_token *tmp;
 	char *var_expanded;
@@ -120,7 +136,7 @@ void	expander_var(t_token *token_list)
 			if (original_value[i] == '$')
 			{
 				i++;
-				tmp_expanded = do_expand(tmp, &i);
+				tmp_expanded = do_expand(tmp, &i, shell_context);
 				temp_string = ft_strjoin(var_expanded, tmp_expanded);
 				free(var_expanded);
 				var_expanded = temp_string;

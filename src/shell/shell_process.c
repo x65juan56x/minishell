@@ -7,7 +7,7 @@ static int	handle_parsing_error(t_token *tokens)
 	return (2);
 }
 
-int	process_command_line(char *input, char ***envp_ptr)
+int	process_command_line(char *input, char ***envp_ptr, t_shell_context **shell_context)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
@@ -18,7 +18,7 @@ int	process_command_line(char *input, char ***envp_ptr)
 	tokens = tokenize(input);
 	if (!tokens)
 		return (1);
-	expander_var(tokens);
+	expander_var(tokens, shell_context);
 	ast = parse(tokens);
 	if (!ast)
 	{
@@ -26,7 +26,7 @@ int	process_command_line(char *input, char ***envp_ptr)
 		return (cleanup_tokens(tokens), exit_status);
 	}
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
-	exit_status = execute_ast(ast, envp_ptr, &heredoc_id);
+	exit_status = execute_ast(ast, envp_ptr, &heredoc_id, shell_context);
 	setup_interactive_signals();
 	cleanup_ast(ast);
 	cleanup_tokens(tokens);

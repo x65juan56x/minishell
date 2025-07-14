@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int	run_shell_loop(char ***envp_ptr)
+int	run_shell_loop(char ***envp_ptr, t_shell_context **shell_context)
 {
 	char	*input;
 	int		exit_status;
@@ -46,7 +46,7 @@ int	run_shell_loop(char ***envp_ptr)
 			break ;
 		}
 		if (*input)
-			exit_status = process_command_line(input, envp_ptr);
+			exit_status = process_command_line(input, envp_ptr, shell_context);
 		free(input);
 	}
 	return (exit_status);
