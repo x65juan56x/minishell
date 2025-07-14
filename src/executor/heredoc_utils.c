@@ -57,9 +57,25 @@ int	read_heredoc_input(char *delimiter, int write_fd)
  *   - `ft_strcmp`
  *   - `write_line_to_pipe`
  *   - `free`
- */
+*/
 
- // Esta función devuelve el *nombre* del fichero temporal, no un fd.
+// Esta función abre y escribe en un fichero cuyo nombre se le pasa.
+// Devuelve 0 en éxito, -1 en error.
+int	create_heredoc_file(const char *filename, char *delimiter)
+{
+    int	fd;
+
+    fd = open(filename, O_CREAT | O_EXCL | O_WRONLY, 0600);
+    if (fd < 0)
+        return (perror("minishell: heredoc"), -1);
+    // read_heredoc_input se encarga de leer del usuario y escribir en el fd.
+    read_heredoc_input(delimiter, fd);
+    close(fd);
+    return (0);
+}
+
+/*
+// Esta función devuelve el *nombre* del fichero temporal, no un fd.
 char	*create_heredoc_temp_file(char *delimiter, int heredoc_id)
 {
 	char	*filename;
@@ -86,3 +102,4 @@ char	*create_heredoc_temp_file(char *delimiter, int heredoc_id)
 	close(fd);
 	return (filename);
 }
+*/

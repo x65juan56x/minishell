@@ -123,4 +123,4 @@ cat
 	ctrl + C ✅
 	ctrl + \ ✅
 
-Considerar poner envp_ptr y heredoc_id_ptr dentro de la struct shell_context para no pasar tantas variables
+Considerar poner envp_ptr y heredoc_id_ptr dentro de la struct shell_context para no pasar tantas variables => Solo pasar envp_ptr

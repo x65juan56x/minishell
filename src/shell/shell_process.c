@@ -15,6 +15,7 @@ int	process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_c
 	int			heredoc_id;
 
 	heredoc_id = 0;
+	shell_context->heredoc_files = NULL;
 	tokens = tokenize(input);
 	if (!tokens)
 		return (1);
@@ -28,6 +29,7 @@ int	process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_c
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
 	exit_status = execute_ast(ast, envp_ptr, &heredoc_id, shell_context);
 	setup_interactive_signals();
+	cleanup_heredoc_files(shell_context);
 	cleanup_ast(ast);
 	cleanup_tokens(tokens);
 	return (exit_status);

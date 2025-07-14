@@ -40,7 +40,7 @@ int	execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_
 {
 	if (!ast)
 		return (0);
-	if (preprocess_heredocs(&ast, heredoc_id_ptr) != 0)
+	if (preprocess_heredocs(&ast, heredoc_id_ptr, shell_context) != 0)
 		return (130);
 	if (ast->type == NODE_OR || ast->type == NODE_AND)
 		return (handle_logical_op(ast, envp_ptr, heredoc_id_ptr, shell_context));

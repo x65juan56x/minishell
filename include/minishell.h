@@ -94,6 +94,7 @@ typedef struct s_pipe_state
 typedef struct s_shell_context
 {
 	int				exit_status;	// Estado de salida del shell
+	t_list			*heredoc_files;	// Lista para rastrear ficheros heredoc
 } t_shell_context;
 
 
@@ -168,14 +169,14 @@ int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* HEREDOC EXECUTOR */
-int				execute_heredoc(char *delimiter, int *heredoc_id_ptr);
+int				execute_heredoc(const char *filename, char *delimiter);
 
 /* HEREDOC UTILS */
 void			disable_ctrl_echo(struct termios *orig_termios);
-char			*create_heredoc_temp_file(char *delimiter, int heredoc_id_ptr);
+int				create_heredoc_file(const char *filename, char *delimiter);
 
 /* HEREDOC PREPROCESSOR */
-int				preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr);
+int				preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* PATH UTILS */
 char			*find_command_path(char *cmd, char **envp);
@@ -204,5 +205,6 @@ char			*get_user_input(void);
 int				handle_input_line(char *input);
 int				process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_context);
 int				run_shell_loop(char ***envp_ptr, t_shell_context *shell_context);
+void			cleanup_heredoc_files(t_shell_context *shell_context);
 
 #endif

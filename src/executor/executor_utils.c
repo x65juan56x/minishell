@@ -24,3 +24,22 @@ int	analyze_child_status(int status)
 	}
 	return (status);
 }
+
+void	cleanup_heredoc_files(t_shell_context *shell_context)
+{
+    t_list	*current;
+    t_list	*next;
+
+    if (!shell_context || !shell_context->heredoc_files)
+        return ;
+    current = shell_context->heredoc_files;
+    while (current)
+    {
+        next = current->next;
+        unlink((char *)current->content);
+        free(current->content);
+        free(current);
+        current = next;
+    }
+    shell_context->heredoc_files = NULL;
+}
