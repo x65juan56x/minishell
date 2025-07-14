@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static int	handle_simple_command_fork(t_ast_node *ast, char ***envp_ptr, t_shell_context **shell_context)
+static int	handle_simple_command_fork(t_ast_node *ast, char ***envp_ptr, t_shell_context *shell_context)
 {
 	pid_t	pid;
 	int		status;
@@ -20,11 +20,11 @@ static int	handle_simple_command_fork(t_ast_node *ast, char ***envp_ptr, t_shell
 	waitpid(pid, &status, 0);
 	setup_interactive_signals();
 	exit_code = (analyze_child_status(status));
-	(*shell_context)->exit_status = exit_code;
+	shell_context->exit_status = exit_code;
 	return (exit_code);
 }
 
-static int	handle_logical_op(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context **shell_context)
+static int	handle_logical_op(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	int	status;
 
@@ -36,7 +36,7 @@ static int	handle_logical_op(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_
 	return (execute_ast(ast->right, envp_ptr, heredoc_id_ptr, shell_context));
 }
 
-int	execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context **shell_context)
+int	execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	if (!ast)
 		return (0);

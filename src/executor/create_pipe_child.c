@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static void	child_process_routine(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context **shell_context)
+static void	child_process_routine(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	int	exit_code;
 
@@ -21,7 +21,7 @@ static void	child_process_routine(t_ast_node *node, t_pipe_config *config, int *
 	exit(exit_code);
 }
 
-pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context **shell_context)
+pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	pid_t	pid;
 

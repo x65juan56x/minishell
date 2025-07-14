@@ -13,7 +13,7 @@ static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast, char ***envp_ptr)
 	return (0);
 }
 
-static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr, t_shell_context **shell_context)
+static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	int	pipe_fd[2];
 
@@ -32,7 +32,7 @@ static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr, t_shell_c
 	return (0);
 }
 
-static int	execute_last_command(t_pipe_state *st, int *heredoc_id_ptr, t_shell_context **shell_context)
+static int	execute_last_command(t_pipe_state *st, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	st->pids[st->i] = fork();
 	if (st->pids[st->i] == -1)
@@ -44,7 +44,7 @@ static int	execute_last_command(t_pipe_state *st, int *heredoc_id_ptr, t_shell_c
 	return (0);
 }
 
-int	execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context **shell_context)
+int	execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	t_pipe_state	st;
 

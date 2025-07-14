@@ -7,7 +7,7 @@ static int	handle_parsing_error(t_token *tokens)
 	return (2);
 }
 
-int	process_command_line(char *input, char ***envp_ptr, t_shell_context **shell_context)
+int	process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_context)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;

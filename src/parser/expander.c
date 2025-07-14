@@ -40,13 +40,13 @@ char	*expand_pid(int *i)
 	return pid_str;
 }
 
-char 	*expand_status(int *i, t_shell_context **shell_context)
+char 	*expand_status(int *i, t_shell_context *shell_context)
 {
 	int		status;
 	char	*status_str;
 	int		len;
 
-	status = (*shell_context)->exit_status;
+	status = shell_context->exit_status;
 	status_str = ft_itoa(status);
 	len = ft_strlen(status_str);
 	*i = *i + len;
@@ -65,7 +65,7 @@ char 	*extract_var_name(char *str, int *i)
 	return(ft_substr(str, *i, len));
 }
 
-char	*do_expand(t_token *token, int *i, t_shell_context **shell_context)
+char	*do_expand(t_token *token, int *i, t_shell_context *shell_context)
 {
 	char	*variable;
 	char	*env_value;
@@ -110,7 +110,7 @@ char	*copy_non_expanded(char *value, int *i, char *var_expanded)
 	(*i)++;
 	return (var_expanded);
 }
-void	expander_var(t_token *token_list, t_shell_context **shell_context)
+void	expander_var(t_token *token_list, t_shell_context *shell_context)
 {
 	t_token *tmp;
 	char *var_expanded;

@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int	run_shell_loop(char ***envp_ptr, t_shell_context **shell_context)
+int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
 {
 	char	*input;
 	int		exit_status;

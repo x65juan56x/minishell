@@ -144,11 +144,11 @@ int				are_quotes_unclosed(const char *s);
 
 /* EXPANDER */
 void			is_expand_needed (char *s, int quoted, t_token *token);
-void			expander_var(t_token *token_list, t_shell_context **shell_context);
-char			*do_expand(t_token *token, int *i, t_shell_context **shell_context);
+void			expander_var(t_token *token_list, t_shell_context *shell_context);
+char			*do_expand(t_token *token, int *i, t_shell_context *shell_context);
 
 /* EXECUTOR */
-int				execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context **shell_context);
+int				execute_ast(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				execute_simple_command(t_ast_node *node, char ***envp_ptr);
 void			launch_command(char **args, char **envp);
 
@@ -158,14 +158,14 @@ int				analyze_child_status(int status);
 int				apply_redirections(t_ast_node *node);
 
 /* PIPE EXECUTOR */
-int				execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context **shell_context);
+int				execute_pipe_line(t_ast_node *ast, char ***envp_ptr, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				wait_for_all_children(pid_t *pids, int num_cmds);
 
 /* PIPE EXECUTOR UTILS */
 int				count_pipe_commands(t_ast_node *ast);
-void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context **shell_context);
+void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
-pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context **shell_context);
+pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* HEREDOC EXECUTOR */
 int				execute_heredoc(char *delimiter, int *heredoc_id_ptr);
@@ -202,7 +202,7 @@ int				builtin_unset(char **args, char ***envp_ptr);
 char			**init_shell_environment(char **envp);
 char			*get_user_input(void);
 int				handle_input_line(char *input);
-int				process_command_line(char *input, char ***envp_ptr, t_shell_context **shell_context);
-int				run_shell_loop(char ***envp_ptr, t_shell_context **shell_context);
+int				process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_context);
+int				run_shell_loop(char ***envp_ptr, t_shell_context *shell_context);
 
 #endif

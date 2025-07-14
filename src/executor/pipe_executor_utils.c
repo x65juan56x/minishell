@@ -17,7 +17,7 @@ int	count_pipe_commands(t_ast_node *ast)
 	return (count);
 }
 
-void	child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context **shell_context)
+void	child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context *shell_context)
 {
 	free(st->pids);
 	setup_child_signals();
