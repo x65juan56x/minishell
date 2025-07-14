@@ -3,11 +3,9 @@
 int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
 {
 	char	*input;
-	int		exit_status;
 	char	*temp;
 	char	*full_input;
 
-	exit_status = 0;
 	while (1)
 	{
 		setup_interactive_signals(); // Configurar señales para el modo interactivo al inicio de cada bucle. Esto asegura que el shell siempre esté listo para recibir entrada.
@@ -39,15 +37,15 @@ int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
 			free(full_input);
 		}
 		if (g_signal_status == SIGINT) // Si Ctrl+C fue presionado durante readline, g_signal_status será SIGINT.
-			exit_status = 130;
+			shell_context->exit_status = 130;
 		if (handle_input_line(input))
 		{
 			free(input);
 			break ;
 		}
 		if (*input)
-			exit_status = process_command_line(input, envp_ptr, shell_context);
+			shell_context->exit_status = process_command_line(input, envp_ptr, shell_context);
 		free(input);
 	}
-	return (exit_status);
+	return (shell_context->exit_status);
 }
