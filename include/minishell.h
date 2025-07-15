@@ -190,10 +190,11 @@ void			ignore_signals(void);
 /* BUILTINS */
 int				is_builtin(char *cmd);
 int				is_builtin_parent(char *cmd);
+char			*get_env_value(const char *var_name, t_shell_context *shell_context);
 int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
-int				builtin_env(t_shell_context *shell_context);
+int				builtin_env(char **envp);
 int				builtin_exit(char **args);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);

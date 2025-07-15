@@ -83,7 +83,7 @@ char	*do_expand(t_token *token, int *i, t_shell_context *shell_context)
 		{
 			variable = extract_var_name(token->value, i);
 			*i = *i + ft_strlen(variable);
-			env_value = getenv(variable);
+			env_value = get_env_value(variable, shell_context);
 			free(variable);
 			if (env_value)
 				return(ft_strdup(env_value));

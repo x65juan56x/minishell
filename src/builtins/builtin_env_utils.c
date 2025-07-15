@@ -1,5 +1,25 @@
 #include "../../include/minishell.h"
 
+// Función auxiliar para obtener el valor de una variable de nuestro entorno.
+// No usamos getenv() porque debemos leer de nuestra copia privada.
+char	*get_env_value(const char *var_name, t_shell_context *shell_context)
+{
+	int		i;
+	size_t	len;
+
+	if (!var_name || !shell_context || !shell_context->envp_cpy)
+		return (NULL);
+	i = 0;
+	len = ft_strlen(var_name);
+	while (shell_context->envp_cpy[i])
+	{
+		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
+			return (shell_context->envp_cpy[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
 static int	is_valid_identifier(const char *name)
 {
 	int	i;
@@ -65,7 +85,7 @@ int	builtin_export(char **args, t_shell_context *shell_context)
 	int		idx;
 
 	if (!args[1])
-		return (builtin_env(shell_context));
+		return (builtin_env(shell_context->envp_cpy));
 	i = 1;
 	while (args[i])
 	{

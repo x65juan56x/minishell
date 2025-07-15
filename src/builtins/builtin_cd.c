@@ -25,24 +25,6 @@ static int	update_env_var(const char *var_name, const char *value,
 	return (0);
 }
 
-// Función auxiliar para obtener el valor de una variable de nuestro entorno.
-// No usamos getenv() porque debemos leer de nuestra copia privada.
-static char	*get_env_value(const char *var_name, t_shell_context *shell_context)
-{
-	int		i;
-	size_t	len;
-
-	i = 0;
-	len = ft_strlen(var_name);
-	while (shell_context->envp_cpy[i])
-	{
-		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
-			return (shell_context->envp_cpy[i] + len + 1);
-		i++;
-	}
-	return (NULL);
-}
-
 static int	go_to_path(const char *path, t_shell_context *shell_context)
 {
 	char	*old_pwd_val;

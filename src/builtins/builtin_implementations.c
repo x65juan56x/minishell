@@ -39,19 +39,19 @@ int	builtin_pwd(void)
 	return (0);
 }
 
-int	builtin_env(t_shell_context *shell_context)
+int	builtin_env(char **envp)
 {
 	int	i;
 
-	if (!shell_context->envp_cpy)
+	if (!envp)
 	{
 		ft_putstr_fd("minishell: env: invalid environment\n", STDERR_FILENO);
 		return (1);
 	}
 	i = 0;
-	while (shell_context->envp_cpy[i])
+	while (envp[i])
 	{
-		if (ft_putstrplus_fd(STDOUT_FILENO, shell_context->envp_cpy[i]) == -1) // Escribir la variable de entorno
+		if (ft_putstrplus_fd(STDOUT_FILENO, envp[i]) == -1) // Escribir la variable de entorno
 			return (perror("minishell: env"), 1);
 		if (ft_putcharplus_fd(STDOUT_FILENO, '\n') == -1) // Escribir el newline
 			return (perror("minishell: env"), 1);
