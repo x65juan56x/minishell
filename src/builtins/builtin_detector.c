@@ -21,20 +21,20 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	execute_builtin(char **args, char ***envp_ptr)
+int	execute_builtin(char **args, t_shell_context *shell_context)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
 	if (ft_strcmp(args[0], "cd") == 0)
-		return (builtin_cd(args, envp_ptr));
+		return (builtin_cd(args, shell_context));
 	if (ft_strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
 	if (ft_strcmp(args[0], "export") == 0)
-		return (builtin_export(args, envp_ptr));
+		return (builtin_export(args, shell_context));
 	if (ft_strcmp(args[0], "unset") == 0)
-		return (builtin_unset(args, envp_ptr));
+		return (builtin_unset(args, shell_context));
 	if (ft_strcmp(args[0], "env") == 0)
-		return (builtin_env(*envp_ptr));
+		return (builtin_env(shell_context));
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (builtin_exit(args));
 	return (1);

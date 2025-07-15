@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast, t_shell_context *shell_context)
+static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast)
 {
 	st->num_cmds = count_pipe_commands(ast);
 	st->pids = malloc(sizeof(pid_t) * st->num_cmds);
@@ -9,7 +9,6 @@ static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast, t_shell_context *s
 	st->i = 0;
 	st->curr = ast;
 	st->prev_pipe_fd = -1;
-	st->envp_ptr = shell_context->envp_cpy;
 	return (0);
 }
 
@@ -48,7 +47,7 @@ int	execute_pipe_line(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *she
 {
 	t_pipe_state	st;
 
-	if (init_pipe_state(&st, ast, shell_context) != 0)
+	if (init_pipe_state(&st, ast) != 0)
 		return (1);
 	while (st.curr->type == NODE_PIPE)
 		if (execute_pipe_segment(&st, heredoc_id_ptr, shell_context) != 0)

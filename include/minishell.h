@@ -88,7 +88,6 @@ typedef struct s_pipe_state
     int			i;
     int			prev_pipe_fd;
     t_ast_node	*curr;
-    char		***envp_ptr;
 }	t_pipe_state;
 
 typedef struct s_shell_context
@@ -194,7 +193,7 @@ int				is_builtin_parent(char *cmd);
 int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
-int				builtin_env(char **envp);
+int				builtin_env(t_shell_context *shell_context);
 int				builtin_exit(char **args);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);

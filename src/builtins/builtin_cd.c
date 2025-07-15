@@ -3,7 +3,7 @@
 // Función auxiliar para actualizar una variable de entorno o crearla si no existe.
 // Es una versión simplificada de `export` para uso interno.
 static int	update_env_var(const char *var_name, const char *value,
-							char ***envp_ptr)
+							t_shell_context *shell_context)
 {
 	char	*new_var;
 	char	*temp;
@@ -20,67 +20,76 @@ static int	update_env_var(const char *var_name, const char *value,
 	export_args[0] = "export";
 	export_args[1] = new_var;
 	export_args[2] = NULL;
-	builtin_export(export_args, envp_ptr);
+	builtin_export(export_args, shell_context);
 	free(new_var);
 	return (0);
 }
 
 // Función auxiliar para obtener el valor de una variable de nuestro entorno.
 // No usamos getenv() porque debemos leer de nuestra copia privada.
-static char	*get_env_value(const char *var_name, char **envp)
+static char	*get_env_value(const char *var_name, t_shell_context *shell_context)
 {
 	int		i;
 	size_t	len;
 
 	i = 0;
 	len = ft_strlen(var_name);
-	while (envp[i])
+	while (shell_context->envp_cpy[i])
 	{
-		if (ft_strncmp(envp[i], var_name, len) == 0 && envp[i][len] == '=')
-			return (envp[i] + len + 1);
+		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
+			return (shell_context->envp_cpy[i] + len + 1);
 		i++;
 	}
 	return (NULL);
 }
 
-static int	go_to_path(const char *path, char ***envp_ptr)
+static int	go_to_path(const char *path, t_shell_context *shell_context)
 {
-	char	*old_pwd;
-	char	new_pwd[1024];
+	char	*old_pwd_val;
+	char	*old_pwd_copy;
+	char	*new_pwd;
 
-	old_pwd = get_env_value("PWD", *envp_ptr);
-	if (chdir(path) != 0)
+	old_pwd_val = get_env_value("PWD", shell_context);
+	old_pwd_copy = NULL;
+	if (old_pwd_val)
 	{
-		perror("minishell: cd");
-		return (1);
+		old_pwd_copy = ft_strdup(old_pwd_val); // Duplicamos para seguridad
+		if (!old_pwd_copy)
+			return (1); // Error de malloc
 	}
-	if (old_pwd)
-		update_env_var("OLDPWD", old_pwd, envp_ptr);
-	if (getcwd(new_pwd, sizeof(new_pwd)) != NULL)
-		update_env_var("PWD", new_pwd, envp_ptr);
+	if (chdir(path) != 0)
+		return (perror("minishell: cd"), free(old_pwd_copy), 1);
+	if (old_pwd_copy)
+		update_env_var("OLDPWD", old_pwd_copy, shell_context);
+	free(old_pwd_copy);
+	new_pwd = getcwd(NULL, 0); // getcwd asigna memoria dinámicamente
+	if (new_pwd)
+		update_env_var("PWD", new_pwd, shell_context);
+	if (new_pwd)
+		free(new_pwd); // Liberamos la memoria asignada por getcwd
 	else
 		return (perror("minishell: cd: getcwd"), 1);
 	return (0);
 }
 
-int	builtin_cd(char **args, char ***envp_ptr)
+int	builtin_cd(char **args, t_shell_context *shell_context)
 {
 	char	*path;
 
 	if (!args[1])
 	{
-		path = get_env_value("HOME", *envp_ptr);
+		path = get_env_value("HOME", shell_context);
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: HOME not set", 2), 1);
 	}
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
-		path = get_env_value("OLDPWD", *envp_ptr);
+		path = get_env_value("OLDPWD", shell_context);
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2), 1);
 		ft_putendl_fd(path, STDOUT_FILENO); // `cd -` imprime el directorio al que va
 	}
 	else
 		path = args[1];
-	return (go_to_path(path, envp_ptr));
+	return (go_to_path(path, shell_context));
 }

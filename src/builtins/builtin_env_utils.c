@@ -16,48 +16,48 @@ static int	is_valid_identifier(const char *name)
 	return (1);
 }
 
-static int	find_env_var_index(const char *name, char **envp)
+static int	find_env_var_index(const char *name, t_shell_context *shell_context)
 {
 	int		i;
 	size_t	len;
 
 	i = 0;
 	len = ft_strlen(name);
-	while (envp[i])
+	while (shell_context->envp_cpy[i])
 	{
-		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+		if (ft_strncmp(shell_context->envp_cpy[i], name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-static int	add_new_env_var(const char *arg, char ***envp_ptr)
+static int	add_new_env_var(const char *arg, t_shell_context *shell_context)
 {
 	char	**new_envp;
 	int		count;
 	int		i;
 
 	count = 0;
-	while ((*envp_ptr)[count])
+	while ((shell_context->envp_cpy)[count])
 		count++;
 	new_envp = malloc(sizeof(char *) * (count + 2));
 	if (!new_envp)
 		return (1);
 	i = -1;
-	while ((*envp_ptr)[++i])
+	while ((shell_context->envp_cpy)[++i])
 	{
-		new_envp[i] = (*envp_ptr)[i];
-		(*envp_ptr)[i] = NULL;
+		new_envp[i] = (shell_context->envp_cpy)[i];
+		(shell_context->envp_cpy)[i] = NULL;
 	}
 	new_envp[i] = ft_strdup(arg);
 	new_envp[i + 1] = NULL;
-	free(*envp_ptr);
-	*envp_ptr = new_envp;
+	free(shell_context->envp_cpy);
+	shell_context->envp_cpy = new_envp;
 	return (0);
 }
 
-int	builtin_export(char **args, char ***envp_ptr)
+int	builtin_export(char **args, t_shell_context *shell_context)
 {
 	int		i;
 	char	*var_name;
@@ -65,7 +65,7 @@ int	builtin_export(char **args, char ***envp_ptr)
 	int		idx;
 
 	if (!args[1])
-		return (builtin_env(*envp_ptr));
+		return (builtin_env(shell_context));
 	i = 1;
 	while (args[i])
 	{
@@ -83,21 +83,21 @@ int	builtin_export(char **args, char ***envp_ptr)
 			i++;
 			continue ;
 		}
-		idx = find_env_var_index(var_name, *envp_ptr);
+		idx = find_env_var_index(var_name, shell_context);
 		if (idx != -1 && eq_ptr)
 		{
-			free((*envp_ptr)[idx]);
-			(*envp_ptr)[idx] = ft_strdup(args[i]);
+			free((shell_context->envp_cpy)[idx]);
+			(shell_context->envp_cpy)[idx] = ft_strdup(args[i]);
 		}
 		else if (idx == -1 && eq_ptr)
-			add_new_env_var(args[i], envp_ptr);
+			add_new_env_var(args[i], shell_context);
 		free(var_name);
 		i++;
 	}
 	return (0);
 }
 
-int	builtin_unset(char **args, char ***envp_ptr)
+int	builtin_unset(char **args, t_shell_context *shell_context)
 {
 	int		i;
 	int		idx;
@@ -116,13 +116,13 @@ int	builtin_unset(char **args, char ***envp_ptr)
 			i++;
 			continue ;
 		}
-		idx = find_env_var_index(args[i], *envp_ptr);
+		idx = find_env_var_index(args[i], shell_context);
 		if (idx != -1)
 		{
-			var_to_remove = (*envp_ptr)[idx];
-			while ((*envp_ptr)[idx])
+			var_to_remove = (shell_context->envp_cpy)[idx];
+			while ((shell_context->envp_cpy)[idx])
 			{
-				(*envp_ptr)[idx] = (*envp_ptr)[idx + 1];
+				(shell_context->envp_cpy)[idx] = (shell_context->envp_cpy)[idx + 1];
 				idx++;
 			}
 			free(var_to_remove);
