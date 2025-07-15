@@ -16,9 +16,6 @@ static int	update_env_var(const char *var_name, const char *value,
 	free(temp);
 	if (!new_var)
 		return (1);
-	// Usamos la misma lógica de export: buscar y reemplazar, o añadir.
-	// Esto requiere que `builtin_export` sea accesible o duplicar la lógica.
-	// Para simplicidad, asumimos que podemos llamar a una función que lo haga.
 	// Aquí simulamos la llamada a export con un solo argumento. (no la llamamos desde el ejecutor sino que la usamos directamente como auxiliar)
 	export_args[0] = "export";
 	export_args[1] = new_var;
@@ -62,10 +59,7 @@ static int	go_to_path(const char *path, char ***envp_ptr)
 	if (getcwd(new_pwd, sizeof(new_pwd)) != NULL)
 		update_env_var("PWD", new_pwd, envp_ptr);
 	else
-	{
-		perror("minishell: cd: getcwd");
-		return (1);
-	}
+		return (perror("minishell: cd: getcwd"), 1);
 	return (0);
 }
 

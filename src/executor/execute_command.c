@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int execute_simple_command(t_ast_node *node, char ***envp_ptr)
+int execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 {
 	t_ast_node *cmd_node = node;
 	t_ast_node *redirects[1024]; // Array para guardar punteros a nodos de redirect
@@ -24,7 +24,7 @@ int execute_simple_command(t_ast_node *node, char ***envp_ptr)
 		|| cmd_node->args[0][0] == '\0')
 		return (0);
 	if (is_builtin(cmd_node->args[0]))
-		return (execute_builtin(cmd_node->args, envp_ptr));
-	launch_command(cmd_node->args, *envp_ptr);
+		return (execute_builtin(cmd_node->args, shell_context));
+	launch_command(cmd_node->args, shell_context->envp_cpy);
 	return (127);
 }

@@ -7,7 +7,7 @@ static int	handle_parsing_error(t_token *tokens)
 	return (2);
 }
 
-int	process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_context)
+int	process_command_line(char *input, t_shell_context *shell_context)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
@@ -27,7 +27,7 @@ int	process_command_line(char *input, char ***envp_ptr, t_shell_context *shell_c
 		return (cleanup_tokens(tokens), exit_status);
 	}
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
-	exit_status = execute_ast(ast, envp_ptr, &heredoc_id, shell_context);
+	exit_status = execute_ast(ast, &heredoc_id, shell_context);
 	setup_interactive_signals();
 	cleanup_heredoc_files(shell_context);
 	cleanup_ast(ast);

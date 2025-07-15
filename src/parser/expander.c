@@ -37,7 +37,7 @@ char	*expand_pid(int *i)
 	pid = getpid();
 	pid_str = ft_itoa(pid);
 	*i = *i + 2; 
-	return pid_str;
+	return (pid_str);
 }
 
 char 	*expand_status(int *i, t_shell_context *shell_context)
@@ -61,7 +61,7 @@ char 	*extract_var_name(char *str, int *i)
 	while (str[(*i )+ len] && (ft_isalnum(str[(*i )+ len] ) || str[(*i )+ len]  == '_'))
 	{
 		len++;
-	}	
+	}
 	return(ft_substr(str, *i, len));
 }
 
@@ -126,7 +126,7 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 		if (tmp->expand != 1)
 		{
 			tmp = tmp->next;
-			continue;
+			continue ;
 		}
 		var_expanded = ft_strdup("");
 		i = 0;
@@ -141,7 +141,6 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 				free(var_expanded);
 				var_expanded = temp_string;
 				free(tmp_expanded);
-				//i++;
 			}
 			else 
 				var_expanded = copy_non_expanded(original_value, &i, var_expanded);

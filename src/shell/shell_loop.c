@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
+int	run_shell_loop(t_shell_context *shell_context)
 {
 	char	*input;
 	char	*temp;
@@ -32,10 +32,20 @@ int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
 			}
 			temp = ft_strjoin(input, "\n"); // Unimos la línea anterior con la nueva (añadiendo un \n)
 			free(input);
+			if (!temp)
+			{
+				free(full_input);
+				input = NULL;
+				break ;
+			}
 			input = ft_strjoin(temp, full_input);
 			free(temp);
 			free(full_input);
+			if (!input)
+				break ;
 		}
+		if (!input)
+			break ;
 		if (g_signal_status == SIGINT) // Si Ctrl+C fue presionado durante readline, g_signal_status será SIGINT.
 			shell_context->exit_status = 130;
 		if (handle_input_line(input))
@@ -44,7 +54,7 @@ int	run_shell_loop(char ***envp_ptr, t_shell_context *shell_context)
 			break ;
 		}
 		if (*input)
-			shell_context->exit_status = process_command_line(input, envp_ptr, shell_context);
+			shell_context->exit_status = process_command_line(input, shell_context);
 		free(input);
 	}
 	return (shell_context->exit_status);

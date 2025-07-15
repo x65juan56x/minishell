@@ -31,10 +31,10 @@ void	child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *her
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		exit(execute_ast(st->curr->left, st->envp_ptr, heredoc_id_ptr, shell_context));
+		exit(execute_ast(st->curr->left, heredoc_id_ptr, shell_context));
 	}
 	else
-		exit(execute_ast(st->curr, st->envp_ptr, heredoc_id_ptr, shell_context));
+		exit(execute_ast(st->curr, heredoc_id_ptr, shell_context));
 }
 
 int	parent_process_logic(t_pipe_state *st, int pipe_fd[2])
