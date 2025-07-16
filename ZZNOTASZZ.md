@@ -111,8 +111,6 @@ valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minish
 
 
 checkear:
- cat | input.txt
- falta salto de linea luego de hacer ^C para salir del error y recuperar el prompt
 
  cat << EOF | sort
 	ctrl + C ❌
@@ -122,5 +120,3 @@ cat << EOF
 cat
 	ctrl + C ✅
 	ctrl + \ ✅
-
-Considerar poner envp_ptr y heredoc_id_ptr dentro de la struct shell_context para no pasar tantas variables => Solo pasar envp_ptr

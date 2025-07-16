@@ -65,7 +65,7 @@ int	create_heredoc_file(const char *filename, char *delimiter)
 {
     int	fd;
 
-    fd = open(filename, O_CREAT | O_EXCL | O_WRONLY, 0600);
+    fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0600);
     if (fd < 0)
         return (perror("minishell: heredoc"), -1);
     // read_heredoc_input se encarga de leer del usuario y escribir en el fd.
