@@ -12,6 +12,7 @@
 # include "../libs/libft/libft.h"
 # include <signal.h>
 # include <termios.h>
+# include <dirent.h>
 
 #define CORAL_BOLD "\001\033[1;38;5;203m\002"
 #define RESET_COLOR "\001\033[0m\002"
@@ -43,6 +44,7 @@ typedef struct s_token
 	char			*value;
 	struct s_token	*next;
 	int				expand;
+	int				in_quotes;
 }	t_token;
 
 typedef enum e_node_type

@@ -28,6 +28,8 @@ SRC_FILES = minishell.c \
 			parser/parser_utils.c \
 			parser/parser_redirect_utils.c \
 			parser/expander.c \
+			parser/wildcard_expander.c \
+			parser/wildcard_utils.c \
 			signals/signals.c \
 			builtins/builtin_detector.c \
 			builtins/builtin_implementations.c \

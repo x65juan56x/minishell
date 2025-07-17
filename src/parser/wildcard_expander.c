@@ -62,16 +62,22 @@ t_token	*expand_wildcards(t_token *tokens)
 	current = tokens;
 	while (current)
 	{
-		if (current->type == TOKEN_WORD && current->expand != 2
+		if (current->type == TOKEN_WORD && current->in_quotes == 0
 			&& ft_strchr(current->value, '*'))
 		{
 			matches = create_match_tokens(current->value);
 			if (matches)
 			{
 				replace_token_with_matches(prev, current, matches);
-				current = (prev) ? prev->next : matches; // Avanzar al inicio de la nueva lista
-				if (!prev)
+				if (prev)
+					current = prev->next;
+				else
+				{
 					head = matches; // La cabeza de la lista ha cambiado
+					current = matches;
+				}
+				while (current && current->next)
+					current = current->next;
 			}
 		}
 		prev = current;
