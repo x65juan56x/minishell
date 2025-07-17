@@ -17,13 +17,12 @@ void	is_expand_needed(char *s, int quoted, t_token *token)
 				token->expand = 1;
 				return ;
 			}
-			if (ft_isalpha(s[i]) || s[i] == '_')
+			if (ft_isalpha(s[i]) || s[i] == '_' || s[i] == '{')
 			{
 				while (ft_isalnum(s[i]) || s[i] == '_')
 					i++;
 				token->expand = 1;
 			}
-			//else (caracter no valido)
 		}
 		i++;
 	}
@@ -58,37 +57,52 @@ char 	*extract_var_name(char *str, int *i)
 	int	len;
 
 	len = 0;
-	while (str[(*i )+ len] && (ft_isalnum(str[(*i )+ len] ) || str[(*i )+ len]  == '_'))
-	{
+	while (str[(*i) + len] && (ft_isalnum(str[(*i )+ len] ) || str[(*i )+ len]  == '_'))
 		len++;
-	}
 	return(ft_substr(str, *i, len));
+}
+
+char	*expand_var(int *i, t_shell_context *shell_context, t_token *token)
+{
+	char	*env_value;
+	char	*variable;
+
+	variable = extract_var_name(token->value, i);
+	*i = *i + ft_strlen(variable);
+	env_value = get_env_value(variable, shell_context);
+	free(variable);
+	if (env_value)
+		return(ft_strdup(env_value));
+	return (ft_strdup(""));
+}
+
+char	*expand_curly(int *i, t_shell_context *shell_context, t_token *token)
+{
+	char	*env_value;
+
+	(*i)++;
+	env_value = expand_var(i, shell_context, token);
+	if (token->value[*i] != '}')
+		return (ft_strdup(""));
+	else
+		(*i)++;
+	if (env_value)
+		return(ft_strdup(env_value));
+	return (ft_strdup(""));
 }
 
 char	*do_expand(t_token *token, int *i, t_shell_context *shell_context)
 {
-	char	*variable;
-	char	*env_value;
-
 	while (token->value[*i] != '\0')
 	{
 		if (token->value[*i] == '$')
 			return(expand_pid(i));
  		else if(token->value[*i] == '?')
-		{
 			return(expand_status(i, shell_context));
-		}
-		//$? expands to the exit status of the most recently executed foreground pipeline.
+		else if (token->value[*i] == '{')
+			return(expand_curly(i, shell_context, token));
 		else if(ft_isalpha(token->value[*i]) || token->value[*i] == '_')
-		{
-			variable = extract_var_name(token->value, i);
-			*i = *i + ft_strlen(variable);
-			env_value = get_env_value(variable, shell_context);
-			free(variable);
-			if (env_value)
-				return(ft_strdup(env_value));
-			return (ft_strdup(""));
-		}
+			return(expand_var(i, shell_context, token));
 		else
 		{
 			(*i)++;
@@ -99,7 +113,8 @@ char	*do_expand(t_token *token, int *i, t_shell_context *shell_context)
 }
 
 char	*copy_non_expanded(char *value, int *i, char *var_expanded)
-{
+{	
+
 	char	char_to_string[2];
 	char	*temp_string;
 	char_to_string[0] = value[*i];
@@ -120,7 +135,6 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 	char *tmp_expanded;
 
 	tmp = token_list;
-
 	while (tmp != NULL)
 	{
 		if (tmp->expand != 1)
