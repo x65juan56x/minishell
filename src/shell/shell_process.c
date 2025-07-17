@@ -20,6 +20,7 @@ int	process_command_line(char *input, t_shell_context *shell_context)
 	if (!tokens)
 		return (1);
 	expander_var(tokens, shell_context);
+	tokens = expand_wildcards(tokens);
 	ast = parse(tokens);
 	if (!ast)
 	{

@@ -143,6 +143,10 @@ int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
 
+/* WILDCARD EXPANSION */
+t_token			*expand_wildcards(t_token *tokens);
+int				match_wildcard(const char *str, const char *pattern);
+
 /* EXPANDER */
 void			is_expand_needed (char *s, int quoted, t_token *token);
 void			expander_var(t_token *token_list, t_shell_context *shell_context);

@@ -41,7 +41,10 @@ static t_token	*process_word(const char *input, int *i)
 	if (!value)
 		return (NULL);
 	token = create_token(TOKEN_WORD, value);
-	is_expand_needed (value, quoted, token);
+	if (quoted == 2)
+		token->expand = 2;
+	else
+		is_expand_needed (value, quoted, token);
 	return (token);
 }
 /*
