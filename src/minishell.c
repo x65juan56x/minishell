@@ -3,12 +3,14 @@
 // Función de limpieza para el contexto
 static void	cleanup_shell_context(t_shell_context *shell_context)
 {
-    if (!shell_context)
-        return;
-    if (shell_context->envp_cpy)
-        ft_freearr(shell_context->envp_cpy);
-    cleanup_heredoc_files(shell_context); // La limpieza de heredoc_files ya se hace en el bucle, pero por si acaso.
-    free(shell_context);
+	if (!shell_context)
+		return;
+	if (shell_context->envp_cpy)
+		ft_freearr(shell_context->envp_cpy);
+	if (shell_context->local_vars) // Limpiar variables locales
+		ft_lstclear(&shell_context->local_vars, free);
+	cleanup_heredoc_files(shell_context); // La limpieza de heredoc_files ya se hace en el bucle, pero por si acaso.
+	free(shell_context);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -23,6 +25,7 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	shell_context->exit_status = 0;
 	shell_context->heredoc_files = NULL;
+	shell_context->local_vars = NULL;
 	shell_context->envp_cpy = init_shell_environment(envp);
 	exit_status = run_shell_loop(shell_context);
 	rl_clear_history();

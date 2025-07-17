@@ -6,21 +6,35 @@ char	*get_env_value(const char *var_name, t_shell_context *shell_context)
 {
 	int		i;
 	size_t	len;
+	t_list	*current;
+	char	*content;
+	char	*eq_ptr;
 
 	if (!var_name || !shell_context || !shell_context->envp_cpy)
 		return (NULL);
 	i = 0;
 	len = ft_strlen(var_name);
-	while (shell_context->envp_cpy[i])
+	current = shell_context->local_vars; // Busca primero en las variables locales
+    while (current)
+    {
+        content = (char *)current->content;
+        eq_ptr = ft_strchr(content, '=');
+        if (eq_ptr && (size_t)(eq_ptr - content) == len
+            && ft_strncmp(content, var_name, len) == 0)
+            return (eq_ptr + 1);
+        current = current->next;
+    }
+	while (shell_context->envp_cpy && shell_context->envp_cpy[i]) // Luego busca en el env_cpy
 	{
-		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
+		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0
+			&& shell_context->envp_cpy[i][len] == '=')
 			return (shell_context->envp_cpy[i] + len + 1);
 		i++;
 	}
 	return (NULL);
 }
 
-static int	is_valid_identifier(const char *name)
+int	is_valid_identifier(const char *name)
 {
 	int	i;
 
@@ -36,7 +50,7 @@ static int	is_valid_identifier(const char *name)
 	return (1);
 }
 
-static int	find_env_var_index(const char *name, t_shell_context *shell_context)
+int	find_env_var_index(const char *name, t_shell_context *shell_context)
 {
 	int		i;
 	size_t	len;
@@ -45,109 +59,92 @@ static int	find_env_var_index(const char *name, t_shell_context *shell_context)
 	len = ft_strlen(name);
 	while (shell_context->envp_cpy[i])
 	{
-		if (ft_strncmp(shell_context->envp_cpy[i], name, len) == 0 && shell_context->envp_cpy[i][len] == '=')
+		if (ft_strncmp(shell_context->envp_cpy[i], name, len) == 0
+			&& shell_context->envp_cpy[i][len] == '=')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-static int	add_new_env_var(const char *arg, t_shell_context *shell_context)
+void	sort_and_print_export(char **envp_cpy)
 {
-	char	**new_envp;
 	int		count;
+	int		i;
+	char	*temp;
+	char	*name;
+	char	*value;
+
+	count = 0;
+	while (envp_cpy[count])
+		count++;
+	i = -1;
+	while (++i < count)
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		temp = ft_strchr(envp_cpy[i], '=');
+		name = ft_substr(envp_cpy[i], 0, temp - envp_cpy[i]);
+		value = temp + 1;
+		ft_putstr_fd(name, STDOUT_FILENO);
+		ft_putstr_fd("=\"", STDOUT_FILENO);
+		ft_putstr_fd(value, STDOUT_FILENO);
+		ft_putendl_fd("\"", STDOUT_FILENO);
+		free(name);
+	}
+}
+
+int	add_new_env_var(const char *arg, t_shell_context *shell_context)
+{
+	int		count;
+	char	**new_envp;
 	int		i;
 
 	count = 0;
-	while ((shell_context->envp_cpy)[count])
+	while (shell_context->envp_cpy[count])
 		count++;
 	new_envp = malloc(sizeof(char *) * (count + 2));
 	if (!new_envp)
 		return (1);
 	i = -1;
-	while ((shell_context->envp_cpy)[++i])
+	while (++i < count)
 	{
-		new_envp[i] = (shell_context->envp_cpy)[i];
-		(shell_context->envp_cpy)[i] = NULL;
+		new_envp[i] = ft_strdup(shell_context->envp_cpy[i]);
+		if (!new_envp[i])
+			return (ft_freearr(new_envp), 1);
 	}
 	new_envp[i] = ft_strdup(arg);
+	if (!new_envp[i])
+		return (ft_freearr(new_envp), 1);
 	new_envp[i + 1] = NULL;
-	free(shell_context->envp_cpy);
+	ft_freearr(shell_context->envp_cpy);
 	shell_context->envp_cpy = new_envp;
 	return (0);
 }
 
-int	builtin_export(char **args, t_shell_context *shell_context)
+void	remove_local_var(const char *name, t_list **local_vars)
 {
-	int		i;
-	char	*var_name;
-	char	*eq_ptr;
-	int		idx;
+	t_list	*prev;
+	t_list	*current;
+	size_t	name_len;
+	char	*content;
 
-	if (!args[1])
-		return (builtin_env(shell_context->envp_cpy));
-	i = 1;
-	while (args[i])
+	prev = NULL;
+	current = *local_vars;
+	name_len = ft_strlen(name);
+	while (current)
 	{
-		eq_ptr = ft_strchr(args[i], '=');
-		if (eq_ptr)
-			var_name = ft_substr(args[i], 0, eq_ptr - args[i]);
-		else
-			var_name = ft_strdup(args[i]);
-		if (!is_valid_identifier(var_name))
+		content = (char *)current->content;
+		if (ft_strncmp(content, name, name_len) == 0
+			&& (content[name_len] == '=' || content[name_len] == '\0'))
 		{
-			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-			ft_putstr_fd(args[i], STDERR_FILENO);
-			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-			free(var_name);
-			i++;
-			continue ;
+			if (prev)
+				prev->next = current->next;
+			else
+				*local_vars = current->next;
+			ft_lstdelone(current, free);
+			return ;
 		}
-		idx = find_env_var_index(var_name, shell_context);
-		if (idx != -1 && eq_ptr)
-		{
-			free((shell_context->envp_cpy)[idx]);
-			(shell_context->envp_cpy)[idx] = ft_strdup(args[i]);
-		}
-		else if (idx == -1 && eq_ptr)
-			add_new_env_var(args[i], shell_context);
-		free(var_name);
-		i++;
+		prev = current;
+		current = current->next;
 	}
-	return (0);
-}
-
-int	builtin_unset(char **args, t_shell_context *shell_context)
-{
-	int		i;
-	int		idx;
-	char	*var_to_remove;
-
-	if (!args[1])
-		return (0);
-	i = 1;
-	while (args[i])
-	{
-		if (!is_valid_identifier(args[i]))
-		{
-			ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
-			ft_putstr_fd(args[i], STDERR_FILENO);
-			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-			i++;
-			continue ;
-		}
-		idx = find_env_var_index(args[i], shell_context);
-		if (idx != -1)
-		{
-			var_to_remove = (shell_context->envp_cpy)[idx];
-			while ((shell_context->envp_cpy)[idx])
-			{
-				(shell_context->envp_cpy)[idx] = (shell_context->envp_cpy)[idx + 1];
-				idx++;
-			}
-			free(var_to_remove);
-		}
-		i++;
-	}
-	return (0);
 }

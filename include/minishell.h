@@ -96,7 +96,8 @@ typedef struct s_shell_context
 {
 	int				exit_status;	// Estado de salida del shell
 	t_list			*heredoc_files;	// Lista para rastrear ficheros heredoc
-	char			**envp_cpy; // Copia del entorno del shell
+	char			**envp_cpy;		// Copia del entorno del shell
+	t_list			*local_vars;	// Lista para variables locales
 } t_shell_context;
 
 
@@ -158,6 +159,7 @@ char			*do_expand(t_token *token, int *i, t_shell_context *shell_context);
 int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				execute_simple_command(t_ast_node *node, t_shell_context *shell_context);
 void			launch_command(char **args, char **envp);
+int				handle_variable_assignment(char **args, t_shell_context *context);
 
 /* EXECUTOR UTILS */
 void			print_signal_message(int signal_num);
@@ -194,9 +196,6 @@ void			setup_heredoc_signals(void);
 void			ignore_signals(void);
 
 /* BUILTINS */
-int				is_builtin(char *cmd);
-int				is_builtin_parent(char *cmd);
-char			*get_env_value(const char *var_name, t_shell_context *shell_context);
 int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
@@ -205,6 +204,18 @@ int				builtin_exit(char **args);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);
 int				builtin_unset(char **args, t_shell_context *shell_context);
+int				find_local_var(const char *name, t_list *local_vars);
+void			remove_local_var(const char *name, t_list **local_vars);
+
+/* BUILTINS UTILS */
+int				is_builtin(char *cmd);
+int				is_builtin_parent(char *cmd);
+char			*get_env_value(const char *var_name, t_shell_context *shell_context);
+int				is_valid_identifier(const char *name);
+int				add_new_env_var(const char *arg, t_shell_context *shell_context);
+int				find_env_var_index(const char *name, t_shell_context *shell_context);
+void			remove_local_var(const char *name, t_list **local_vars);
+void			sort_and_print_export(char **envp_cpy);
 
 /* SHELL MANAGEMENT */
 char			**init_shell_environment(char **envp);

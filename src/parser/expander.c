@@ -87,7 +87,7 @@ char	*expand_curly(int *i, t_shell_context *shell_context, t_token *token)
 	else
 		(*i)++;
 	if (env_value)
-		return(ft_strdup(env_value));
+		return(ft_strdup(env_value)); // El ft_strdup no es necesario porque la función expand_var ya está alocando memoria para env_value
 	return (ft_strdup(""));
 }
 
