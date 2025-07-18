@@ -18,6 +18,7 @@ static int	heredoc_parent_routine(pid_t pid, struct termios *orig_termios)
 		&& WEXITSTATUS(status) == 130))
 	{
 		g_signal_status = SIGINT;
+		write(STDOUT_FILENO, "\n", 1);
 		return (-1);
 	}
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
@@ -30,7 +31,8 @@ int	execute_heredoc(const char *filename, char *delimiter)
 	pid_t			pid;
 	struct termios	orig_termios;
 
-	disable_ctrl_echo(&orig_termios);
+//	disable_ctrl_echo(&orig_termios);
+	tcgetattr(STDIN_FILENO, &orig_termios);
 	ignore_signals();
 	pid = fork();
 	if (pid == -1)
