@@ -9,30 +9,30 @@ Ejecuta comandos básicos y analiza el uso de variables globales.
 
 - **Comando simple con ruta absoluta:**
   ```bash
-  MiniShell $ /bin/ls
+  ✅ MiniShell $ /bin/ls 
   ```
   - **Salida esperada:** El listado de archivos y directorios en la carpeta actual, seguido de un nuevo prompt.
 
 - **Otros comandos con ruta absoluta:**
   ```bash
-  MiniShell $ /bin/pwd
+  ✅ MiniShell $ /bin/pwd
   ```
   - **Salida esperada:** La ruta del directorio actual.
 
   ```bash
-  MiniShell $ /usr/bin/whoami
+  ✅ MiniShell $ /usr/bin/whoami
   ```
   - **Salida esperada:** Tu nombre de usuario.
 
 - **Comando vacío:**
   ```bash
-  MiniShell $ 
+  ✅ MiniShell $ 
   ```
   - **Salida esperada:** Simplemente un nuevo prompt, sin errores.
 
 - **Solo espacios o tabuladores:**
   ```bash
-  MiniShell $      
+  ✅ MiniShell $      
   ```
   - **Salida esperada:** Igual que un comando vacío, debe mostrar un nuevo prompt.
 
@@ -55,19 +55,19 @@ Ejecuta comandos con múltiples argumentos, sin usar comillas.
 ### Pruebas y Salidas Esperadas
 - **Comando con argumentos:**
   ```bash
-  MiniShell $ /bin/ls -l
+  ✅ MiniShell $ /bin/ls -l
   ```
   - **Salida esperada:** El listado detallado de archivos en el directorio actual.
 
 - **Comando con múltiples argumentos:**
   ```bash
-  MiniShell $ /bin/ls -la /tmp
+  ✅ MiniShell $ /bin/ls -la /tmp
   ```
   - **Salida esperada:** El listado detallado de todos los archivos (incluidos los ocultos) en `/tmp`.
 
 - **Comando echo con argumentos:**
   ```bash
-  MiniShell $ /bin/echo hello world
+  ✅ MiniShell $ /bin/echo hello world
   ```
   - **Salida esperada:**
     ```
@@ -76,19 +76,19 @@ Ejecuta comandos con múltiples argumentos, sin usar comillas.
 
 - **Comando de conteo de líneas:**
   ```bash
-  MiniShell $ /usr/bin/wc -l /etc/passwd
+  ❓✅ MiniShell $ /usr/bin/wc -l /etc/passwd
   ```
   - **Salida esperada:** El número de líneas del archivo `/etc/passwd`.
 
 - **Comando cat con archivo:**
   ```bash
-  MiniShell $ /bin/cat /etc/hosts
+  ✅ MiniShell $ /bin/cat /etc/hosts
   ```
   - **Salida esperada:** El contenido del archivo `/etc/hosts`.
 
 - **Comando grep con patrón:**
   ```bash
-  MiniShell $ /bin/grep root /etc/passwd
+  ✅ MiniShell $ /bin/grep root /etc/passwd
   ```
   - **Salida esperada:** Las líneas que contienen "root" en `/etc/passwd`.
 
@@ -102,7 +102,7 @@ Prueba el builtin `echo` con y sin la opción `-n`.
 ### Pruebas y Salidas Esperadas
 - **`echo` sin argumentos:**
   ```bash
-  MiniShell $ echo
+  ✅ MiniShell $ echo
   ```
   - **Salida esperada:** Un salto de línea.
     ```
@@ -111,45 +111,46 @@ Prueba el builtin `echo` con y sin la opción `-n`.
 
 - **`echo` con un argumento:**
   ```bash
-  MiniShell $ echo hello
+  ✅ MiniShell $ echo hello
   ```
   - **Salida esperada:** `hello` seguido de un salto de línea.
 
 - **`echo` con múltiples argumentos:**
   ```bash
-  MiniShell $ echo hello world
+  ✅ MiniShell $ echo hello world
   ```
   - **Salida esperada:** `hello world` seguido de un salto de línea.
 
 - **`echo` con la opción `-n`:**
   ```bash
-  MiniShell $ echo -n hello
+  ✅ MiniShell $ echo -n hello
   ```
   - **Salida esperada:** `hello` sin salto de línea. El siguiente prompt aparecerá en la misma línea.
 
 - **`echo` con `-n` y múltiples argumentos:**
   ```bash
-  MiniShell $ echo -n hello world
+  ✅ MiniShell $ echo -n hello world
   ```
   - **Salida esperada:** `hello world` sin salto de línea.
 
 - **`echo` solo con `-n`:**
   ```bash
-  MiniShell $ echo -n
+  ✅ MiniShell $ echo -n
   ```
   - **Salida esperada:** Ninguna salida, el prompt aparece en la misma línea.
 
 - **`echo` con `-n` en medio:**
   ```bash
-  MiniShell $ echo hello -n world
+  ✅ MiniShell $ echo hello -n world
   ```
   - **Salida esperada:** `hello -n world` seguido de un salto de línea (el `-n` no se interpreta si no está al principio).
 
 - **`echo` con múltiples `-n`:**
   ```bash
-  MiniShell $ echo -n -n hello
+  ✅ MiniShell $ echo -n -n hello
   ```
   - **Salida esperada:** `-n hello` sin salto de línea (solo el primer `-n` se interpreta).
+  - ⚠️ ** BASH: comparar**
 
 ---
 
