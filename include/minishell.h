@@ -154,6 +154,14 @@ int				match_wildcard(const char *str, const char *pattern);
 void			is_expand_needed (char *s, int quoted, t_token *token);
 void			expander_var(t_token *token_list, t_shell_context *shell_context);
 char			*do_expand(t_token *token, int *i, t_shell_context *shell_context);
+char			*copy_non_expanded(char *value, int *i, char *var_expanded);
+
+/* EXPANDER UTILS*/
+char			*expand_pid(int *i);
+char			*expand_status(int *i, t_shell_context *shell_context);
+char			*extract_var_name(char *str, int *i);
+char			*expand_var(int *i, t_shell_context *shell_context, t_token *token);
+char			*expand_curly(int *i, t_shell_context *shell_context, t_token *token);
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context);

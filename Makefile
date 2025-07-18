@@ -28,6 +28,7 @@ SRC_FILES = minishell.c \
 			parser/parser_utils.c \
 			parser/parser_redirect_utils.c \
 			parser/expander.c \
+			parser/expander_utils.c \
 			parser/wildcard_expander.c \
 			parser/wildcard_utils.c \
 			signals/signals.c \
