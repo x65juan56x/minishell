@@ -6,6 +6,7 @@ int	handle_variable_assignment(char **args, t_shell_context *context)
 	char	*var_name;
 	t_list	*new_node;
 
+	//printf("DEBUG: handle_variable_assignment called with %s\n", args[0]);/*DEBUG*/
 	eq_ptr = ft_strchr(args[0], '=');
 	if (!eq_ptr || eq_ptr == args[0])
 		return (0);
@@ -45,11 +46,18 @@ int execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 	while (j >= 0) // La última en la línea de comandos es la primera en el array, y será la última en ser aplicada en este bucle, por lo que "gana".
 		if (apply_redirections(redirects[j--]) != 0)
 			return (1);
+	if (cmd_node && cmd_node->args && cmd_node->args[0]
+        && ft_strchr(cmd_node->args[0], '=') && !cmd_node->args[1])
+    {
+        handle_variable_assignment(cmd_node->args, shell_context);
+//		debug_print_local_vars(shell_context);/*DEBUG*/
+        return (0);
+    }
+//	debug_print_local_vars(shell_context);/*DEBUG*/
 	if (!cmd_node || !cmd_node->args || !cmd_node->args[0] // 3. Ahora cmd_node apunta al comando real. Ejecutarlo.
 		|| cmd_node->args[0][0] == '\0')
 		return (0);
-	if (handle_variable_assignment(cmd_node->args, shell_context))
-		return (0);
+//	printf("DEBUG: execute_simple_command args[0]=%s\n", cmd_node->args[0]);/*DEBUG*/
 	if (is_builtin(cmd_node->args[0]))
 		return (execute_builtin(cmd_node->args, shell_context));
 	launch_command(cmd_node->args, shell_context->envp_cpy);

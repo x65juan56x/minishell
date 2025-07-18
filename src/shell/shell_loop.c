@@ -54,7 +54,13 @@ int	run_shell_loop(t_shell_context *shell_context)
 			break ;
 		}
 		if (*input)
+		{
+//			printf("DEBUG: Antes de process_command_line\n");/*DEBUG*/
+//			debug_print_local_vars(shell_context);/*DEBUG*/
 			shell_context->exit_status = process_command_line(input, shell_context);
+//			printf("DEBUG: Después de process_command_line\n");/*DEBUG*/
+//			debug_print_local_vars(shell_context);/*DEBUG*/
+		}
 		free(input);
 	}
 	return (shell_context->exit_status);

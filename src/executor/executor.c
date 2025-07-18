@@ -6,8 +6,8 @@ static int	handle_simple_command_fork(t_ast_node *ast, t_shell_context *shell_co
 	int		status;
 	int		exit_code;
 
-	if (ast->type == NODE_COMMAND && is_builtin_parent(ast->args[0]))
-		return (execute_builtin(ast->args, shell_context));
+	if (ast->type == NODE_COMMAND && (is_builtin_parent(ast->args[0]) || (ast->args[0] && ft_strchr(ast->args[0], '=') && !ast->args[1])))
+		return (execute_simple_command(ast, shell_context));
 	ignore_signals();
 	pid = fork();
 	if (pid == -1)

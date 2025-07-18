@@ -233,4 +233,7 @@ int				process_command_line(char *input, t_shell_context *shell_context);
 int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
 
+/* DEBUGGING */
+void			debug_print_local_vars(t_shell_context *ctx);
+
 #endif

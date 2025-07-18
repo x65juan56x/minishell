@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/13 12:36:39 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/07/18 18:16:15 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <unistd.h>
 
 # include <stdlib.h>
+
+//# include <stdio.h>/*DEBUG*/
 
 typedef struct s_node
 {

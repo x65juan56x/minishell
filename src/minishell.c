@@ -1,5 +1,17 @@
 #include "../include/minishell.h"
 
+void debug_print_local_vars(t_shell_context *ctx)
+{
+    t_list *cur = ctx->local_vars;
+    printf("DEBUG: local_vars: ");
+    while (cur)
+	{
+        printf("[%s] ", (char*)cur->content);
+        cur = cur->next;
+    }
+    printf("\n");
+}
+
 // Función de limpieza para el contexto
 static void	cleanup_shell_context(t_shell_context *shell_context)
 {
