@@ -1052,37 +1052,37 @@ Casos de comillas anidadas y su interpretación.
 
 - **Comillas simples dentro de dobles:**
   ```bash
-  MiniShell $ echo "'$USER'"
+  ❌MiniShell $ echo "'$USER'"❌
   ```
   - **Salida esperada:** `'testuser'`. Las comillas dobles exteriores se eliminan, las comillas simples interiores se tratan como caracteres literales, y `$USER` se expande.
 
 - **Comillas dobles dentro de simples:**
   ```bash
-  MiniShell $ echo '"$USER"'
+  ✅MiniShell $ echo '"$USER"'✅
   ```
   - **Salida esperada:** `"$USER"`. Las comillas simples exteriores se eliminan, y todo lo de adentro, incluidas las comillas dobles y el `$`, se trata como literal.
 
 - **Expansión normal:**
   ```bash
-  MiniShell $ echo "$USER"
+  ❌MiniShell $ echo "$USER"❌
   ```
   - **Salida esperada:** `testuser`.
 
 - **Sin expansión:**
   ```bash
-  MiniShell $ echo '$USER'
+  ✅MiniShell $ echo '$USER'✅
   ```
   - **Salida esperada:** `$USER`.
 
 - **Caso complejo con comillas simples:**
   ```bash
-  MiniShell $ echo "hello '$USER' world"
+  ❌MiniShell $ echo "hello '$USER' world"❌
   ```
   - **Salida esperada:** `hello 'testuser' world`.
 
 - **Caso complejo con comillas dobles:**
   ```bash
-  MiniShell $ echo 'hello "$USER" world'
+  ✅MiniShell $ echo 'hello "$USER" world'✅
   ```
   - **Salida esperada:** `hello "$USER" world`.
 
@@ -1126,7 +1126,7 @@ MiniShell $ echo "" "" ""
 
 #### Comillas anidadas complejas
 ```bash
-MiniShell $ echo "He said: \"She said: 'Hello world'\""
+❌MiniShell $ echo "He said: \"She said: 'Hello world'\""❌
 ```
 - **Salida esperada:** `He said: "She said: 'Hello world'"`.
 
@@ -1146,20 +1146,20 @@ MiniShell $ export VAR_123_ABC=test
 MiniShell $ export ___=empty
 MiniShell $ echo $_VAR $VAR_123_ABC $___
 ```
-- **Salida esperada:** `value test empty`.
+- **Salida esperada:** `value test empty`.✅
 
 #### Variables que no existen seguidas de texto
 ```bash
 MiniShell $ echo $NOEXISTEtest
 ```
-- **Salida esperada:** `test` (solo se expande `$NOEXISTE` a vacío).
+- **Salida esperada:** `test` (solo se expande `$NOEXISTE` a vacío).✅
 
 #### Variables con caracteres especiales en el valor
 ```bash
 MiniShell $ export SPECIAL='!@#$%^&*()[]{}|;:"<>?'
 MiniShell $ echo $SPECIAL
 ```
-- **Salida esperada:** `!@#$%^&*()[]{}|;:"<>?`.
+- **Salida esperada:** `!@#$%^&*()[]{}|;:"<>?`.✅
 
 #### Variable $? después de comandos con pipes
 ```bash
