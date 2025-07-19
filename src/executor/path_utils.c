@@ -112,7 +112,7 @@ char	*find_command_path(char *cmd, char **envp)
 	}
 	tmp = get_path_from_env(envp);
 	if (!tmp)
-		tmp = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+		return (NULL);
 	dirs = ft_split(tmp, ':');
 	if (!dirs)
 		return (NULL);

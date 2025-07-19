@@ -188,7 +188,7 @@ pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_
 int				execute_heredoc(const char *filename, char *delimiter);
 
 /* HEREDOC UTILS */
-void			disable_ctrl_echo(struct termios *orig_termios);
+// void			disable_ctrl_echo(struct termios *orig_termios);
 int				create_heredoc_file(const char *filename, char *delimiter);
 
 /* HEREDOC PREPROCESSOR */
@@ -235,5 +235,6 @@ void			cleanup_heredoc_files(t_shell_context *shell_context);
 
 /* DEBUGGING */
 void			debug_print_local_vars(t_shell_context *ctx);
+void			debug_print_expand(t_token token);
 
 #endif

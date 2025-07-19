@@ -12,6 +12,13 @@ void debug_print_local_vars(t_shell_context *ctx)
     printf("\n");
 }
 
+void debug_print_expand(t_token token)
+{
+    printf("DEBUG: expand: ");
+    printf("[%i] ", token.expand);
+    printf("\n");
+}
+
 // Función de limpieza para el contexto
 static void	cleanup_shell_context(t_shell_context *shell_context)
 {

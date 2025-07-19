@@ -12,7 +12,6 @@ char	*get_env_value(const char *var_name, t_shell_context *shell_context)
 
 	if (!var_name || !shell_context || !shell_context->envp_cpy)
 		return (NULL);
-	i = 0;
 	len = ft_strlen(var_name);
 	current = shell_context->local_vars; // Busca primero en las variables locales
     while (current)
@@ -24,13 +23,11 @@ char	*get_env_value(const char *var_name, t_shell_context *shell_context)
             return (eq_ptr + 1);
         current = current->next;
     }
-	while (shell_context->envp_cpy && shell_context->envp_cpy[i]) // Luego busca en el env_cpy
-	{
+	i = -1;
+	while (shell_context->envp_cpy && shell_context->envp_cpy[++i]) // Luego busca en el env_cpy
 		if (ft_strncmp(shell_context->envp_cpy[i], var_name, len) == 0
 			&& shell_context->envp_cpy[i][len] == '=')
 			return (shell_context->envp_cpy[i] + len + 1);
-		i++;
-	}
 	return (NULL);
 }
 

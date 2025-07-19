@@ -64,6 +64,8 @@ int	builtin_cd(char **args, t_shell_context *shell_context)
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: HOME not set", 2), 1);
 	}
+	else if (ft_strcmp(args[1], "") == 0)
+		return (0);
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
 		path = get_env_value("OLDPWD", shell_context);

@@ -563,7 +563,7 @@ Prueba el cambio de directorios.
 
 - **Argumento vacío:**
   ```bash
-  ⚠️MiniShell $ cd ""
+  ✅MiniShell $ cd ""
   ```
   - **Salida esperada:** Debería comportarse como `cd` sin argumentos (ir al HOME) o mostrar error.
 
@@ -635,7 +635,7 @@ Verifica que los comandos se buscan en los directorios especificados por `PATH`.
 
 - **Eliminar `PATH`:**
   ```bash
-  ❌MiniShell $ unset PATH
+  ✅MiniShell $ unset PATH
   MiniShell $ ls
   ```
   - **Salida esperada:** `minishell: ls: command not found`.
@@ -894,9 +894,15 @@ Verifica la correcta expansión de variables de entorno.
 
 - **Expansión en comillas dobles:**
   ```bash
-  ❌MiniShell $ echo "$USER"
+  ✅MiniShell $ echo "$USER"
   ```
   - **Salida esperada:** Tu nombre de usuario.
+
+- **Sin expansión en comillas dobles:**
+  ```bash
+  ❌MiniShell $ echo $"USER"
+  ```
+  - **Salida esperada:** `USER`.
 
 - **Sin expansión en comillas simples:**
   ```bash
@@ -1058,31 +1064,31 @@ Casos de comillas anidadas y su interpretación.
 
 - **Comillas simples dentro de dobles:**
   ```bash
-  ❌MiniShell $ echo "'$USER'"❌
+  ✅MiniShell $ echo "'$USER'"
   ```
   - **Salida esperada:** `'testuser'`. Las comillas dobles exteriores se eliminan, las comillas simples interiores se tratan como caracteres literales, y `$USER` se expande.
 
 - **Comillas dobles dentro de simples:**
   ```bash
-  ✅MiniShell $ echo '"$USER"'✅
+  ✅MiniShell $ echo '"$USER"'
   ```
   - **Salida esperada:** `"$USER"`. Las comillas simples exteriores se eliminan, y todo lo de adentro, incluidas las comillas dobles y el `$`, se trata como literal.
 
 - **Expansión normal:**
   ```bash
-  ❌MiniShell $ echo "$USER"❌
+  ✅MiniShell $ echo "$USER"
   ```
   - **Salida esperada:** `testuser`.
 
 - **Sin expansión:**
   ```bash
-  ✅MiniShell $ echo '$USER'✅
+  ✅MiniShell $ echo '$USER'
   ```
   - **Salida esperada:** `$USER`.
 
 - **Caso complejo con comillas simples:**
   ```bash
-  ❌MiniShell $ echo "hello '$USER' world"❌
+  ✅MiniShell $ echo "hello '$USER' world"
   ```
   - **Salida esperada:** `hello 'testuser' world`.
 
@@ -1120,26 +1126,26 @@ bash -c 'echo "test" > file.txt; cat file.txt'
 
 #### Comillas no cerradas (debería fallar)
 ```bash
-MiniShell $ echo "hello world
+✅MiniShell $ echo "hello world
 ```
 - **Salida esperada:** El shell debería pedir más entrada con `>` o mostrar error de sintaxis.
 
 #### Comillas vacías múltiples
 ```bash
-MiniShell $ echo "" "" ""
+✅MiniShell $ echo "" "" ""
 ```
 - **Salida esperada:** Dos líneas en blanco (tres argumentos vacíos).
 
 #### Comillas anidadas complejas
 ```bash
-❌MiniShell $ echo "He said: \"She said: 'Hello world'\""❌
+❌MiniShell $ echo "He said: \"She said: 'Hello world'\""
 ```
 - **Salida esperada:** `He said: "She said: 'Hello world'"`.
 
 #### Comillas simples dentro de comillas dobles con variables
 ```bash
-MiniShell $ export TEST="world"
-MiniShell $ echo "'Hello $TEST'"
+✅MiniShell $ export TEST="world"
+✅MiniShell $ echo "'Hello $TEST'"
 ```
 - **Salida esperada:** `'Hello world'`.
 
@@ -1147,30 +1153,30 @@ MiniShell $ echo "'Hello $TEST'"
 
 #### Variables con nombres válidos pero raros
 ```bash
-MiniShell $ export _VAR=value
-MiniShell $ export VAR_123_ABC=test
-MiniShell $ export ___=empty
-MiniShell $ echo $_VAR $VAR_123_ABC $___
+✅MiniShell $ export _VAR=value
+✅MiniShell $ export VAR_123_ABC=test
+✅MiniShell $ export ___=empty
+✅MiniShell $ echo $_VAR $VAR_123_ABC $___
 ```
-- **Salida esperada:** `value test empty`.✅
+- **Salida esperada:** `value test empty`.
 
 #### Variables que no existen seguidas de texto
 ```bash
-MiniShell $ echo $NOEXISTEtest
+✅MiniShell $ echo $NOEXISTEtest
 ```
-- **Salida esperada:** `test` (solo se expande `$NOEXISTE` a vacío).✅
+- **Salida esperada:** `test` (solo se expande `$NOEXISTE` a vacío).
 
 #### Variables con caracteres especiales en el valor
 ```bash
-MiniShell $ export SPECIAL='!@#$%^&*()[]{}|;:"<>?'
-MiniShell $ echo $SPECIAL
+✅MiniShell $ export SPECIAL='!@#$%^&*()[]{}|;:"<>?'
+✅MiniShell $ echo $SPECIAL
 ```
-- **Salida esperada:** `!@#$%^&*()[]{}|;:"<>?`.✅
+- **Salida esperada:** `!@#$%^&*()[]{}|;:"<>?`.
 
 #### Variable $? después de comandos con pipes
 ```bash
-MiniShell $ ls | grep nonexistent
-MiniShell $ echo $?
+✅MiniShell $ ls | grep nonexistent
+✅MiniShell $ echo $?
 ```
 - **Salida esperada:** `1` (código de salida de `grep`, no de `ls`).
 
@@ -1178,31 +1184,31 @@ MiniShell $ echo $?
 
 #### Múltiples redirecciones del mismo tipo
 ```bash
-MiniShell $ echo "test" > file1 > file2 > file3
+✅MiniShell $ echo "test" > file1 > file2 > file3
 ```
 - **Salida esperada:** Solo `file3` debería contener "test".
 
 #### Redirección a archivo sin permisos
 ```bash
-MiniShell $ echo "test" > /root/forbidden.txt
+✅MiniShell $ echo "test" > /root/forbidden.txt
 ```
 - **Salida esperada:** `Permission denied`.
 
 #### Redirección desde archivo que no existe
 ```bash
-MiniShell $ cat < /file/that/does/not/exist
+✅MiniShell $ cat < /file/that/does/not/exist
 ```
 - **Salida esperada:** `No such file or directory`.
 
 #### Redirección con nombre de archivo vacío
 ```bash
-MiniShell $ echo "test" > ""
+✅MiniShell $ echo "test" > ""
 ```
 - **Salida esperada:** Error de sintaxis o `No such file or directory`.
 
 #### Here document con delimitador que aparece en el contenido
 ```bash
-MiniShell $ cat << EOF
+✅MiniShell $ cat << EOF
 This line contains EOF in it
 EOF
 ```
@@ -1210,7 +1216,7 @@ EOF
 
 #### Here document con delimitador vacío
 ```bash
-MiniShell $ cat << ""
+✅MiniShell $ cat << ""
 test
 ""
 ```
@@ -1220,25 +1226,25 @@ test
 
 #### Pipe con comando que no existe
 ```bash
-MiniShell $ commandnotfound | cat
+✅MiniShell $ commandnotfound | cat
 ```
 - **Salida esperada:** Error de `commandnotfound`, `cat` no debería recibir entrada.
 
 #### Pipe con redirección compleja
 ```bash
-MiniShell $ echo "test" | cat > output.txt | wc -l
+✅MiniShell $ echo "test" | cat > output.txt | wc -l
 ```
 - **Salida esperada:** Comportamiento indefinido, posible error de sintaxis.
 
 #### Pipe al inicio de línea
 ```bash
-MiniShell $ | cat
+❌MiniShell $ | cat
 ```
 - **Salida esperada:** Error de sintaxis.
 
 #### Pipe al final de línea
 ```bash
-MiniShell $ echo "test" |
+❌MiniShell $ echo "test" |
 ```
 - **Salida esperada:** Error de sintaxis o prompt secundario.
 
@@ -1246,33 +1252,33 @@ MiniShell $ echo "test" |
 
 #### cd con múltiples argumentos
 ```bash
-MiniShell $ cd /tmp /home
+❌MiniShell $ cd /tmp /home
 ```
 - **Salida esperada:** `too many arguments`.
 
 #### cd con guión pero sin OLDPWD
 ```bash
-MiniShell $ unset OLDPWD
-MiniShell $ cd -
+✅MiniShell $ unset OLDPWD
+✅MiniShell $ cd -
 ```
 - **Salida esperada:** `OLDPWD not set`.
 
 #### export con igual al principio
 ```bash
-MiniShell $ export =value
+✅MiniShell $ export =value
 ```
 - **Salida esperada:** `not a valid identifier`.
 
 #### export con nombre que contiene espacios
 ```bash
-MiniShell $ export "VAR WITH SPACES"=value
+✅MiniShell $ export "VAR WITH SPACES"=value
 ```
 - **Salida esperada:** `not a valid identifier`.
 
 #### unset con argumentos especiales
 ```bash
-MiniShell $ unset ""
-MiniShell $ unset PATH HOME USER
+❌MiniShell $ unset ""
+✅MiniShell $ unset PATH HOME USER
 ```
 - **Salida esperada:** Primera línea posible error, segunda línea elimina las tres variables.
 
@@ -1280,7 +1286,7 @@ MiniShell $ unset PATH HOME USER
 
 #### Ctrl+C durante here document
 ```bash
-MiniShell $ cat << EOF
+✅MiniShell $ cat << EOF
 line1
 ^C
 ```
@@ -1288,7 +1294,7 @@ line1
 
 #### Ctrl+D durante here document
 ```bash
-MiniShell $ cat << EOF
+✅MiniShell $ cat << EOF
 line1
 ^D
 ```
@@ -1296,7 +1302,7 @@ line1
 
 #### Múltiples Ctrl+C consecutivos
 ```bash
-MiniShell $ ^C^C^C
+✅MiniShell $ ^C^C^C
 ```
 - **Salida esperada:** Múltiples nuevas líneas, prompt limpio.
 
@@ -1304,19 +1310,19 @@ MiniShell $ ^C^C^C
 
 #### Argumentos con solo espacios
 ```bash
-MiniShell $ echo "   " "   " "   "
+✅MiniShell $ echo "   " "   " "   "
 ```
 - **Salida esperada:** `         ` (tres grupos de espacios).
 
 #### Tabuladores vs espacios
 ```bash
-MiniShell $ echo "	" "    "
+✅MiniShell $ echo "	" "    "
 ```
 - **Salida esperada:** Un tabulador seguido de cuatro espacios.
 
 #### Argumentos extremadamente largos
 ```bash
-MiniShell $ echo $(python3 -c "print('a'*10000)")
+❌MiniShell $ echo $(python3 -c "print('a'*10000)")
 ```
 - **Salida esperada:** 10000 caracteres 'a' (si soporta expansión de comandos).
 
@@ -1324,28 +1330,28 @@ MiniShell $ echo $(python3 -c "print('a'*10000)")
 
 #### PATH con directorio inexistente
 ```bash
-MiniShell $ export PATH="/nonexistent:/bin"
-MiniShell $ ls
+✅MiniShell $ export PATH="/nonexistent:/bin"
+✅MiniShell $ ls
 ```
 - **Salida esperada:** Funciona (encuentra `ls` en `/bin`).
 
 #### PATH vacío
 ```bash
-MiniShell $ export PATH=""
-MiniShell $ ls
+✅MiniShell $ export PATH=""
+✅MiniShell $ ls
 ```
 - **Salida esperada:** `command not found`.
 
 #### PATH con solo dos puntos
 ```bash
-MiniShell $ export PATH=":"
-MiniShell $ ls
+✅MiniShell $ export PATH=":"
+✅MiniShell $ ls
 ```
 - **Salida esperada:** `command not found`.
 
 #### Comando con ruta que contiene espacios
 ```bash
-MiniShell $ "/bin/echo with spaces"
+✅MiniShell $ "/bin/echo with spaces"
 ```
 - **Salida esperada:** `No such file or directory`.
 
@@ -1353,26 +1359,26 @@ MiniShell $ "/bin/echo with spaces"
 
 #### Variable seguida inmediatamente de dígitos
 ```bash
-MiniShell $ export TEST=hello
-MiniShell $ echo $TEST123
+✅MiniShell $ export TEST=hello
+✅MiniShell $ echo $TEST123
 ```
 - **Salida esperada:** Vacío (busca la variable `TEST123`).
 
 #### Variable con llaves vacías
 ```bash
-MiniShell $ echo ${}
+❌MiniShell $ echo ${}
 ```
 - **Salida esperada:** `${}` literal o error de sintaxis.
 
 #### Variable con llaves sin cerrar
 ```bash
-MiniShell $ echo ${USER
+❌MiniShell $ echo ${USER
 ```
 - **Salida esperada:** Error de sintaxis.
 
 #### Múltiples signos de dólar
 ```bash
-MiniShell $ echo $$
+✅MiniShell $ echo $$
 ```
 - **Salida esperada:** El PID del shell (si soporta `$$`).
 
@@ -1380,26 +1386,26 @@ MiniShell $ echo $$
 
 #### Wildcard en directorio vacío
 ```bash
-MiniShell $ mkdir empty_dir
-MiniShell $ cd empty_dir
-MiniShell $ echo *
+✅MiniShell $ mkdir empty_dir
+✅MiniShell $ cd empty_dir
+✅MiniShell $ echo *
 ```
 - **Salida esperada:** `*` literal.
 
 #### Wildcard con archivos ocultos
 ```bash
-MiniShell $ echo .*
+❌MiniShell $ echo .*
 ```
 - **Salida esperada:** Archivos que empiecen con punto.
 
 #### Wildcard con caracteres especiales en nombres
 ```bash
-MiniShell $ touch "file with spaces.txt"
-MiniShell $ echo *.txt
+✅MiniShell $ touch "file with spaces.txt"
+✅MiniShell $ echo *.txt
 ```
 - **Salida esperada:** `file with spaces.txt`.
 
-### A11. Casos Edge de Operadores Lógicos (si implementado)
+### A11. Casos Edge de Operadores Lógicos
 
 #### Operadores sin espacios
 ```bash
@@ -1409,13 +1415,13 @@ MiniShell $ echo hello&&echo world
 
 #### Operadores al principio
 ```bash
-MiniShell $ && echo hello
+❌MiniShell $ && echo hello
 ```
 - **Salida esperada:** Error de sintaxis.
 
 #### Operadores al final
 ```bash
-MiniShell $ echo hello &&
+❌MiniShell $ echo hello &&
 ```
 - **Salida esperada:** Error de sintaxis o prompt secundario.
 
@@ -1423,19 +1429,19 @@ MiniShell $ echo hello &&
 
 #### Línea extremadamente larga
 ```bash
-MiniShell $ echo "$(python3 -c "print('a'*100000)")"
+❌MiniShell $ echo "$(python3 -c "print('a'*100000)")"
 ```
 - **Salida esperada:** 100000 caracteres 'a' o error de memoria.
 
 #### Muchos argumentos
 ```bash
-MiniShell $ echo $(seq 1 10000)
+❌MiniShell $ echo $(seq 1 10000)
 ```
 - **Salida esperada:** Números del 1 al 10000 o error.
 
 #### Pipes anidados profundos
 ```bash
-MiniShell $ echo test | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
+✅MiniShell $ echo test | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
 ```
 - **Salida esperada:** `test` o error de recursos.
 
@@ -1443,23 +1449,23 @@ MiniShell $ echo test | cat | cat | cat | cat | cat | cat | cat | cat | cat | ca
 
 #### Ejecutar archivo sin permisos de ejecución
 ```bash
-MiniShell $ touch noexec
-MiniShell $ chmod 644 noexec
-MiniShell $ ./noexec
+✅MiniShell $ touch noexec
+✅MiniShell $ chmod 644 noexec
+✅MiniShell $ ./noexec
 ```
 - **Salida esperada:** `Permission denied`.
 
 #### Ejecutar directorio
 ```bash
-MiniShell $ mkdir testdir
-MiniShell $ ./testdir
+⚠️MiniShell $ mkdir testdir
+⚠️MiniShell $ ./testdir
 ```
 - **Salida esperada:** `Is a directory`.
 
 #### Redirección a dispositivo
 ```bash
-MiniShell $ echo "test" > /dev/null
-MiniShell $ cat < /dev/zero | head -1
+✅MiniShell $ echo "test" > /dev/null
+⚠️MiniShell $ cat < /dev/zero | head -1
 ```
 - **Salida esperada:** Primera línea funciona, segunda muestra datos de `/dev/zero`.
 
@@ -1467,19 +1473,19 @@ MiniShell $ cat < /dev/zero | head -1
 
 #### Punto y coma al final
 ```bash
-MiniShell $ echo hello;
+❌MiniShell $ echo hello;
 ```
 - **Salida esperada:** `hello` (si soporta `;`) o error de sintaxis.
 
 #### Múltiples espacios y tabuladores
 ```bash
-MiniShell $ echo		hello			world
+❌MiniShell $ echo		hello			world
 ```
 - **Salida esperada:** `hello world` (espacios normalizados).
 
 #### Comando con solo espacios
 ```bash
-MiniShell $                    
+✅MiniShell $                    
 ```
 - **Salida esperada:** Nuevo prompt sin ejecutar nada.
 
@@ -1487,31 +1493,31 @@ MiniShell $
 
 #### Backslash al final de línea
 ```bash
-MiniShell $ echo hello\
+❌MiniShell $ echo hello\
 ```
 - **Salida esperada:** `hello\` o continuación de línea.
 
 #### Caracteres no imprimibles
 ```bash
-MiniShell $ echo -e "hello\x00world"
+❌MiniShell $ echo -e "hello\x00world"
 ```
 - **Salida esperada:** `hello` seguido de caracteres de control.
 
 #### Caracteres Unicode
 ```bash
-MiniShell $ echo "Hola 世界 🌍"
+✅MiniShell $ echo "Hola 世界 🌍"
 ```
 - **Salida esperada:** `Hola 世界 🌍`.
 
 ### A16. Casos Edge de Historial
 
 #### Navegación en historial vacío
-- **Prueba:** Iniciar minishell nuevo y usar flechas arriba/abajo.
+- **Prueba:** Iniciar minishell nuevo y usar flechas arriba/abajo.✅
 - **Salida esperada:** No debería hacer nada.
 
 #### Comando muy largo en historial
 ```bash
-MiniShell $ echo "very long command that should be stored in history and retrievable"
+✅MiniShell $ echo "very long command that should be stored in history and retrievable"
 # Usar flecha arriba
 ```
 - **Salida esperada:** El comando debería aparecer completo.
@@ -1520,20 +1526,20 @@ MiniShell $ echo "very long command that should be stored in history and retriev
 
 #### Inyección de comandos en variables
 ```bash
-MiniShell $ export MALICIOUS="test; rm -rf /"
-MiniShell $ echo $MALICIOUS
+✅MiniShell $ export MALICIOUS="test; rm -rf /"
+✅MiniShell $ echo $MALICIOUS
 ```
 - **Salida esperada:** `test; rm -rf /` (literal, no ejecutado).
 
 #### Redirección a archivos del sistema
 ```bash
-MiniShell $ echo "malicious" > /etc/passwd
+✅MiniShell $ echo "malicious" > /etc/passwd
 ```
 - **Salida esperada:** `Permission denied`.
 
 #### Paths relativos maliciosos
 ```bash
-MiniShell $ ../../../bin/ls
+✅MiniShell $ ../../../bin/ls
 ```
 - **Salida esperada:** Funciona si la ruta existe.
 
@@ -1541,13 +1547,13 @@ MiniShell $ ../../../bin/ls
 
 #### Múltiples procesos hijos
 ```bash
-MiniShell $ sleep 1 & sleep 1 & sleep 1
+❌MiniShell $ sleep 1 & sleep 1 & sleep 1
 ```
 - **Salida esperada:** Tres procesos en paralelo (si soporta `&`).
 
 #### Interrupción durante fork
 ```bash
-MiniShell $ sleep 10
+✅MiniShell $ sleep 10
 # Ctrl+C inmediatamente
 ```
 - **Salida esperada:** Proceso interrumpido, código de salida 130.

@@ -42,7 +42,6 @@ char	*expand_var(int *i, t_shell_context *shell_context, t_token *token)
 
 	variable = extract_var_name(token->value, i);
 	*i = *i + ft_strlen(variable);
-	//printf("DEBUG: expand_var buscando [%s]\n", variable);/*DEBUG*/
 	env_value = get_env_value(variable, shell_context);
 	free(variable);
 	if (env_value)
