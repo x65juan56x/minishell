@@ -162,49 +162,49 @@ Prueba el builtin `exit` con diferentes argumentos para verificar los códigos d
 ### Pruebas y Salidas Esperadas
 - **`exit` sin argumentos:**
   ```bash
-  MiniShell $ exit
+  ✅MiniShell $ exit
   ```
   - **Salida esperada:** El shell imprime `exit` y termina. El código de salida es el del último comando ejecutado (o 0 si no hubo ninguno).
 
 - **`exit` con código 0:**
   ```bash
-  MiniShell $ exit 0
+  ✅MiniShell $ exit 0
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 0.
 
 - **`exit` con código 1:**
   ```bash
-  MiniShell $ exit 1
+  ✅MiniShell $ exit 1
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 1.
 
 - **`exit` con código 42:**
   ```bash
-  MiniShell $ exit 42
+  ✅MiniShell $ exit 42
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 42.
 
 - **`exit` con código 255:**
   ```bash
-  MiniShell $ exit 255
+  ✅MiniShell $ exit 255
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 255.
 
 - **`exit` con código mayor a 255:**
   ```bash
-  MiniShell $ exit 256
+  ✅MiniShell $ exit 256
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 0 (256 % 256 = 0).
 
 - **`exit` con código negativo:**
   ```bash
-  MiniShell $ exit -1
+  ✅MiniShell $ exit -1
   ```
   - **Salida esperada:** El shell imprime `exit` y termina con código 255 ((-1) % 256 = 255).
 
 - **`exit` con argumento no numérico:**
   ```bash
-  MiniShell $ exit abc
+  ✅MiniShell $ exit abc
   ```
   - **Salida esperada:** El shell imprime un error y termina con código 255.
     ```
@@ -214,7 +214,7 @@ Prueba el builtin `exit` con diferentes argumentos para verificar los códigos d
 
 - **`exit` con demasiados argumentos:**
   ```bash
-  MiniShell $ exit 42 extra_arg
+  ✅MiniShell $ exit 42 extra_arg
   ```
   - **Salida esperada:** El shell imprime un error y **no termina**.
     ```
@@ -233,43 +233,43 @@ Verifica que la variable especial `$?` se expande correctamente al código de sa
 ### Pruebas y Salidas Esperadas
 - **Comando exitoso:**
   ```bash
-  MiniShell $ /bin/ls
-  MiniShell $ echo $?
+  ✅MiniShell $ /bin/ls
+  ✅MiniShell $ echo $?
   ```
   - **Salida esperada:** El listado de `ls`, y en la siguiente línea un `0`.
 
 - **Comando exitoso con directorio:**
   ```bash
-  MiniShell $ /bin/ls /tmp
-  MiniShell $ echo $?
+  ✅MiniShell $ /bin/ls /tmp
+  ✅MiniShell $ echo $?
   ```
   - **Salida esperada:** El listado de `/tmp`, y en la siguiente línea un `0`.
 
 - **Comando fallido:**
   ```bash
-  MiniShell $ /bin/ls archivo_que_no_existe
-  MiniShell $ echo $?
+  ✅MiniShell $ /bin/ls archivo_que_no_existe
+  ✅MiniShell $ echo $?
   ```
   - **Salida esperada:** Un mensaje de error de `ls` (ej: `No such file or directory`), y en la siguiente línea un código de error distinto de cero (bash suele dar `2`).
 
 - **Comando que retorna falso:**
   ```bash
-  MiniShell $ /bin/false
-  MiniShell $ echo $?
+  ✅MiniShell $ /bin/false
+  ✅MiniShell $ echo $?
   ```
   - **Salida esperada:** En la línea siguiente un `1`.
 
 - **Comando que retorna verdadero:**
   ```bash
-  MiniShell $ /bin/true
-  MiniShell $ echo $?
+  ✅MiniShell $ /bin/true
+  ✅MiniShell $ echo $?
   ```
   - **Salida esperada:** En la línea siguiente un `0`.
 
 - **Expresión con `$?`:**
   ```bash
-  MiniShell $ /bin/false
-  MiniShell $ expr $? + $?
+  ✅MiniShell $ /bin/false
+  ✅MiniShell $ expr $? + $?
   ```
   - **Salida esperada:** `2` (1 + 1, ya que `false` devuelve 1 y `$?` se evalúa dos veces con el mismo valor).
 
@@ -283,30 +283,30 @@ Verifica el comportamiento correcto de las señales en diferentes contextos.
 ### Pruebas y Salidas Esperadas
 - **`Ctrl+C` en prompt vacío:** Muestra un nuevo prompt en una nueva línea. El código de salida debería ser 130.
   ```bash
-  MiniShell $ ^C
-  MiniShell $ echo $?
+  ✅MiniShell $ ^C
+  ✅MiniShell $ echo $?
   130
   ```
-- **`Ctrl+\` en prompt vacío:** No debe hacer nada.
-- **`Ctrl+D` en prompt vacío:** El shell imprime `exit` y termina.
-- **`Ctrl+C` con texto en el prompt:** Aborta la línea actual y muestra un nuevo prompt limpio.
+- **`Ctrl+\` en prompt vacío:** No debe hacer nada.✅
+- **`Ctrl+D` en prompt vacío:** El shell imprime `exit` y termina.✅
+- **`Ctrl+C` con texto en el prompt:** Aborta la línea actual y muestra un nuevo prompt limpio.✅
   ```bash
   MiniShell $ hola que tal^C
   MiniShell $ 
   ```
-- **`Ctrl+C` durante un comando bloqueante (ej: `cat`):** El comando `cat` termina, se imprime un salto de línea y se muestra un nuevo prompt. El código de salida `$?` debería ser 130.
-- **`Ctrl+\` durante un comando bloqueante (ej: `cat`):** El comando `cat` termina y el shell muestra `Quit (core dumped)`. El código de salida `$?` debería ser 131.
-- **`Ctrl+D` durante un comando bloqueante (ej: `cat`):** Envía un `EOF` al `stdin` del comando. `cat` terminará y el shell mostrará un nuevo prompt.
+- **`Ctrl+C` durante un comando bloqueante (ej: `cat`):** El comando `cat` termina, se imprime un salto de línea y se muestra un nuevo prompt. El código de salida `$?` debería ser 130.✅
+- **`Ctrl+\` durante un comando bloqueante (ej: `cat`):** El comando `cat` termina y el shell muestra `Quit (core dumped)`. El código de salida `$?` debería ser 131.✅
+- **`Ctrl+D` durante un comando bloqueante (ej: `cat`):** Envía un `EOF` al `stdin` del comando. `cat` terminará y el shell mostrará un nuevo prompt.✅
 
 ### Comandos de prueba para señales:
 ```bash
-MiniShell $ cat
+✅MiniShell $ cat
 # Probar Ctrl+C, Ctrl+\, Ctrl+D
 
-MiniShell $ grep "algo"
+✅MiniShell $ grep "algo"
 # Probar Ctrl+C, Ctrl+\, Ctrl+D
 
-MiniShell $ sleep 10
+✅MiniShell $ sleep 10
 # Probar Ctrl+C, Ctrl+\, Ctrl+D
 ```
 
@@ -325,43 +325,43 @@ Las comillas dobles deben preservar los espacios y caracteres especiales como pa
 ### Pruebas y Salidas Esperadas
 - **Preservación de espacios:**
   ```bash
-  MiniShell $ echo "hello world"
+  ✅MiniShell $ echo "hello world"
   ```
   - **Salida esperada:** `hello world` (espacios preservados).
 
 - **Preservación de caracteres especiales:**
   ```bash
-  MiniShell $ echo "cat lol.c | cat > lol.c"
+  ✅MiniShell $ echo "cat lol.c | cat > lol.c"
   ```
   - **Salida esperada:** La cadena literal `cat lol.c | cat > lol.c`, no una ejecución de pipes.
 
 - **Múltiples espacios:**
   ```bash
-  MiniShell $ echo "  hello   world  "
+  ✅MiniShell $ echo "  hello   world  "
   ```
   - **Salida esperada:** `  hello   world  ` (preservando todos los espacios).
 
 - **Comillas dobles vacías:**
   ```bash
-  MiniShell $ echo ""
+  ✅MiniShell $ echo ""
   ```
   - **Salida esperada:** Una línea en blanco (argumento vacío).
 
 - **Comillas dobles escapadas:**
   ```bash
-  MiniShell $ echo "hello \"world\""
+  ❌MiniShell $ echo "hello \"world\""
   ```
   - **Salida esperada:** `hello "world"` (las comillas internas se escapan).
 
 - **Tabuladores en comillas:**
   ```bash
-  MiniShell $ echo "tab	here"
+  ✅MiniShell $ echo "tab	here"
   ```
   - **Salida esperada:** `tab	here` (con tabulador preservado).
 
 - **Salto de línea en comillas:**
   ```bash
-  MiniShell $ echo "newline
+  ✅MiniShell $ echo "newline
   here"
   ```
   - **Salida esperada:**
@@ -380,43 +380,43 @@ Las comillas simples deben preservar literalmente todo su contenido. No se inter
 ### Pruebas y Salidas Esperadas
 - **Preservación de espacios:**
   ```bash
-  MiniShell $ echo 'hello world'
+  ✅MiniShell $ echo 'hello world'
   ```
   - **Salida esperada:** `hello world`.
 
 - **Sin expansión de variables:**
   ```bash
-  MiniShell $ echo '$USER'
+  ✅MiniShell $ echo '$USER'
   ```
   - **Salida esperada:** La cadena literal `$USER`.
 
 - **Caracteres especiales:**
   ```bash
-  MiniShell $ echo '| > < >> <<'
+  ✅MiniShell $ echo '| > < >> <<'
   ```
   - **Salida esperada:** La cadena literal `| > < >> <<`.
 
 - **Argumento vacío:**
   ```bash
-  MiniShell $ echo ''
+  ✅MiniShell $ echo ''
   ```
   - **Salida esperada:** Una línea en blanco (un argumento vacío que `echo` imprime como nada, seguido de un salto de línea).
 
 - **Comillas dobles dentro de simples:**
   ```bash
-  MiniShell $ echo 'hello "world"'
+  ✅MiniShell $ echo 'hello "world"'
   ```
   - **Salida esperada:** `hello "world"` (las comillas dobles se tratan como literales).
 
 - **Variable PATH sin expansión:**
   ```bash
-  MiniShell $ echo '$PATH'
+  ✅MiniShell $ echo '$PATH'
   ```
   - **Salida esperada:** La cadena literal `$PATH`.
 
 - **Comando sin expansión:**
   ```bash
-  MiniShell $ echo '$(ls)'
+  ✅MiniShell $ echo '$(ls)'
   ```
   - **Salida esperada:** La cadena literal `$(ls)` (sin ejecutar el comando).
 
@@ -430,48 +430,48 @@ Prueba la creación, modificación y visualización de variables de entorno.
 ### Pruebas y Salidas Esperadas
 - **`export` sin argumentos:**
   ```bash
-  MiniShell $ export
+  ✅MiniShell $ export
   ```
   - **Salida esperada:** Una lista de todas las variables de entorno, formateadas como `declare -x VAR="valor"`.
 
 - **Crear una nueva variable:**
   ```bash
-  MiniShell $ export TEST_VAR=hello
-  MiniShell $ env | grep TEST_VAR
+  ✅MiniShell $ export TEST_VAR=hello
+  ✅MiniShell $ env | grep TEST_VAR
   ```
   - **Salida esperada:** `TEST_VAR=hello`.
 
 - **Modificar PATH:**
   ```bash
-  MiniShell $ export PATH=/bin:/usr/bin
-  MiniShell $ echo $PATH
+  ✅MiniShell $ export PATH=/bin:/usr/bin
+  ✅MiniShell $ echo $PATH
   ```
   - **Salida esperada:** `/bin:/usr/bin`.
 
 - **Modificar USER:**
   ```bash
-  MiniShell $ export USER=new_user
-  MiniShell $ env | grep USER
+  ✅MiniShell $ export USER=new_user
+  ✅MiniShell $ env | grep USER
   ```
   - **Salida esperada:** `USER=new_user`.
 
 - **Variable vacía:**
   ```bash
-  MiniShell $ export EMPTY_VAR=""
-  MiniShell $ env | grep EMPTY_VAR
+  ✅MiniShell $ export EMPTY_VAR=""
+  ✅MiniShell $ env | grep EMPTY_VAR
   ```
   - **Salida esperada:** `EMPTY_VAR=`.
 
 - **Variable con nombre válido:**
   ```bash
-  MiniShell $ export VALID_123=value
-  MiniShell $ env | grep VALID_123
+  ✅MiniShell $ export VALID_123=value
+  ✅MiniShell $ env | grep VALID_123
   ```
   - **Salida esperada:** `VALID_123=value`.
 
 - **Variable con nombre inválido:**
   ```bash
-  MiniShell $ export 123INVALID=value
+  ✅MiniShell $ export 123INVALID=value
   ```
   - **Salida esperada:** Error: `minishell: export: '123INVALID': not a valid identifier`.
 
@@ -485,30 +485,30 @@ Prueba la eliminación de variables de entorno.
 ### Pruebas y Salidas Esperadas
 - **Crear y eliminar variable:**
   ```bash
-  MiniShell $ export TEST_VAR=hello
-  MiniShell $ env | grep TEST_VAR
-  MiniShell $ unset TEST_VAR
-  MiniShell $ env | grep TEST_VAR
+  ✅MiniShell $ export TEST_VAR=hello
+  ✅MiniShell $ env | grep TEST_VAR
+  ✅MiniShell $ unset TEST_VAR
+  ✅MiniShell $ env | grep TEST_VAR
   ```
   - **Salida esperada:** Primera línea: `TEST_VAR=hello`. Última línea: no debe producir salida.
 
 - **Eliminar PATH:**
   ```bash
-  MiniShell $ unset PATH
-  MiniShell $ env | grep PATH
+  ✅MiniShell $ unset PATH
+  ✅MiniShell $ env | grep PATH
   ```
   - **Salida esperada:** No debe mostrar PATH en la salida.
 
 - **Eliminar USER:**
   ```bash
-  MiniShell $ unset USER
-  MiniShell $ env | grep USER
+  ✅MiniShell $ unset USER
+  ✅MiniShell $ env | grep USER
   ```
   - **Salida esperada:** No debe mostrar USER en la salida.
 
 - **Intentar eliminar una variable que no existe:**
   ```bash
-  MiniShell $ unset NONEXISTENT_VAR
+  ✅MiniShell $ unset NONEXISTENT_VAR
   ```
   - **Salida esperada:** No debe ocurrir ningún error, simplemente no hace nada.
 
@@ -522,48 +522,48 @@ Prueba el cambio de directorios.
 ### Pruebas y Salidas Esperadas
 - **Ir a un directorio:**
   ```bash
-  MiniShell $ cd /tmp
-  MiniShell $ /bin/ls
+  ✅MiniShell $ cd /tmp
+  ✅MiniShell $ /bin/ls
   ```
   - **Salida esperada:** Cambio a `/tmp`, luego listado de archivos en `/tmp`.
 
 - **Directorio padre (`..`):**
   ```bash
-  MiniShell $ cd ..
-  MiniShell $ /bin/ls
+  ✅MiniShell $ cd ..
+  ✅MiniShell $ /bin/ls
   ```
   - **Salida esperada:** Cambio al directorio padre, luego listado de archivos.
 
 - **Directorio actual (`.`):**
   ```bash
-  MiniShell $ cd .
-  MiniShell $ /bin/ls
+  ✅MiniShell $ cd .
+  ✅MiniShell $ /bin/ls
   ```
   - **Salida esperada:** Permanece en el mismo directorio, luego listado de archivos.
 
 - **Ir al directorio `HOME`:**
   ```bash
-  MiniShell $ cd
-  MiniShell $ /bin/ls
+  ✅MiniShell $ cd
+  ✅MiniShell $ /bin/ls
   ```
   - **Salida esperada:** Cambio al directorio home, luego listado de archivos del home.
 
 - **Ir al directorio anterior:**
   ```bash
-  MiniShell $ cd -
-  MiniShell $ /bin/ls
+  ✅MiniShell $ cd -
+  ✅MiniShell $ /bin/ls
   ```
   - **Salida esperada:** Cambio al directorio anterior, imprime la ruta, luego listado de archivos.
 
 - **Error de directorio no existente:**
   ```bash
-  MiniShell $ cd /nonexistent
+  ✅MiniShell $ cd /nonexistent
   ```
   - **Salida esperada:** Un mensaje de error como `minishell: cd: /nonexistent: No such file or directory`.
 
 - **Argumento vacío:**
   ```bash
-  MiniShell $ cd ""
+  ⚠️MiniShell $ cd ""
   ```
   - **Salida esperada:** Debería comportarse como `cd` sin argumentos (ir al HOME) o mostrar error.
 
@@ -577,39 +577,39 @@ Ejecuta comandos usando rutas relativas en lugar de absolutas o nombres de coman
 ### Pruebas y Salidas Esperadas
 - **Ejecutable en directorio actual:**
   ```bash
-  MiniShell $ ./minishell
+  ✅MiniShell $ ./minishell
   ```
   - **Salida esperada:** Se ejecuta una nueva instancia de tu shell.
 
 - **Ruta relativa hacia arriba:**
   ```bash
-  MiniShell $ ../bin/ls
+  ✅MiniShell $ ../bin/ls
   ```
   - **Salida esperada:** Error (probablemente `No such file or directory` a menos que exista).
 
 - **Ruta relativa compleja:**
   ```bash
-  MiniShell $ ../../usr/bin/whoami
+  ✅MiniShell $ ../../usr/bin/whoami
   ```
   - **Salida esperada:** Tu nombre de usuario (si la ruta es correcta).
 
 - **Desde /tmp:**
   ```bash
-  MiniShell $ cd /tmp
-  MiniShell $ ../bin/ls
+  ✅MiniShell $ cd /tmp
+  ✅MiniShell $ ../bin/ls
   ```
   - **Salida esperada:** Listado de archivos si `/bin/ls` existe.
 
 - **Desde directorio raíz:**
   ```bash
-  MiniShell $ cd /
-  MiniShell $ usr/bin/whoami
+  ✅MiniShell $ cd /
+  ✅MiniShell $ usr/bin/whoami
   ```
   - **Salida esperada:** Tu nombre de usuario.
 
 - **Archivo en directorio actual:**
   ```bash
-  MiniShell $ ./etc/passwd
+  ✅MiniShell $ ./etc/passwd
   ```
   - **Salida esperada:** Error de permisos o que no es ejecutable.
 
@@ -623,47 +623,47 @@ Verifica que los comandos se buscan en los directorios especificados por `PATH`.
 ### Pruebas y Salidas Esperadas
 - **Ejecución normal:**
   ```bash
-  MiniShell $ ls
+  ✅MiniShell $ ls
   ```
   - **Salida esperada:** El listado de archivos.
 
 - **Verificar `PATH` actual:**
   ```bash
-  MiniShell $ echo $PATH
+  ✅MiniShell $ echo $PATH
   ```
   - **Salida esperada:** La lista de directorios separados por `:`.
 
 - **Eliminar `PATH`:**
   ```bash
-  MiniShell $ unset PATH
+  ❌MiniShell $ unset PATH
   MiniShell $ ls
   ```
   - **Salida esperada:** `minishell: ls: command not found`.
 
 - **Restaurar `PATH` con /bin:**
   ```bash
-  MiniShell $ export PATH="/bin"
+  ✅MiniShell $ export PATH="/bin"
   MiniShell $ ls
   ```
   - **Salida esperada:** El listado de archivos de nuevo.
 
 - **Restaurar `PATH` con múltiples directorios:**
   ```bash
-  MiniShell $ export PATH="/usr/bin:/bin"
+  ✅MiniShell $ export PATH="/usr/bin:/bin"
   MiniShell $ ls
   ```
   - **Salida esperada:** El listado de archivos de nuevo.
 
 - **PATH completo:**
   ```bash
-  MiniShell $ export PATH="/usr/bin:/bin:/usr/local/bin"
+  ✅MiniShell $ export PATH="/usr/bin:/bin:/usr/local/bin"
   MiniShell $ ls
   ```
   - **Salida esperada:** El listado de archivos de nuevo.
 
 - **Comprobar orden de búsqueda:**
   ```bash
-  MiniShell $ which ls
+  ✅MiniShell $ which ls
   ```
   - **Salida esperada:** Debería mostrar la ruta del primer `ls` encontrado en PATH.
 
@@ -677,21 +677,21 @@ Prueba la redirección de entrada y salida.
 ### Pruebas y Salidas Esperadas
 - **Redirección de salida `>`:**
   ```bash
-  MiniShell $ echo "hello" > file.txt
-  MiniShell $ cat file.txt
+  ✅MiniShell $ echo "hello" > file.txt
+  ✅MiniShell $ cat file.txt
   ```
   - **Salida esperada:** `hello`. El archivo `file.txt` es creado o sobrescrito.
 
 - **Redirección de entrada `<`:**
   ```bash
-  MiniShell $ cat < file.txt
+  ✅MiniShell $ cat < file.txt
   ```
   - **Salida esperada:** `hello` (contenido del archivo).
 
 - **Redirección de salida `>>` (append):**
   ```bash
-  MiniShell $ echo "world" >> file.txt
-  MiniShell $ cat file.txt
+  ✅MiniShell $ echo "world" >> file.txt
+  ✅MiniShell $ cat file.txt
   ```
   - **Salida esperada:**
     ```
@@ -701,32 +701,32 @@ Prueba la redirección de entrada y salida.
 
 - **Redirección de salida con listado:**
   ```bash
-  MiniShell $ ls > output.txt
-  MiniShell $ cat < output.txt
+  ✅MiniShell $ ls > output.txt
+  ✅MiniShell $ cat < output.txt
   ```
   - **Salida esperada:** El listado de archivos del directorio actual.
 
 - **Redirección de entrada con wc:**
   ```bash
-  MiniShell $ wc -l < /etc/passwd
+  ✅MiniShell $ wc -l < /etc/passwd
   ```
   - **Salida esperada:** El número de líneas del archivo `/etc/passwd`.
 
 - **Múltiples redirecciones:**
   ```bash
-  MiniShell $ echo "test" > file1.txt > file2.txt
+  ✅MiniShell $ echo "test" > file1.txt > file2.txt
   ```
   - **Salida esperada:** Solo `file2.txt` debería contener "test" (la última redirección "gana").
 
 - **Redirección con archivo inexistente:**
   ```bash
-  MiniShell $ cat < /nonexistent_file
+  ✅MiniShell $ cat < /nonexistent_file
   ```
   - **Salida esperada:** Error: `No such file or directory`.
 
 - **Here Document `<<`:**
   ```bash
-  MiniShell $ cat << EOF
+  ✅MiniShell $ cat << EOF
   > hello
   > world
   > EOF
@@ -747,56 +747,56 @@ Prueba la conexión de la salida de un comando con la entrada de otro.
 ### Pruebas y Salidas Esperadas
 - **Pipe simple con grep:**
   ```bash
-  MiniShell $ ls | grep txt
+  ✅MiniShell $ ls | grep txt
   ```
   - **Salida esperada:** Solo las líneas que contienen "txt".
 
 - **Pipe con passwd:**
   ```bash
-  MiniShell $ cat /etc/passwd | grep root
+  ✅MiniShell $ cat /etc/passwd | grep root
   ```
   - **Salida esperada:** Las líneas que contienen "root" en `/etc/passwd`.
 
 - **Pipe con conteo de palabras:**
   ```bash
-  MiniShell $ echo "hello world" | wc -w
+  ✅MiniShell $ echo "hello world" | wc -w
   ```
   - **Salida esperada:** `2` (número de palabras).
 
 - **Pipe con conteo de líneas:**
   ```bash
-  MiniShell $ ls | wc -l
+  ✅MiniShell $ ls | wc -l
   ```
   - **Salida esperada:** El número de archivos en el directorio actual.
 
 - **Pipe múltiple:**
   ```bash
-  MiniShell $ cat /etc/passwd | grep root | wc -l
+  ✅MiniShell $ cat /etc/passwd | grep root | wc -l
   ```
   - **Salida esperada:** El número de líneas que contienen "root".
 
 - **Pipe con comando que falla:**
   ```bash
-  MiniShell $ ls nonexistent | grep something | wc -l
+  ✅MiniShell $ ls nonexistent | grep something | wc -l
   ```
   - **Salida esperada:** Un mensaje de error de `ls` a `stderr`, y `0` de `wc -l`.
 
 - **Pipe múltiple con cat:**
   ```bash
-  MiniShell $ echo "test" | cat | cat | cat
+  ✅MiniShell $ echo "test" | cat | cat | cat
   ```
   - **Salida esperada:** `test`.
 
 - **Pipe con redirección:**
   ```bash
-  MiniShell $ ls | grep txt > output.txt
-  MiniShell $ cat output.txt
+  ✅MiniShell $ ls | grep txt > output.txt
+  ✅MiniShell $ cat output.txt
   ```
   - **Salida esperada:** Los archivos que contienen "txt" guardados en `output.txt`.
 
 - **Pipe con redirección de entrada:**
   ```bash
-  MiniShell $ cat file.txt | grep pattern < input.txt
+  ✅MiniShell $ cat file.txt | grep pattern < input.txt
   ```
   - **Salida esperada:** Comportamiento complejo - normalmente `grep` ignoraría el pipe y leería de `input.txt`.
 
@@ -808,45 +808,51 @@ Prueba la conexión de la salida de un comando con la entrada de otro.
 Pruebas de robustez y características de la terminal.
 
 ### Pruebas y Salidas Esperadas
-- **Navegación del historial:** Presiona las flechas arriba y abajo.
+- **Navegación del historial:** Presiona las flechas arriba y abajo.✅
   - **Salida esperada:** Debes poder navegar por los comandos previamente introducidos.
 
 - **Comando inválido:**
   ```bash
-  MiniShell $ wjkgjrgwg4g43go34o
+  ✅MiniShell $ wjkgjrgwg4g43go34o
   ```
   - **Salida esperada:** `minishell: wjkgjrgwg4g43go34o: command not found`. El shell no debe cerrarse.
 
 - **Pipe colgado:**
   ```bash
-  MiniShell $ cat | cat | ls
+  ✅MiniShell $ cat | cat | ls
   ```
   - **Salida esperada:** El shell debe esperar una entrada de `stdin`. Si escribes algo y presionas `Ctrl+D`, `ls` debería ejecutarse.
 
 - **Comando muy largo:**
   ```bash
-  MiniShell $ echo this is a very long command with many many many arguments and it should work fine
+  ✅MiniShell $ echo this is a very long command with many many many arguments and it should work fine
   ```
   - **Salida esperada:** El echo completo de todos los argumentos.
 
 - **Comando inexistente:**
   ```bash
-  MiniShell $ invalidcommand
+  ✅MiniShell $ invalidcommand
   ```
   - **Salida esperada:** `minishell: invalidcommand: command not found`. El shell no debe cerrarse.
 
 - **Ruta inexistente:**
   ```bash
-  MiniShell $ /bin/nonexistent
+  ✅MiniShell $ /bin/nonexistent
   ```
   - **Salida esperada:** `minishell: /bin/nonexistent: No such file or directory`. El shell no debe cerrarse.
 
 - **Buffer vacío después de `Ctrl+C`:**
   ```bash
-  MiniShell $ echo hola^C
-  MiniShell $ [presionar Enter]
+  ✅MiniShell $ echo hola^C
+  ✅MiniShell $ [presionar Enter]
   ```
   - **Salida esperada:** No debería ejecutarse nada, solo mostrar un nuevo prompt.
+
+- **Comando con expansión:**
+  ```bash
+  ❌MiniShell $ echo $(ls)
+  ```
+  - **Salida esperada:** La cadena de la ejecución del comando.
 
 ---
 
@@ -858,62 +864,62 @@ Verifica la correcta expansión de variables de entorno.
 ### Pruebas y Salidas Esperadas
 - **Expansión simple:**
   ```bash
-  MiniShell $ echo $USER
+  ✅MiniShell $ echo $USER
   ```
   - **Salida esperada:** Tu nombre de usuario.
 
 - **Expansión de PATH:**
   ```bash
-  MiniShell $ echo $PATH
+  ✅MiniShell $ echo $PATH
   ```
   - **Salida esperada:** La lista de directorios separados por `:`.
 
 - **Expansión de HOME:**
   ```bash
-  MiniShell $ echo $HOME
+  ✅MiniShell $ echo $HOME
   ```
   - **Salida esperada:** La ruta de tu directorio home.
 
 - **Expansión de PWD:**
   ```bash
-  MiniShell $ echo $PWD
+  ✅MiniShell $ echo $PWD
   ```
   - **Salida esperada:** La ruta del directorio actual.
 
 - **Variable inexistente:**
   ```bash
-  MiniShell $ echo $NONEXISTENT
+  ✅MiniShell $ echo $NONEXISTENT
   ```
   - **Salida esperada:** Una línea en blanco.
 
 - **Expansión en comillas dobles:**
   ```bash
-  MiniShell $ echo "$USER"
+  ❌MiniShell $ echo "$USER"
   ```
   - **Salida esperada:** Tu nombre de usuario.
 
 - **Sin expansión en comillas simples:**
   ```bash
-  MiniShell $ echo '$USER'
+  ✅MiniShell $ echo '$USER'
   ```
   - **Salida esperada:** `$USER`.
 
 - **Concatenación de variables:**
   ```bash
-  MiniShell $ echo $USER$HOME
+  ✅MiniShell $ echo $USER$HOME
   ```
   - **Salida esperada:** Tu nombre de usuario seguido de tu directorio home (sin espacio).
 
 - **Expansión con llaves:**
   ```bash
-  MiniShell $ echo ${USER}
+  ✅MiniShell $ echo ${USER}
   ```
   - **Salida esperada:** Tu nombre de usuario.
 
 - **Variable personalizada:**
   ```bash
-  MiniShell $ export TEST=hello
-  MiniShell $ echo $TEST
+  ✅MiniShell $ export TEST=hello
+  ✅MiniShell $ echo $TEST
   ```
   - **Salida esperada:** `hello`.
 
@@ -927,7 +933,7 @@ Prueba los operadores lógicos AND y OR.
 ### Pruebas y Salidas Esperadas
 - **AND (`&&`) - éxito:**
   ```bash
-  MiniShell $ echo hello && echo world
+  ✅MiniShell $ echo hello && echo world
   ```
   - **Salida esperada:**
     ```
@@ -937,37 +943,37 @@ Prueba los operadores lógicos AND y OR.
 
 - **OR (`||`) - éxito:**
   ```bash
-  MiniShell $ echo hello || echo world
+  ✅MiniShell $ echo hello || echo world
   ```
   - **Salida esperada:** `hello` (no se ejecuta el segundo comando).
 
 - **AND (`&&`) - fallo:**
   ```bash
-  MiniShell $ false && echo world
+  ✅MiniShell $ false && echo world
   ```
   - **Salida esperada:** No se imprime "world" porque `false` falla.
 
 - **OR (`||`) - fallo:**
   ```bash
-  MiniShell $ false || echo world
+  ✅MiniShell $ false || echo world
   ```
   - **Salida esperada:** `world` (se ejecuta porque `false` falla).
 
 - **AND con éxito:**
   ```bash
-  MiniShell $ true && echo success
+  ✅MiniShell $ true && echo success
   ```
   - **Salida esperada:** `success`.
 
 - **OR con éxito:**
   ```bash
-  MiniShell $ true || echo failure
+  ✅MiniShell $ true || echo failure
   ```
   - **Salida esperada:** No se imprime "failure" porque `true` tiene éxito.
 
 - **Combinación con paréntesis:**
   ```bash
-  MiniShell $ (echo hello && echo world) || echo failed
+  ✅MiniShell $ (echo hello && echo world) || echo failed
   ```
   - **Salida esperada:**
     ```
@@ -977,7 +983,7 @@ Prueba los operadores lógicos AND y OR.
 
 - **Combinación compleja:**
   ```bash
-  MiniShell $ echo test && (echo nested && echo commands)
+  ✅MiniShell $ echo test && (echo nested && echo commands)
   ```
   - **Salida esperada:**
     ```
@@ -996,43 +1002,43 @@ Prueba la expansión de `*` a los nombres de archivo del directorio actual.
 ### Pruebas y Salidas Esperadas
 - **Wildcard con echo:**
   ```bash
-  MiniShell $ echo *
+  ✅MiniShell $ echo *
   ```
   - **Salida esperada:** Una lista de todos los archivos y directorios en el directorio actual, separados por espacios.
 
 - **Wildcard con ls:**
   ```bash
-  MiniShell $ ls *.txt
+  ✅MiniShell $ ls *.txt
   ```
   - **Salida esperada:** Listado de todos los archivos `.txt`.
 
 - **Wildcard con cat:**
   ```bash
-  MiniShell $ cat *.c
+  ✅MiniShell $ cat *.c
   ```
   - **Salida esperada:** Contenido de todos los archivos `.c` concatenados.
 
 - **Wildcard con echo para headers:**
   ```bash
-  MiniShell $ echo *.h
+  ✅MiniShell $ echo *.h
   ```
   - **Salida esperada:** Una lista de todos los archivos `.h`, separados por espacios.
 
 - **Wildcard con rm:**
   ```bash
-  MiniShell $ rm *.tmp
+  ✅MiniShell $ rm *.tmp
   ```
   - **Salida esperada:** Elimina todos los archivos `.tmp` (si existen).
 
 - **Wildcard con patrón:**
   ```bash
-  MiniShell $ ls *test*
+  ✅MiniShell $ ls *test*
   ```
   - **Salida esperada:** Listado de todos los archivos que contengan "test" en su nombre.
 
 - **Wildcard con prefijo:**
   ```bash
-  MiniShell $ echo file*
+  ✅MiniShell $ echo file*
   ```
   - **Salida esperada:** Todos los archivos que empiecen con "file".
 
