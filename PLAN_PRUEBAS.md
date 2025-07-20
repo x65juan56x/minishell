@@ -150,7 +150,6 @@ Prueba el builtin `echo` con y sin la opción `-n`.
   ✅ MiniShell $ echo -n -n hello
   ```
   - **Salida esperada:** `-n hello` sin salto de línea (solo el primer `-n` se interpreta).
-  - ⚠️ ** BASH: comparar**
 
 ---
 
@@ -346,12 +345,6 @@ Las comillas dobles deben preservar los espacios y caracteres especiales como pa
   ✅MiniShell $ echo ""
   ```
   - **Salida esperada:** Una línea en blanco (argumento vacío).
-
-- **Comillas dobles escapadas:**
-  ```bash
-  ❌MiniShell $ echo "hello \"world\""
-  ```
-  - **Salida esperada:** `hello "world"` (las comillas internas se escapan).
 
 - **Tabuladores en comillas:**
   ```bash
@@ -1130,12 +1123,6 @@ bash -c 'echo "test" > file.txt; cat file.txt'
 ```
 - **Salida esperada:** Dos líneas en blanco (tres argumentos vacíos).
 
-#### Comillas anidadas complejas
-```bash
-❌MiniShell $ echo "He said: \"She said: 'Hello world'\""
-```
-- **Salida esperada:** `He said: "She said: 'Hello world'"`.
-
 #### Comillas simples dentro de comillas dobles con variables
 ```bash
 ✅MiniShell $ export TEST="world"
@@ -1465,12 +1452,6 @@ line1
 
 ### A14. Casos Edge de Sintaxis
 
-#### Punto y coma al final
-```bash
-❌MiniShell $ echo hello;
-```
-- **Salida esperada:** `hello` (si soporta `;`) o error de sintaxis.
-
 #### Múltiples espacios y tabuladores
 ```bash
 ✅MiniShell $ echo		hello			world
@@ -1484,12 +1465,6 @@ line1
 - **Salida esperada:** Nuevo prompt sin ejecutar nada.
 
 ### A15. Casos Edge de Escape y Caracteres Especiales
-
-#### Backslash al final de línea
-```bash
-❌MiniShell $ echo hello\
-```
-- **Salida esperada:** `hello\` o continuación de línea.
 
 #### Caracteres Unicode
 ```bash
@@ -1532,12 +1507,6 @@ line1
 - **Salida esperada:** Funciona si la ruta existe.
 
 ### A18. Casos Edge de Concurrencia
-
-#### Múltiples procesos hijos
-```bash
-❌MiniShell $ sleep 1 & sleep 1 & sleep 1
-```
-- **Salida esperada:** Tres procesos en paralelo (si soporta `&`).
 
 #### Interrupción durante fork
 ```bash

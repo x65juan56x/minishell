@@ -7,10 +7,10 @@ int	builtin_echo(char **args)
 
 	newline = 1;
 	i = 1;
-	if (args[1] && (ft_strcmp(args[1], "-n") == 0))
+	while (args[i] && (ft_strcmp(args[i], "-n") == 0))
 	{
 		newline = 0; // No imprimir \n al final
-		i = 2; // Empezar desde args[2]
+		i++; // Empezar desde args[2]
 	}
 	while(args[i])
 	{
