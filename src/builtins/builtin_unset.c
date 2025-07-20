@@ -23,20 +23,21 @@ int	builtin_unset(char **args, t_shell_context *shell_context)
 	status = 0;
 	while (args[i])
 	{
-		if (!is_valid_identifier(args[i]))
-		{
-			ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
-			ft_putstr_fd(args[i], STDERR_FILENO);
-			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-			status = 1;
-		}
-		else
-		{
-			idx = find_env_var_index(args[i], shell_context);
-			if (idx != -1)
-				remove_env_var(idx, shell_context);
-			remove_local_var(args[i], &shell_context->local_vars);
-		}
+		
+		// if (!is_valid_identifier(args[i]))
+		// {
+		// 	ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
+		// 	ft_putstr_fd(args[i], STDERR_FILENO);
+		// 	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+		// 	status = 1;
+		// }
+		// else
+		// {
+		idx = find_env_var_index(args[i], shell_context);
+		if (idx != -1)
+			remove_env_var(idx, shell_context);
+		remove_local_var(args[i], &shell_context->local_vars);
+		// }
 		i++;
 	}
 	return (status);
