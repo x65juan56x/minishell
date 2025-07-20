@@ -1,21 +1,5 @@
 #include "../../include/minishell.h"
 
-// void	disable_ctrl_echo(struct termios *orig_termios)
-// {
-// 	struct termios	new_termios;
-
-// 	if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
-// 		return ;
-// 	new_termios = *orig_termios;
-// 	new_termios.c_lflag &= ~ECHOCTL; // Desactivar el bit ECHOCTL
-// 	if (tcsetattr(STDIN_FILENO, TCSANOW, &new_termios) == -1)
-// 		return ;
-// }
-/**
- * Desactiva el eco de caracteres de control (ej. ^C) en la terminal.
- * orig_termios Puntero para guardar la configuración original.
- */
-
 int	read_heredoc_input(char *delimiter, int write_fd)
 {
 	char	*line;

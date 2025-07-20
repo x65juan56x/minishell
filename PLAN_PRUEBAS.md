@@ -76,7 +76,7 @@ Ejecuta comandos con múltiples argumentos, sin usar comillas.
 
 - **Comando de conteo de líneas:**
   ```bash
-  ❓✅ MiniShell $ /usr/bin/wc -l /etc/passwd
+  ✅ MiniShell $ /usr/bin/wc -l /etc/passwd
   ```
   - **Salida esperada:** El número de líneas del archivo `/etc/passwd`.
 
@@ -1258,7 +1258,7 @@ test
 
 #### unset con argumentos especiales
 ```bash
-❌MiniShell $ unset ""
+✅MiniShell $ unset ""
 ✅MiniShell $ unset PATH HOME USER
 ```
 - **Salida esperada:** Primera línea posible error, segunda línea elimina las tres variables.
@@ -1303,7 +1303,7 @@ line1
 
 #### Argumentos extremadamente largos
 ```bash
-❌MiniShell $ echo $(python3 -c "print('a'*10000)")
+⚠️MiniShell $ echo $(python3 -c "print('a'*10000)")
 ```
 - **Salida esperada:** 10000 caracteres 'a' (si soporta expansión de comandos).
 
@@ -1345,13 +1345,13 @@ line1
 ```
 - **Salida esperada:** Vacío (busca la variable `TEST123`).
 
-#### Variable con llaves vacías
+#### Variable con llaves vacías NO ES NECESARIO
 ```bash
 ❌MiniShell $ echo ${}
 ```
 - **Salida esperada:** `${}` literal o error de sintaxis.
 
-#### Variable con llaves sin cerrar
+#### Variable con llaves sin cerrar NO ES NECESARIO
 ```bash
 ❌MiniShell $ echo ${USER
 ```
@@ -1375,7 +1375,7 @@ line1
 
 #### Wildcard con archivos ocultos
 ```bash
-❌MiniShell $ echo .*
+✅MiniShell $ echo .*
 ```
 - **Salida esperada:** Archivos que empiecen con punto.
 
@@ -1402,21 +1402,21 @@ line1
 
 #### Operadores al final
 ```bash
-❌MiniShell $ echo hello &&
+✅MiniShell $ echo hello &&
 ```
 - **Salida esperada:** Error de sintaxis o prompt secundario.
 
 ### A12. Casos Edge de Memoria y Límites
 
-#### Línea extremadamente larga
+#### Línea extremadamente larga NO SE COMO CHEQUEARLO SIN EXPANSIÓN DE COMANDOS
 ```bash
-❌MiniShell $ echo "$(python3 -c "print('a'*100000)")"
+⚠️MiniShell $ echo "$(python3 -c "print('a'*100000)")"
 ```
 - **Salida esperada:** 100000 caracteres 'a' o error de memoria.
 
-#### Muchos argumentos
+#### Muchos argumentos NO SE COMO CHEQUEARLO SIN EXPANSIÓN DE COMANDOS
 ```bash
-❌MiniShell $ echo $(seq 1 10000)
+⚠️MiniShell $ echo $(seq 1 10000)
 ```
 - **Salida esperada:** Números del 1 al 10000 o error.
 

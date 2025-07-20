@@ -17,7 +17,8 @@ static t_token	*create_match_tokens(const char *pattern)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		if (entry->d_name[0] != '.' && match_wildcard(entry->d_name, pattern))
+		if ((pattern[0] == '.' || entry->d_name[0] != '.')
+			&& match_wildcard(entry->d_name, pattern))
 		{
 			new_token = create_token(TOKEN_WORD, ft_strdup(entry->d_name));
 			if (!new_token)

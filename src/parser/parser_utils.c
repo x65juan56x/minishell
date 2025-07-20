@@ -99,3 +99,17 @@ int	are_quotes_unclosed(const char *s)
 	}
 	return (in_quote);
 }
+
+int	is_and_open(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '&' && s[i + 1] == '&' && !s[i + 2])
+			return (1);
+		i++;
+	}
+	return (0);
+}
