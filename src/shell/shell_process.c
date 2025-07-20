@@ -7,6 +7,21 @@ static int	handle_parsing_error(t_token *tokens)
 	return (2);
 }
 
+static int	pipes_checker(t_token *tokens)
+{
+	t_token	*last;
+
+	last = tokens;
+	while (last->next->next != NULL)
+		last = last->next;
+	if (tokens->type == 1 || last->type == 1)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token '|'\n", STDERR_FILENO);
+		return (1); // Debo liberar las listas antes de retornar?
+	}
+	return (0);
+}
+
 int	process_command_line(char *input, t_shell_context *shell_context)
 {
 	t_token		*tokens;
@@ -19,26 +34,15 @@ int	process_command_line(char *input, t_shell_context *shell_context)
 	tokens = tokenize(input);
 	if (!tokens)
 		return (1);
-//	printf("En process_command_line antes de expander_var\n");/*DEBUG*/
-//	debug_print_local_vars(shell_context);/*DEBUG*/
+	if (pipes_checker(tokens))
+		return (2);
 	expander_var(tokens, shell_context);
-//	printf("En process_command_line después de expander_var\n");/*DEBUG*/
-//	debug_print_local_vars(shell_context);/*DEBUG*/
 	tokens = expand_wildcards(tokens);
 	ast = parse(tokens);
 	if (!ast)
-	{
-		exit_status = handle_parsing_error(tokens);
-		return (cleanup_tokens(tokens), exit_status);
-	}
-//	printf("En process_command_line después de parse\n");/*DEBUG*/
-//	debug_print_local_vars(shell_context);/*DEBUG*/
+		return (cleanup_tokens(tokens), handle_parsing_error(tokens));
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
-//	printf("En process_command_line antes de execute_ast\n");/*DEBUG*/
-//	debug_print_local_vars(shell_context);/*DEBUG*/
 	exit_status = execute_ast(ast, &heredoc_id, shell_context);
-//	printf("En process_command_line después de execute_ast\n");/*DEBUG*/
-//	debug_print_local_vars(shell_context);/*DEBUG*/
 	setup_interactive_signals();
 	cleanup_heredoc_files(shell_context);
 	cleanup_ast(ast);

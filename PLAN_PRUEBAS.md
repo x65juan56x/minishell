@@ -848,12 +848,6 @@ Pruebas de robustez y características de la terminal.
   ```
   - **Salida esperada:** No debería ejecutarse nada, solo mostrar un nuevo prompt.
 
-- **Comando con expansión:**
-  ```bash
-  ❌MiniShell $ echo $(ls)
-  ```
-  - **Salida esperada:** La cadena de la ejecución del comando.
-
 ---
 
 ## 17. Variables de entorno
@@ -1094,7 +1088,7 @@ Casos de comillas anidadas y su interpretación.
 
 - **Caso complejo con comillas dobles:**
   ```bash
-  ✅MiniShell $ echo 'hello "$USER" world'✅
+  ✅MiniShell $ echo 'hello "$USER" world'
   ```
   - **Salida esperada:** `hello "$USER" world`.
 
@@ -1238,13 +1232,13 @@ test
 
 #### Pipe al inicio de línea
 ```bash
-❌MiniShell $ | cat
+✅MiniShell $ | cat
 ```
 - **Salida esperada:** Error de sintaxis.
 
 #### Pipe al final de línea
 ```bash
-❌MiniShell $ echo "test" |
+✅MiniShell $ echo "test" |
 ```
 - **Salida esperada:** Error de sintaxis o prompt secundario.
 

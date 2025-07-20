@@ -1,22 +1,34 @@
 #include "../include/minishell.h"
 
-void debug_print_local_vars(t_shell_context *ctx)
+void	debug_print_local_vars(t_shell_context *ctx)
 {
-    t_list *cur = ctx->local_vars;
-    printf("DEBUG: local_vars: ");
-    while (cur)
+	t_list *cur = ctx->local_vars;
+	printf("DEBUG: local_vars: ");
+	while (cur)
 	{
-        printf("[%s] ", (char*)cur->content);
-        cur = cur->next;
-    }
-    printf("\n");
+		printf("[%s] ", (char*)cur->content);
+		cur = cur->next;
+	}
+	printf("\n");
 }
 
-void debug_print_expand(t_token token)
+void	debug_print_token_list(t_token *head)
 {
-    printf("DEBUG: expand: ");
-    printf("[%i] ", token.expand);
-    printf("\n");
+	t_token *cur = head;
+	printf("DEBUG: token list: ");
+	while (cur)
+	{
+		printf("[%s] ", (char*)cur->value);
+		cur = cur->next;
+	}
+	printf("\n");
+}
+
+void	debug_print_expand(t_token token)
+{
+	printf("DEBUG: expand: ");
+	printf("[%i] ", token.expand);
+	printf("\n");
 }
 
 // Función de limpieza para el contexto
