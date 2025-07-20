@@ -1246,7 +1246,7 @@ test
 
 #### cd con múltiples argumentos
 ```bash
-❌MiniShell $ cd /tmp /home
+✅MiniShell $ cd /tmp /home
 ```
 - **Salida esperada:** `too many arguments`.
 

@@ -64,6 +64,8 @@ int	builtin_cd(char **args, t_shell_context *shell_context)
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: HOME not set", 2), 1);
 	}
+	else if (args[2])
+		return (ft_putendl_fd("minishell: cd: too many arguments", 2), 1);
 	else if (ft_strcmp(args[1], "") == 0)
 		return (0);
 	else if (ft_strcmp(args[1], "-") == 0)
@@ -71,7 +73,7 @@ int	builtin_cd(char **args, t_shell_context *shell_context)
 		path = get_env_value("OLDPWD", shell_context);
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2), 1);
-		ft_putendl_fd(path, STDOUT_FILENO); // `cd -` imprime el directorio al que va
+		ft_putendl_fd(path, STDOUT_FILENO); // `cd -` vuelve al directorio anterior e imprime su ruta
 	}
 	else
 		path = args[1];
