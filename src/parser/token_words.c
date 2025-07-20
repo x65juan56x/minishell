@@ -6,7 +6,7 @@ static int	find_word_end(const char *s, int start)
 	char	quote;
 
 	i = start;
-	while (s[i] && !is_operator_char(s[i]) && s[i] != ' ')
+	while (s[i] && !is_operator_char(s[i]) && s[i] != ' ' && s[i] != 9)
 	{
 		if (s[i] == '\'' || s[i] == '"')
 		{

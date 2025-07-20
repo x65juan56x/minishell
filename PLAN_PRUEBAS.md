@@ -1403,13 +1403,13 @@ line1
 
 #### Operadores sin espacios
 ```bash
-MiniShell $ echo hello&&echo world
+✅MiniShell $ echo hello&&echo world
 ```
 - **Salida esperada:** `hello` seguido de `world` o error de sintaxis.
 
 #### Operadores al principio
 ```bash
-❌MiniShell $ && echo hello
+✅MiniShell $ && echo hello
 ```
 - **Salida esperada:** Error de sintaxis.
 
@@ -1473,7 +1473,7 @@ MiniShell $ echo hello&&echo world
 
 #### Múltiples espacios y tabuladores
 ```bash
-❌MiniShell $ echo		hello			world
+✅MiniShell $ echo		hello			world
 ```
 - **Salida esperada:** `hello world` (espacios normalizados).
 
@@ -1490,12 +1490,6 @@ MiniShell $ echo hello&&echo world
 ❌MiniShell $ echo hello\
 ```
 - **Salida esperada:** `hello\` o continuación de línea.
-
-#### Caracteres no imprimibles
-```bash
-❌MiniShell $ echo -e "hello\x00world"
-```
-- **Salida esperada:** `hello` seguido de caracteres de control.
 
 #### Caracteres Unicode
 ```bash

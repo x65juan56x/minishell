@@ -14,9 +14,11 @@ static int	pipes_checker(t_token *tokens)
 	last = tokens;
 	while (last->next->next != NULL)
 		last = last->next;
-	if (tokens->type == 1 || last->type == 1)
+	if (tokens->type == 1 || tokens->type == 6 || last->type == 1)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token '|'\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: syntax error near unexpected token '", STDERR_FILENO);
+		ft_putstr_fd(tokens->value, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		return (1); // Debo liberar las listas antes de retornar?
 	}
 	return (0);

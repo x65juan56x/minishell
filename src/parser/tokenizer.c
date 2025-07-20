@@ -72,7 +72,7 @@ static int	generate_token_list(const char *input, t_token **head,
 	i = 0;
 	while (input[i])
 	{
-		while (input[i] && input[i] == ' ')
+		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
 			i++;
 		if (!input[i])
 			break ;
