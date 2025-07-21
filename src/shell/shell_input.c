@@ -11,7 +11,7 @@ char	*get_user_input(void)
 			return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
 	else // Modo No Interactivo
-		input = ft_mini_gnl_char(STDIN_FILENO); // Usamos ft_mini_gnl para leer del pipe sin imprimir nada
+		input = get_next_line(STDIN_FILENO); // Usamos GNL para leer del pipe sin imprimir nada
 	return (input);
 }
 

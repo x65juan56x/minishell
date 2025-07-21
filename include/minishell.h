@@ -10,6 +10,7 @@
 # include <readline/history.h>
 # include <sys/wait.h>
 # include "../libs/libft/libft.h"
+# include "../libs/get_next_line/get_next_line.h"
 # include <signal.h>
 # include <termios.h>
 # include <dirent.h>

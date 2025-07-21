@@ -49,20 +49,26 @@ OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
 HEAD = $(INCLUDE_DIR)/minishell.h
 LIBFT_DIR = libs/libft
 LIBFT = $(LIBFT_DIR)/libft.a
+GNL_DIR = libs/get_next_line
+GNL = $(GNL_DIR)/get_next_line.a
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I$(INCLUDE_DIR)
-LIBS = -lreadline -L$(LIBFT_DIR) -lft
+LIBS = -lreadline -L$(LIBFT_DIR) -lft -L$(GNL_DIR) -l:get_next_line.a
 
 GREEN = \033[0;32m
 RED = \033[0;31m
 RESET = \033[0m
 
-all: $(LIBFT) $(NAME)
+all: $(LIBFT) $(GNL) $(NAME)
 
 $(LIBFT):
 	@echo "$(GREEN)Compilando libft...$(RESET)"
 	@$(MAKE) -C $(LIBFT_DIR)
+
+$(GNL):
+	@echo "$(GREEN)Compilando get_next_line...$(RESET)"
+	@$(MAKE) -C $(GNL_DIR)
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
@@ -76,7 +82,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEAD) | $(OBJ_DIR)
 	@echo "$(GREEN)Compilando $<$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJ) $(LIBFT)
+$(NAME): $(OBJ) $(LIBFT) $(GNL)
 	@echo "$(GREEN)Linkeando $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBS)
 	@echo "$(GREEN)✓ $(NAME) compilado exitosamente!$(RESET)"
@@ -85,11 +91,13 @@ clean:
 	@echo "$(RED)Eliminando archivos objeto...$(RESET)"
 	@rm -rf $(OBJ_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(GNL_DIR) clean
 
 fclean: clean
 	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
 	@rm -f $(NAME)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(GNL_DIR) fclean
 
 re: fclean all
 

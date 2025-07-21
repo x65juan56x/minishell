@@ -9,7 +9,7 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 		if (isatty(STDIN_FILENO))
 			line = readline("> ");
 		else
-			line = ft_mini_gnl_char(STDIN_FILENO);
+			line = get_next_line(STDIN_FILENO);
 		if (!line)
 		{
 			if (isatty(STDIN_FILENO))
