@@ -19,12 +19,13 @@ void	is_expand_needed(char *s, int quoted, t_token *token)
 			}
 			if (ft_isalpha(s[i]) || s[i] == '_' || s[i] == '{')
 			{
-				while (ft_isalnum(s[i]) || s[i] == '_')
+				while (s[i] && (ft_isalnum(s[i]) || s[i] == '_'))
 					i++;
 				token->expand = 1;
 			}
 		}
-		i++;
+		else if (s[i])
+			i++;
 	}
 }
 
