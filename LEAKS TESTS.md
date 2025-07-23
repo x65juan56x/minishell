@@ -1,5 +1,7 @@
 # Escenarios para Detectar Memory Leaks en Minishell
 
+valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
+
 Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala para probar tu minishell con Valgrind y asegurar que no haya leaks en ninguna ruta de ejecución.
 
 ---
@@ -22,19 +24,19 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 2. Expansión de Variables
 
-- `echo $FOOBAR`
-- `export LONGVAR=$(head -c 10000 /dev/zero | tr '\0' a)`
-- `echo $LONGVAR`
-- `echo $USER$?$$`
-- `echo $USER$?$$$NOEXISTE`
-- `echo $USER$USER$USER`
-- `echo $USER$USER$USER$USER$USER`
+- `echo $FOOBAR` ✅
+- `export LONGVAR=$(head -c 10000 /dev/zero | tr '\0' a)`✅
+- `echo $LONGVAR`✅
+- `echo $USER$?$$`✅
+- `echo $USER$?$$$NOEXISTE`✅
+- `echo $USER$USER$USER`✅
+- `echo $USER$USER$USER$USER$USER`✅
 
 ---
 
 ## 3. Wildcards
 
-- `ls *.noexiste`
+- `ls *.noexiste`✅
 - `touch file{1..100}.txt; ls *.txt`
 - `ls a* b*`
 - `ls "*.c"`
