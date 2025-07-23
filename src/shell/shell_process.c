@@ -1,9 +1,13 @@
 #include "../../include/minishell.h"
 
-static int	handle_parsing_error(t_token *tokens)
+static int	handle_parsing_error(t_token *tokens, t_ast_node *ast)
 {
 	if (tokens->type != TOKEN_EOF)
 		ft_putstr_fd("minishell: syntax error\n", STDERR_FILENO);
+	if (ast)
+		cleanup_ast(ast);
+	if (tokens)
+		cleanup_tokens(tokens);
 	return (2);
 }
 
@@ -37,12 +41,12 @@ int	process_command_line(char *input, t_shell_context *shell_context)
 	if (!tokens)
 		return (1);
 	if (pipes_checker(tokens))
-		return (2);
+		return (cleanup_tokens(tokens), 2);
 	expander_var(tokens, shell_context);
 	tokens = expand_wildcards(tokens);
 	ast = parse(tokens);
 	if (!ast)
-		return (cleanup_tokens(tokens), handle_parsing_error(tokens));
+		return (cleanup_tokens(tokens), handle_parsing_error(tokens, ast));
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
 	exit_status = execute_ast(ast, &heredoc_id, shell_context);
 	setup_interactive_signals();
