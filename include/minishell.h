@@ -210,7 +210,7 @@ int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int				builtin_env(char **envp);
-int				builtin_exit(char **args);
+int				builtin_exit(char **args, t_shell_context *shell_context);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);
 int				builtin_unset(char **args, t_shell_context *shell_context);
@@ -228,12 +228,13 @@ void			remove_local_var(const char *name, t_list **local_vars);
 void			sort_and_print_export(char **envp_cpy);
 
 /* SHELL MANAGEMENT */
-char			**init_shell_environment(char **envp);
+char			**init_shell_environment(char **envp, t_shell_context *shell_context);
 char			*get_user_input(void);
 int				handle_input_line(char *input);
 int				process_command_line(char *input, t_shell_context *shell_context);
 int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
+void			cleanup_shell_context(t_shell_context *shell_context);
 
 /* DEBUGGING */
 void	debug_print_local_vars(t_shell_context *ctx);

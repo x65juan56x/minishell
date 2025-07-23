@@ -87,11 +87,11 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 7. Comandos Externos
 
-- `noexiste`
-- `ls /noexiste`
-- `seq 10000`
-- `cat` (luego muchas líneas y Ctrl+D)
-- `VAR=hola echo $VAR`
+- `noexiste`✅
+- `ls /noexiste`✅
+- `seq 10000`✅
+- `cat` (luego muchas líneas y Ctrl+D)✅
+- `VAR=hola echo $VAR`✅
 - `export VAR=hola; VAR=adios echo $VAR`
 
 ---
@@ -118,23 +118,23 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 - `echo |`✅
 - `echo hola &&`✅
 - `echo hola ||`✅
-- `echo hola && echo mundo || echo error`
-- `echo hola && echo mundo && echo test`
-- `echo hola || echo mundo || echo test`
-- `echo hola && echo mundo || echo test`
-- `echo hola && (echo mundo || echo test)`
-- `echo hola && (echo mundo && echo test)`
-- `echo hola && (echo mundo && (echo test || echo foo))`
-- `VAR=hola`
-- `VAR=hola VAR2=adios`
-- `VAR=hola VAR2=adios echo $VAR $VAR2`
+- `echo hola && echo mundo || echo error`✅
+- `echo hola && echo mundo && echo test`✅
+- `echo hola || echo mundo || echo test`✅
+- `echo hola && echo mundo || echo test`✅
+- `echo hola && (echo mundo || echo test)`✅
+- `echo hola && (echo mundo && echo test)`✅
+- `echo hola && (echo mundo && (echo test || echo foo))`✅
+- `VAR=hola`✅
+- `VAR=hola VAR2=adios`✅
+- `VAR=hola VAR2=adios echo $VAR $VAR2`✅
 
 ---
 
 ## 10. Señales
 
-- `Ctrl+C en el prompt`
-- `Ctrl+D en el prompt`
-- `Ctrl+\ en el prompt`
-- `Ctrl+C durante ejecución de comando externo (sleep 10)`
-- `Ctrl+C durante heredoc`
+- `Ctrl+C en el prompt`✅
+- `Ctrl+D en el prompt`✅
+- `Ctrl+\ en el prompt`✅
+- `Ctrl+C durante ejecución de comando externo (sleep 10)`✅
+- `Ctrl+C durante heredoc`✅

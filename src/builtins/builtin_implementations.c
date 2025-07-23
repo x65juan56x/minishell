@@ -60,7 +60,7 @@ int	builtin_env(char **envp)
 	return (0);
 }
 
-int	builtin_exit(char **args)
+int	builtin_exit(char **args, t_shell_context *shell_context)
 {
 	int	exit_code;
 
@@ -80,6 +80,7 @@ int	builtin_exit(char **args)
 		return (1);
 	}
 	exit_code = ft_atoi(args[1]); // Valid numeric argument, and it's the only one.
+	cleanup_shell_context(shell_context);
 	// The exit code is an 8-bit unsigned value (0-255).
 	// Casting to unsigned char correctly wraps the value.
 	exit((unsigned char)exit_code);

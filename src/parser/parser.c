@@ -12,7 +12,7 @@ t_ast_node	*parse(t_token *tokens)
 	parser.error = 0;
 	ast = parse_or_expression(&parser);
 	if (parser.error)
-		return (cleanup_ast(ast), NULL);
+		return (cleanup_ast(ast), cleanup_tokens(tokens), NULL);
 	return (ast);
 }
 /*

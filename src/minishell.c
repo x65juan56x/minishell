@@ -32,7 +32,7 @@ void	debug_print_expand(t_token token)
 }
 
 // Función de limpieza para el contexto
-static void	cleanup_shell_context(t_shell_context *shell_context)
+void	cleanup_shell_context(t_shell_context *shell_context)
 {
 	if (!shell_context)
 		return;
@@ -57,7 +57,7 @@ int	main(int ac, char **av, char **envp)
 	shell_context->exit_status = 0;
 	shell_context->heredoc_files = NULL;
 	shell_context->local_vars = NULL;
-	shell_context->envp_cpy = init_shell_environment(envp);
+	shell_context->envp_cpy = init_shell_environment(envp, shell_context);
 	exit_status = run_shell_loop(shell_context);
 	rl_clear_history();
 	cleanup_shell_context(shell_context);

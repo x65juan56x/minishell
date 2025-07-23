@@ -6,7 +6,7 @@
 /*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/18 18:16:15 by juan             ###   ########.fr       */
+/*   Updated: 2025/07/23 22:22:37 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,10 +135,6 @@ void	ft_error(void);
 /* MISC */
 
 void	*ft_freearr(char **arr);
-
-char	*ft_mini_gnl_char(int fd);
-
-int		ft_mini_gnl(char **line);
 
 char	**ft_split_args(char const *s);
 

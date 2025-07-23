@@ -23,7 +23,7 @@ static char	**copy_envp(char **envp)
 	return (new_envp);
 }
 
-char	**init_shell_environment(char **envp)
+char	**init_shell_environment(char **envp, t_shell_context *shell_context)
 {
 	char	**envp_copy;
 
@@ -31,6 +31,7 @@ char	**init_shell_environment(char **envp)
 	if (!envp_copy)
 	{
 		ft_putstr_fd("minishell: failed to initialize environment\n", STDERR_FILENO);
+		cleanup_shell_context(shell_context);
 		exit(1);
 	}
 	return (envp_copy);

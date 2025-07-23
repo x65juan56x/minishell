@@ -36,7 +36,7 @@ int	execute_builtin(char **args, t_shell_context *shell_context)
 	if (ft_strcmp(args[0], "env") == 0)
 		return (builtin_env(shell_context->envp_cpy));
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (builtin_exit(args));
+		return (builtin_exit(args, shell_context));
 	return (1);
 }
 
