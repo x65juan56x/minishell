@@ -52,6 +52,11 @@ char	*process_quoted_string(const char *s, int start, int end, int *quoted)
 	k = start;
 	while (k < end)
 	{
+		if((s[k] == '$') && (s[k + 1] == '"' || s[k + 1] == '\''))
+		{
+			*quoted = 2;
+			k++;
+		}
 		if (s[k] == '\'' || s[k] == '"')
 		{
 			if(s[k] == '"')
