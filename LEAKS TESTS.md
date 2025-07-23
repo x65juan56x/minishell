@@ -8,17 +8,17 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 1. Entrada y Parsing
 
-- `echo ""`
-- `echo ''`
-- `echo "hola`
-- `echo 'hola`
-- `echo hola      mundo`
-- `echo $NOEXISTE`
-- `echo $USER$NOEXISTE`
-- `echo $USER$?$$`
-- `echo "User: $USER, Home: $HOME"`
+- `echo ""`✅
+- `echo ''`✅
+- `echo "hola`✅
+- `echo 'hola`✅
+- `echo hola      mundo`✅
+- `echo $NOEXISTE`✅
+- `echo $USER$NOEXISTE`✅
+- `echo $USER$?$$`✅
+- `echo "User: $USER, Home: $HOME"`✅
 - `echo '$USER'`
-- `echo "$USER"`
+- `echo "$USER"`✅
 
 ---
 
