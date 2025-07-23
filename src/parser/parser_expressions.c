@@ -44,28 +44,31 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	compact_args = malloc(sizeof(char *) * (arg_count + 2));
 	if (!compact_args)
 		return (ft_freearr(args), cleanup_ast(node), NULL);
-	i = 0;
-	while (i < arg_count)
-	{
-		compact_args[i] = ft_strdup(args[i]);
-		if (!compact_args[i])
-		{
-			ft_freearr(compact_args);
-			ft_freearr(args);
-			return (cleanup_ast(node), NULL);
-		}
-		i++;
-	}
-	compact_args[arg_count] = NULL;
-	ft_freearr(args);
-	cmd_node->args = compact_args; // 3. Finalizamos el nodo de comando.
 	if (arg_count == 0) // Si no hubo palabras, el comando es inválido.
 	{
 		// Pero si hubo redirecciones, el nodo principal no es el de comando.
 		// Le damos un argumento vacío para que el ejecutor no lo ignore.
-		args[0] = ft_strdup("");
-		args[1] = NULL;
+		compact_args[0] = ft_strdup("");
+		compact_args[1] = NULL;
 	}
+	else
+	{
+		i = 0;
+		while (i < arg_count)
+		{
+			compact_args[i] = ft_strdup(args[i]);
+			if (!compact_args[i])
+			{
+				ft_freearr(compact_args);
+				ft_freearr(args);
+				return (cleanup_ast(node), NULL);
+			}
+			i++;
+		}
+		compact_args[arg_count] = NULL;
+	}
+	ft_freearr(args);
+	cmd_node->args = compact_args; // 3. Finalizamos el nodo de comando.
 	return (node);
 }
 

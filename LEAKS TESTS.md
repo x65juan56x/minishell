@@ -114,10 +114,10 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 ## 9. Errores y Edge Cases
 
 - `echo $(seq 1000)`
-- `echo hola |`
-- `echo |`
-- `echo hola &&`
-- `echo hola ||`
+- `echo hola |`✅
+- `echo |`✅
+- `echo hola &&`✅
+- `echo hola ||`✅
 - `echo hola && echo mundo || echo error`
 - `echo hola && echo mundo && echo test`
 - `echo hola || echo mundo || echo test`
