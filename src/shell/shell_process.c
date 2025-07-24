@@ -44,9 +44,23 @@ int	process_command_line(char *input, t_shell_context *shell_context)
 		return (cleanup_tokens(tokens), 2);
 	expander_var(tokens, shell_context);
 	tokens = expand_wildcards(tokens);
+	debug_print_token_list(tokens); //DEBUG
 	ast = parse(tokens);
 	if (!ast)
 		return (handle_parsing_error(tokens, ast));
+	//DEBUG
+	if (ast->type == NODE_COMMAND && ast->args)
+    {
+        int i = 0;
+        printf("DEBUG: AST args: ");
+        while (ast->args[i])
+        {
+            printf("[%s] ", ast->args[i]);
+            i++;
+        }
+        printf("\n");
+    }
+	//DEBUG
 	ignore_signals(); // El shell debe ignorar las señales mientras el AST se ejecuta.
 	exit_status = execute_ast(ast, &heredoc_id, shell_context);
 	setup_interactive_signals();

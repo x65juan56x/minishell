@@ -22,7 +22,10 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 			|| is_redirect_token(parser->current->type)))
 	{
 		if (parser->current->type == TOKEN_WORD)
+		{
 			args[arg_count++] = ft_strdup(consume_token(parser, TOKEN_WORD)->value);
+			printf("DEBUG: parser arg added: %s\n", args[arg_count - 1]); //DEBUG
+		}
 		else if (is_redirect_token(parser->current->type))
 		{
 			t_token *op = consume_token(parser, parser->current->type);

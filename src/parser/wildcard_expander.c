@@ -28,9 +28,11 @@ static t_token	*create_match_tokens(const char *pattern)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
+		printf("DEBUG: pattern='%s', entry='%s'\n", pattern, entry->d_name); //DEBUG
 		if ((pattern[0] == '.' || entry->d_name[0] != '.')
 			&& match_wildcard(entry->d_name, pattern))
 		{
+			printf("DEBUG: MATCHED '%s'\n", entry->d_name); //DEBUG
 			new_token = create_token(TOKEN_WORD, ft_strdup(entry->d_name));
 			if (!new_token)
 				break ; // Error de malloc, se limpiará fuera.
@@ -66,43 +68,41 @@ static void	replace_token_with_matches(t_token *prev, t_token *current,
 // Devuelve la nueva cabeza de la lista, que puede haber cambiado.
 t_token	*expand_wildcards(t_token *tokens)
 {
-	t_token	*current;
-	t_token	*prev;
-	t_token	*matches;
-	t_token	*head;
+    t_token	*current;
+    t_token	*prev;
+    t_token	*matches;
+    t_token	*head;
+    t_token	*last_match;
 
-	head = tokens;
-	prev = NULL;
-	current = tokens;
+    head = tokens;
+    prev = NULL;
+    current = tokens;
 
-	while (current)
-	{
-		if (current->type == TOKEN_WORD && current->in_quotes == 0
-			&& ft_strchr(current->value, '*'))
-		{
-			matches = create_match_tokens(current->value);
-			if (matches)
-			{
-				replace_token_with_matches(prev, current, matches);
-				if (prev)
-					current = prev->next;
-				else
-				{
-					head = matches; // La cabeza de la lista ha cambiado
-					current = matches;
-				}
-				t_token *tmp;
-				tmp = current;
-				while (tmp && tmp->next)
-					tmp = tmp->next;
-				prev = tmp;
-				current = current->next;
-				continue;
-			//Se que es algo aqui pero no consigo hacer que funciones
-			}
-		}
-		prev = current;
-		current = current->next;
-	}
-	return (head);
+    while (current)
+    {
+        if (current->type == TOKEN_WORD && current->in_quotes == 0
+            && ft_strchr(current->value, '*'))
+        {
+            matches = create_match_tokens(current->value);
+			debug_print_token_list(matches); //DEBUG
+            if (matches)
+            {
+                replace_token_with_matches(prev, current, matches);
+                if (prev == NULL)
+                    head = matches;
+                last_match = matches;
+                while (last_match->next)
+                    last_match = last_match->next;
+                // Avanza prev al último match
+                prev = last_match;
+                // Avanza current al siguiente token real
+                current = last_match->next;
+                continue;
+            }
+        }
+        // Solo avanza prev y current si NO hubo expansión
+        prev = current;
+        current = current->next;
+    }
+    return (head);
 }
