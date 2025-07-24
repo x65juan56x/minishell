@@ -24,9 +24,9 @@ BONUS_OBJ = $(addprefix $(OBJ_DIR)/, $(BONUS_SRC_FILES:.c=.o))
 all: $(NAME)
 
 bonus: OBJ_BONUS
-	@echo "$(BLUE)Creando librería BONUS $(NAME)...$(RESET)"
+	@echo "$(BLUE)Building BONUS library $(NAME)...$(RESET)"
 	@$(AR) $(NAME) $(BONUS_OBJ)
-	@echo "$(GREEN)✓ $(NAME) BONUS creada exitosamente!$(RESET)"
+	@echo "$(GREEN)✓ $(NAME) BONUS successfully built!$(RESET)"
 
 OBJ_BONUS: $(OBJ_DIR) $(BONUS_OBJ)
 
@@ -34,27 +34,27 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: %.c $(HEAD) | $(OBJ_DIR)
-	@echo "$(GREEN)Compilando $<$(RESET)"
+	@echo "$(GREEN)Compiling $<$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ_DIR) $(OBJ)
-	@echo "$(BLUE)Creando librería $(NAME)...$(RESET)"
+	@echo "$(BLUE)Building library $(NAME)...$(RESET)"
 	@$(AR) $(NAME) $(OBJ)
-	@echo "$(GREEN)✓ $(NAME) creada exitosamente!$(RESET)"
+	@echo "$(GREEN)✓ $(NAME) successfully built!$(RESET)"
 
 clean:
-	@echo "$(RED)Eliminando archivos objeto...$(RESET)"
+	@echo "$(RED)Deleting object files...$(RESET)"
 	@$(RM) -rf $(OBJ_DIR)
 
 fclean: clean
-	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
+	@echo "$(RED)Deleting $(NAME)...$(RESET)"
 	@$(RM) $(NAME)
 
 re: fclean all
 
 info:
-	@echo "Archivos fuente normal: $(words $(SRC_FILES))"
-	@echo "Archivos fuente bonus: $(words $(BONUS_SRC_FILES))"
-	@echo "Directorio objetos: $(OBJ_DIR)"
+	@echo "Source files: $(words $(SRC_FILES))"
+	@echo "Bonus source files: $(words $(BONUS_SRC_FILES))"
+	@echo "Object folder: $(OBJ_DIR)"
 
 .PHONY: all bonus clean fclean re info

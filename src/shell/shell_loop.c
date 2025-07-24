@@ -5,6 +5,7 @@ int	run_shell_loop(t_shell_context *shell_context)
 	char	*input;
 	char	*temp;
 	char	*full_input;
+	int		exit_code;
 
 	while (1)
 	{
@@ -57,7 +58,14 @@ int	run_shell_loop(t_shell_context *shell_context)
 			break ;
 		}
 		if (*input)
-			shell_context->exit_status = process_command_line(input, shell_context);
+		{
+			exit_code = process_command_line(input, shell_context);
+			shell_context->exit_status = exit_code;
+			if (exit_code == -2)
+				shell_context->exit_status = 0;
+			free(input);
+			break ;
+		}
 		free(input);
 	}
 	return (shell_context->exit_status);

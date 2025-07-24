@@ -63,11 +63,11 @@ RESET = \033[0m
 all: $(LIBFT) $(GNL) $(NAME)
 
 $(LIBFT):
-	@echo "$(GREEN)Compilando libft...$(RESET)"
+	@echo "$(GREEN)Compiling libft...$(RESET)"
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(GNL):
-	@echo "$(GREEN)Compilando get_next_line...$(RESET)"
+	@echo "$(GREEN)Compiling get_next_line...$(RESET)"
 	@$(MAKE) -C $(GNL_DIR)
 
 $(OBJ_DIR):
@@ -79,22 +79,22 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/shell
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEAD) | $(OBJ_DIR)
-	@echo "$(GREEN)Compilando $<$(RESET)"
+	@echo "$(GREEN)Compiling $<$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ) $(LIBFT) $(GNL)
-	@echo "$(GREEN)Linkeando $(NAME)...$(RESET)"
+	@echo "$(GREEN)Linking $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBS)
-	@echo "$(GREEN)✓ $(NAME) compilado exitosamente!$(RESET)"
+	@echo "$(GREEN)✓ $(NAME) successfully compiled!$(RESET)"
 
 clean:
-	@echo "$(RED)Eliminando archivos objeto...$(RESET)"
+	@echo "$(RED)Deleting object files...$(RESET)"
 	@rm -rf $(OBJ_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
 	@$(MAKE) -C $(GNL_DIR) clean
 
 fclean: clean
-	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
+	@echo "$(RED)Deleting $(NAME)...$(RESET)"
 	@rm -f $(NAME)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@$(MAKE) -C $(GNL_DIR) fclean
@@ -102,8 +102,8 @@ fclean: clean
 re: fclean all
 
 info:
-	@echo "Archivos fuente: $(words $(SRC))"
-	@echo "Archivos objeto: $(words $(OBJ))"
-	@echo "Directorio objetos: $(OBJ_DIR)"
+	@echo "Source files: $(words $(SRC))"
+	@echo "Object files: $(words $(OBJ))"
+	@echo "Object folder: $(OBJ_DIR)"
 
 .PHONY: all clean fclean re info

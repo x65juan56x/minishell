@@ -60,19 +60,19 @@ int	builtin_env(char **envp)
 	return (0);
 }
 
-int	builtin_exit(char **args, t_shell_context *shell_context)
+int	builtin_exit(char **args)
 {
 	int	exit_code;
 
 	ft_putendl_fd("exit", STDOUT_FILENO);
 	if (!args[1])
-		exit(0);
+		return (-2); // Código especial para exit sin argumentos
 	if (!ft_isnumstr(args[1])) // Non-numeric argument: print error and exit with 255.
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		exit(255);
+		return (255);
 	}
 	if (args[2]) // Numeric argument followed by another: print error and *do not exit*.
 	{
@@ -80,8 +80,7 @@ int	builtin_exit(char **args, t_shell_context *shell_context)
 		return (1);
 	}
 	exit_code = ft_atoi(args[1]); // Valid numeric argument, and it's the only one.
-	cleanup_shell_context(shell_context);
 	// The exit code is an 8-bit unsigned value (0-255).
 	// Casting to unsigned char correctly wraps the value.
-	exit((unsigned char)exit_code);
+	return ((unsigned char)exit_code);
 }
