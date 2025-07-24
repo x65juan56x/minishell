@@ -84,6 +84,11 @@ int	run_shell_loop(t_shell_context *shell_context)
                 shell_context->exit_status = exit_code;
                 should_exit = 0;
             }
+			if (should_exit)
+			{
+				free(input);
+				break;
+			}
 		}
 		free(input);
 	}
