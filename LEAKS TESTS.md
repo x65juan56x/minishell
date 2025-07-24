@@ -69,19 +69,19 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 6. Builtins
 
-- `export VAR1=hola`
-- `unset VAR1`
-- `export VAR2=`
-- `export 1VAR=hola`
-- `unset NOEXISTE`
-- `env`
-- `cd`
-- `cd /noexiste`
-- `cd /tmp`
-- `exit`
-- `exit hola`
-- `exit 42`
-- `exit 1 2`
+- `export VAR1=hola`✅
+- `unset VAR1`✅
+- `export VAR2=`✅
+- `export 1VAR=hola`✅
+- `unset NOEXISTE`✅
+- `env`✅
+- `cd`✅
+- `cd /noexiste`✅
+- `cd /tmp`✅
+- `exit`✅
+- `exit hola`✅
+- `exit 42`✅
+- `exit 1 2`✅
 
 ---
 
