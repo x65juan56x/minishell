@@ -1,0 +1,265 @@
+==1337449== ERROR SUMMARY: 211 errors from 12 contexts (suppressed: 0 from 0)
+==1337449== 
+==1337449== 1 errors in context 1 of 12:
+==1337449== Invalid free() / delete / delete[] / realloc()
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25040 is 0 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 2 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x40195B: cleanup_heredoc_files (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014F6: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25048 is 8 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 3 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x4014CC: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25058 is 24 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 4 of 12:
+==1337449== Invalid free() / delete / delete[] / realloc()
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408581: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b250a0 is 0 bytes inside a block of size 544 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408581: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x406FC5: copy_envp (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406F38: init_shell_environment (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40157D: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 5 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x4014BF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25050 is 16 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 6 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x4014B0: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25050 is 16 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 7 of 12:
+==1337449== Invalid read of size 4
+==1337449==    at 0x407615: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25040 is 0 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 8 of 12:
+==1337449== Invalid write of size 4
+==1337449==    at 0x4075DF: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25040 is 0 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 1 errors in context 9 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x40195B: cleanup_heredoc_files (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40725B: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25048 is 8 bytes inside a block of size 32 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x4014FF: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x401533: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 67 errors in context 10 of 12:
+==1337449== Invalid free() / delete / delete[] / realloc()
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408567: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b25300 is 0 bytes inside a block of size 12 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408567: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x407CB4: ft_strdup (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40700B: copy_envp (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406F38: init_shell_environment (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40157D: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 67 errors in context 11 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x40855F: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b250a0 is 0 bytes inside a block of size 544 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408581: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x406FC5: copy_envp (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406F38: init_shell_environment (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40157D: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== 
+==1337449== 68 errors in context 12 of 12:
+==1337449== Invalid read of size 8
+==1337449==    at 0x40854C: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4015A2: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Address 0x4b250a0 is 0 bytes inside a block of size 544 free'd
+==1337449==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x408581: ft_freearr (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4014C7: cleanup_shell_context (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406112: builtin_exit (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x405CE7: execute_builtin (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401E8B: execute_simple_command (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4017B6: handle_simple_command_fork (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401676: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40724A: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x4075D4: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x401591: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==  Block was alloc'd at
+==1337449==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1337449==    by 0x406FC5: copy_envp (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x406F38: init_shell_environment (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449==    by 0x40157D: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==1337449== 
+==1337449== ERROR SUMMARY: 211 errors from 12 contexts (suppressed: 0 from 0)

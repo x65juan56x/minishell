@@ -40,7 +40,7 @@ $(OBJ_DIR)/%.o: %.c $(HEAD) | $(OBJ_DIR)
 $(NAME): $(OBJ_DIR) $(OBJ)
 	@echo "$(BLUE)Building library $(NAME)...$(RESET)"
 	@$(AR) $(NAME) $(OBJ)
-	@echo "$(GREEN)✓ $(NAME) Successfully built!$(RESET)"
+	@echo "$(GREEN)✓ $(NAME) successfully built!$(RESET)"
 
 clean:
 	@echo "$(RED)Deleting object files...$(RESET)"
