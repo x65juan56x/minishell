@@ -61,9 +61,10 @@ int	run_shell_loop(t_shell_context *shell_context)
 		if (*input)
 		{
 			exit_code = process_command_line(input, shell_context);
-			if (exit_code == -2) // Solo salir si el usuario pidió exit
+			if (exit_code <= -2) // Solo salir si el usuario pidió exit
 			{
-				shell_context->exit_status = 0;
+				// Si exit_code == -2, status 0. Si exit_code == -2 - N, status N.
+				shell_context->exit_status = (exit_code == -2) ? 0 : -(exit_code + 2);
 				should_exit = 1;
 			}
 			else

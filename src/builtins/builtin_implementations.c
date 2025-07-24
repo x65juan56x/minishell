@@ -82,5 +82,5 @@ int	builtin_exit(char **args)
 	exit_code = ft_atoi(args[1]); // Valid numeric argument, and it's the only one.
 	// The exit code is an 8-bit unsigned value (0-255).
 	// Casting to unsigned char correctly wraps the value.
-	return ((unsigned char)exit_code);
+	return (-2 - (unsigned char)exit_code);
 }
