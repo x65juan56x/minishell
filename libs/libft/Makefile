@@ -75,27 +75,27 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: %.c $(HEAD) | $(OBJ_DIR)
-	@echo "$(GREEN)Compilando $<$(RESET)"
+	@echo "$(GREEN)Compiled $<$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
-	@echo "$(BLUE)Creando librería $(NAME)...$(RESET)"
+	@echo "$(BLUE)Building library $(NAME)...$(RESET)"
 	@$(AR) $(NAME) $(OBJ)
-	@echo "$(GREEN)✓ $(NAME) creada exitosamente!$(RESET)"
+	@echo "$(GREEN)✓ $(NAME) successfully built!$(RESET)"
 
 clean:
-	@echo "$(RED)Eliminando archivos objeto de libft...$(RESET)"
+	@echo "$(RED)Deleting Libft object files...$(RESET)"
 	@$(RM) -rf $(OBJ_DIR)
 
 fclean: clean
-	@echo "$(RED)Eliminando $(NAME)...$(RESET)"
+	@echo "$(RED)Deleting $(NAME)...$(RESET)"
 	@$(RM) $(NAME)
 
 re: fclean all
 
 info:
-	@echo "Archivos fuente: $(words $(SRC))"
-	@echo "Archivos objeto: $(words $(OBJ))"
-	@echo "Directorio objetos: $(OBJ_DIR)"
+	@echo "Source files: $(words $(SRC))"
+	@echo "Object files: $(words $(OBJ))"
+	@echo "Object folder: $(OBJ_DIR)"
 
 .PHONY: all clean fclean re info
