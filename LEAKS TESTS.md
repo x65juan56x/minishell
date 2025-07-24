@@ -37,9 +37,9 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 ## 3. Wildcards
 
 - `ls *.noexiste`✅
-- `touch file{1..100}.txt; ls *.txt`
-- `ls a* b*`
-- `ls "*.c"`
+- `touch file{1..100}.txt; ls *.txt` ✅ (lo he probado creando los archivos por separado)
+- `ls a* b*` ❌ ()
+- `ls "*.c"` ✅
 - `ls *`
 - `ls .*`
 
@@ -47,14 +47,14 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 4. Redirecciones y Pipes
 
-- `cat < noexiste.txt`
-- `echo hola > test.txt`
-- `echo hola >> test.txt`
-- `cat < test.txt > out.txt`
-- `noexiste | echo hola`
-- `echo hola | cat | wc -l`
-- `echo hola > a > b > c > d`
-- `yes | yes | yes | yes | head -n 1`
+- `cat < noexiste.txt` ✅
+- `echo hola > test.txt` ✅
+- `echo hola >> test.txt` ✅
+- `cat < test.txt > out.txt` ✅
+- `noexiste | echo hola` ✅
+- `echo hola | cat | wc -l` ✅
+- `echo hola > a > b > c > d` ✅
+- `yes | yes | yes | yes | head -n 1` ✅
 
 ---
 
