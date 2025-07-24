@@ -1,5 +1,16 @@
 #include "../../include/minishell.h"
 
+void	print_token_values(t_token *head)
+{
+	t_token *curr = head;
+
+	while (curr)
+	{
+		printf("%s\n", curr->value);
+		curr = curr->next;
+	}
+}
+
 // Crea una nueva lista de tokens a partir de los nombres de fichero que coinciden.
 static t_token	*create_match_tokens(const char *pattern)
 {
@@ -27,6 +38,7 @@ static t_token	*create_match_tokens(const char *pattern)
 		}
 		entry = readdir(dir);
 	}
+	//print_token_values(matches_head);
 	closedir(dir);
 	return (matches_head);
 }
@@ -49,6 +61,7 @@ static void	replace_token_with_matches(t_token *prev, t_token *current,
 	free(current);
 }
 
+
 // Función principal que recorre la lista de tokens y expande los wildcards.
 // Devuelve la nueva cabeza de la lista, que puede haber cambiado.
 t_token	*expand_wildcards(t_token *tokens)
@@ -61,6 +74,7 @@ t_token	*expand_wildcards(t_token *tokens)
 	head = tokens;
 	prev = NULL;
 	current = tokens;
+
 	while (current)
 	{
 		if (current->type == TOKEN_WORD && current->in_quotes == 0
@@ -77,8 +91,14 @@ t_token	*expand_wildcards(t_token *tokens)
 					head = matches; // La cabeza de la lista ha cambiado
 					current = matches;
 				}
-				while (current && current->next)
-					current = current->next;
+				t_token *tmp;
+				tmp = current;
+				while (tmp && tmp->next)
+					tmp = tmp->next;
+				prev = tmp;
+				current = current->next;
+				continue;
+			//Se que es algo aqui pero no consigo hacer que funciones
 			}
 		}
 		prev = current;
