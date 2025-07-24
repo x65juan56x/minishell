@@ -60,30 +60,17 @@ int	run_shell_loop(t_shell_context *shell_context)
 		}
 		if (*input)
 		{
-			exit_code = process_command_line(input, shell_context); // Solo salir si es exit válido, NO si es error por demasiados argumentos
-			if (exit_code == -2)
+			exit_code = process_command_line(input, shell_context);
+			if (exit_code == -2) // Solo salir si el usuario pidió exit
 			{
-                shell_context->exit_status = 0;
-                should_exit = 1;
-            }
-            else if (exit_code >= 0 && exit_code <= 255)
-            {
-                if (exit_code != 1)
-                {
-                    shell_context->exit_status = exit_code;
-                    should_exit = 1;
-                }
-                else
-                {
-                    shell_context->exit_status = exit_code;
-                    should_exit = 0;
-                }
-            }
-            else
-            {
-                shell_context->exit_status = exit_code;
-                should_exit = 0;
-            }
+				shell_context->exit_status = 0;
+				should_exit = 1;
+			}
+			else
+			{
+				shell_context->exit_status = exit_code;
+				should_exit = 0;
+			}
 			if (should_exit)
 			{
 				free(input);
