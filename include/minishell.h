@@ -232,7 +232,7 @@ void			sort_and_print_export(char **envp_cpy);
 char			**init_shell_environment(char **envp, t_shell_context *shell_context);
 char			*get_user_input(void);
 int				handle_input_line(char *input);
-int				process_command_line(char *input, t_shell_context *shell_context);
+int				process_command_line(t_token *tokens, t_shell_context *shell_context);
 int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
 void			cleanup_shell_context(t_shell_context *shell_context);

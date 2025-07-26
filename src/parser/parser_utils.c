@@ -107,13 +107,10 @@ int	is_lparen_and_or_open(const char *s)
 	i = 0;
 	while (s[i])
 	{
-		if (s[0] != '&' &&s[0] != '|')
-		{
-			if (s[i + 1] == '&' && s[i + 2] == '&' && !s[i + 3])
-				return (1);
-			if (s[i + 1] == '|' && s[i + 2] == '|' && !s[i + 3])
-				return (1);
-		}
+		if (s[i + 1] == '&' && s[i + 2] == '&' && !s[i + 3])
+			return (1);
+		if (s[i + 1] == '|' && s[i + 2] == '|' && !s[i + 3])
+			return (1);
 		if (s[i] == '(' && !s[i + 1])
 			return (1);
 		i++;
