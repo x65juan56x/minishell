@@ -100,14 +100,21 @@ int	are_quotes_unclosed(const char *s)
 	return (in_quote);
 }
 
-int	is_and_open(const char *s)
+int	is_lparen_and_or_open(const char *s)
 {
 	int	i;
 
 	i = 0;
 	while (s[i])
 	{
-		if (s[i] == '&' && s[i + 1] == '&' && !s[i + 2])
+		if (s[0] != '&' &&s[0] != '|')
+		{
+			if (s[i + 1] == '&' && s[i + 2] == '&' && !s[i + 3])
+				return (1);
+			if (s[i + 1] == '|' && s[i + 2] == '|' && !s[i + 3])
+				return (1);
+		}
+		if (s[i] == '(' && !s[i + 1])
 			return (1);
 		i++;
 	}

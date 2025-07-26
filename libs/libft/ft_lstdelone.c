@@ -6,7 +6,7 @@
 /*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 12:25:24 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/18 18:15:52 by juan             ###   ########.fr       */
+/*   Updated: 2025/07/25 10:43:16 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	ft_lstdelone(t_list *lst, void (*del)(void*))
 {
-//	printf("DEBUG: ft_lstdelone llamada\n");/*DEBUG*/
 	if (!lst)
 		return ;
 	del(lst->content);

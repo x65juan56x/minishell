@@ -8,7 +8,8 @@ char	*get_user_input(void)
 	{
 		input = readline(PROMPT); // Usamos readline para tener el prompt y el historial
 		if (!input) // Ctrl+D
-			return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
+			return(NULL); //BORRAR Y DESCOMENTAR LA LINEA SIGUIENTE
+	//		return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
 	else // Modo No Interactivo
 		input = get_next_line(STDIN_FILENO); // Usamos GNL para leer del pipe sin imprimir nada

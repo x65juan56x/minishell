@@ -64,7 +64,7 @@ int	builtin_exit(char **args)
 {
 	int	exit_code;
 
-	ft_putendl_fd("exit", STDOUT_FILENO);
+//	ft_putendl_fd("exit", STDOUT_FILENO); //DESCOMENTAR!!!
 	if (!args[1])
 		return (-2); // Código especial para exit sin argumentos
 	if (!ft_isnumstr(args[1])) // Non-numeric argument: print error and exit with 255.

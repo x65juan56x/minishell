@@ -28,11 +28,11 @@ static t_token	*create_match_tokens(const char *pattern)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		printf("DEBUG: pattern='%s', entry='%s'\n", pattern, entry->d_name); //DEBUG
+//		printf("DEBUG: pattern='%s', entry='%s'\n", pattern, entry->d_name); //DEBUG
 		if ((pattern[0] == '.' || entry->d_name[0] != '.')
 			&& match_wildcard(entry->d_name, pattern))
 		{
-			printf("DEBUG: MATCHED '%s'\n", entry->d_name); //DEBUG
+//			printf("DEBUG: MATCHED '%s'\n", entry->d_name); //DEBUG
 			new_token = create_token(TOKEN_WORD, ft_strdup(entry->d_name));
 			if (!new_token)
 				break ; // Error de malloc, se limpiará fuera.
@@ -84,7 +84,7 @@ t_token	*expand_wildcards(t_token *tokens)
             && ft_strchr(current->value, '*'))
         {
             matches = create_match_tokens(current->value);
-			debug_print_token_list(matches); //DEBUG
+//			debug_print_token_list(matches); //DEBUG
             if (matches)
             {
                 replace_token_with_matches(prev, current, matches);

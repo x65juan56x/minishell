@@ -15,7 +15,7 @@ int	run_shell_loop(t_shell_context *shell_context)
 		input = get_user_input();
 		if (!input)
 			break ; // Ctrl+D presionado
-		while (are_quotes_unclosed(input) || is_and_open(input))
+		while (are_quotes_unclosed(input) || is_lparen_and_or_open(input))
 		{
 			if (!isatty(STDIN_FILENO))  // Solo en modo interactivo
 			{
@@ -34,7 +34,7 @@ int	run_shell_loop(t_shell_context *shell_context)
 			}
 			if (are_quotes_unclosed(input))
 				temp = ft_strjoin(input, "\n"); // Unimos la línea anterior con la nueva (añadiendo un \n)
-			else if (is_and_open(input))
+			else if (is_lparen_and_or_open(input))
 				temp = ft_strdup(input);
 			free(input);
 			if (!temp)

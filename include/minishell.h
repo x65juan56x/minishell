@@ -99,6 +99,7 @@ typedef struct s_shell_context
 	t_list			*heredoc_files;	// Lista para rastrear ficheros heredoc
 	char			**envp_cpy;		// Copia del entorno del shell
 	t_list			*local_vars;	// Lista para variables locales
+	int				error_flag;
 } t_shell_context;
 
 
@@ -117,7 +118,7 @@ char			*extract_word_token(const char *s, int *i, int *quoted);
 char			*process_quoted_string(const char *s, int start, int end, int *quoted);
 
 /* PARSER AST */
-t_ast_node		*parse(t_token *tokens);
+t_ast_node		*parse(t_token *tokens, t_shell_context *shell_context);
 void			cleanup_ast(t_ast_node *node);
 t_ast_node		*create_ast_node(t_node_type type);
 t_ast_node		*create_binary_node(t_token_type op_type, t_ast_node *left, t_ast_node *right);
@@ -146,7 +147,7 @@ void			skip_redirect_token(t_token **tp);
 int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
-int				is_and_open(const char *s);
+int				is_lparen_and_or_open(const char *s);
 
 /* WILDCARD EXPANSION */
 t_token			*expand_wildcards(t_token *tokens);
