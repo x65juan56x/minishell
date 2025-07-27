@@ -72,7 +72,7 @@ int	builtin_exit(char **args)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		return (255);
+		return (-4);
 	}
 	if (args[2]) // Numeric argument followed by another: print error and *do not exit*.
 	{
