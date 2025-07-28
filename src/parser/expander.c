@@ -89,7 +89,7 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 		else
 			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 	}
-	free(tmp->value);
+	//free(tmp->value);
 	tmp->value = var_expanded;
 }
 
@@ -109,6 +109,29 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 		tmp = tmp->next;
 	}
 	return ;
+}
+
+char	*expander_line_content(char *line, t_shell_context *shell_context)
+{
+	t_token *tmp_token;
+	char 	*expanded_value;
+
+	//creamos un token temporal con la linea del heredoc
+	tmp_token = create_token(TOKEN_WORD, line);
+	if(!tmp_token)
+	{
+		return (NULL);
+	}
+	//marcar el token para que sea expandido
+	tmp_token->expand = 1;
+	//llamar a la funcion de actualización de tokens
+	update_tokens_values(shell_context, tmp_token);
+			//ahora el value de este token se corresponde con el valor expandido
+	//extraer el valor expandido
+	expanded_value = ft_strdup(tmp_token->value);
+	//limpiar el token temporal
+	//free(tmp_token);
+	return(expanded_value);
 }
 
 //PROBLEMA DE SEGMENTATION FAULT CUANDO ES UN ENV_VAR INCORRECTO

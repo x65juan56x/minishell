@@ -1,9 +1,9 @@
 #include "../../include/minishell.h"
 
-static void	heredoc_child_routine(const char *filename, char *delimiter)
+static void	heredoc_child_routine(const char *filename, char *delimiter, t_shell_context *shell_context)
 {
 	setup_heredoc_signals();
-	if (create_heredoc_file(filename, delimiter) != 0)
+	if (create_heredoc_file(filename, delimiter, shell_context) != 0)
 		exit(1); // Sale con error si la creación del fichero falla.
 	exit(0); // Éxito
 }
@@ -26,7 +26,7 @@ static int	heredoc_parent_routine(pid_t pid, struct termios *orig_termios)
 	return (0);
 }
 
-int	execute_heredoc(const char *filename, char *delimiter)
+int	execute_heredoc(const char *filename, char *delimiter, t_shell_context *shell_context)
 {
 	pid_t			pid;
 	struct termios	orig_termios;
@@ -42,6 +42,6 @@ int	execute_heredoc(const char *filename, char *delimiter)
 		return (-1);
 	}
 	if (pid == 0)
-		heredoc_child_routine(filename, delimiter);
+		heredoc_child_routine(filename, delimiter, shell_context);
 	return (heredoc_parent_routine(pid, &orig_termios));
 }
