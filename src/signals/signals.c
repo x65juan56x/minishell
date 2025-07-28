@@ -26,16 +26,23 @@ void setup_interactive_signals(void)
 	/* Ctrl+C  */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags   = SA_RESTART;
+	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = interactive_sigint_handler;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 	/* Ctrl+\  => ignorado en el prompt (bash no imprime nada) */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags   = SA_RESTART;
+	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
+		perror("minishell: sigaction");
+	/* Ctrl+Z  => ignorado en el prompt */
+	ft_bzero(&sa, sizeof(sa));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	if (sigaction(SIGTSTP, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 }
 /**
