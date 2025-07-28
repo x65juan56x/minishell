@@ -156,6 +156,7 @@ int				match_wildcard(const char *str, const char *pattern);
 /* EXPANDER */
 void			is_expand_needed (char *s, int quoted, t_token *token);
 void			expander_var(t_token *token_list, t_shell_context *shell_context);
+char			*expander_line_content(char *line, t_shell_context *shell_context);
 char			*do_expand(t_token *token, int *i, t_shell_context *shell_context);
 char			*copy_non_expanded(char *value, int *i, char *var_expanded);
 
@@ -165,6 +166,7 @@ char			*expand_status(int *i, t_shell_context *shell_context);
 char			*extract_var_name(char *str, int *i);
 char			*expand_var(int *i, t_shell_context *shell_context, t_token *token);
 char			*expand_curly(int *i, t_shell_context *shell_context, t_token *token);
+
 
 /* EXECUTOR */
 int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context);
@@ -188,11 +190,11 @@ int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* HEREDOC EXECUTOR */
-int				execute_heredoc(const char *filename, char *delimiter);
+int				execute_heredoc(const char *filename, char *delimiter, t_shell_context *shell_context);
 
 /* HEREDOC UTILS */
 // void			disable_ctrl_echo(struct termios *orig_termios);
-int				create_heredoc_file(const char *filename, char *delimiter);
+int				create_heredoc_file(const char *filename, char *delimiter, t_shell_context *shell_context);
 
 /* HEREDOC PREPROCESSOR */
 int				preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr, t_shell_context *shell_context);

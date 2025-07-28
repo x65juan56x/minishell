@@ -40,7 +40,7 @@ int	preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr,
         temp_filename = build_heredoc_filename(*heredoc_id_ptr);
         if (!temp_filename)
             return (-1);
-        if (execute_heredoc(temp_filename, node->file) != 0)
+        if (execute_heredoc(temp_filename, node->file, shell_context) != 0)
             return (free(temp_filename), -1);
         new_list_node = ft_lstnew(ft_strdup(temp_filename)); // Guardamos una copia del nombre
         if (!new_list_node || !new_list_node->content)

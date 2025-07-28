@@ -1,8 +1,9 @@
 #include "../../include/minishell.h"
 
-int	read_heredoc_input(char *delimiter, int write_fd)
+int	read_heredoc_input(char *delimiter, int write_fd, t_shell_context *shell_context)
 {
 	char	*line;
+	char 	*expanded_line;
 
 	while (1)
 	{
@@ -23,8 +24,10 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 			free(line);
 			break ;
 		}
-		ft_putendl_fd(line, write_fd);
+		expanded_line = expander_line_content(line, shell_context);
+		ft_putendl_fd(expanded_line, write_fd);
 		free(line);
+		free(expanded_line);
 	}
 	return (0);
 }
@@ -45,14 +48,14 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 
 // Esta función abre y escribe en un fichero cuyo nombre se le pasa.
 // Devuelve 0 en éxito, -1 en error.
-int	create_heredoc_file(const char *filename, char *delimiter)
+int	create_heredoc_file(const char *filename, char *delimiter, t_shell_context *shell_context)
 {
 	int	fd;
 
 	fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd < 0)
 		return (perror("minishell: heredoc"), -1);
-	read_heredoc_input(delimiter, fd); // read_heredoc_input se encarga de leer del usuario y escribir en el fd.
+	read_heredoc_input(delimiter, fd, shell_context); // read_heredoc_input se encarga de leer del usuario y escribir en el fd.
 	close(fd);
 	return (0);
 }
