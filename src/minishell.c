@@ -15,7 +15,7 @@ void	debug_print_local_vars(t_shell_context *ctx)
 void	debug_print_token_list(t_token *head)
 {
 	t_token *cur = head;
-	printf("DEBUG: token list: ");
+	//printf("DEBUG: token list: ");
 	while (cur)
 	{
 		printf("[%s] ", (char*)cur->value);
@@ -26,7 +26,7 @@ void	debug_print_token_list(t_token *head)
 
 void	debug_print_expand(t_token token)
 {
-	printf("DEBUG: expand: ");
+	//printf("DEBUG: expand: ");
 	printf("[%i] ", token.expand);
 	printf("\n");
 }

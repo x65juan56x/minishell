@@ -120,3 +120,26 @@ cat << EOF
 cat
 	ctrl + C ✅
 	ctrl + \ ✅
+
+
+Causa Principal: Corrupción de Punteros
+El problema crítico estaba en que calculabas last_match después de llamar a replace_token_with_matches. Esta función modifica la estructura de la lista enlazada y libera el token original (current), lo que puede dejar matches en un estado inconsistente.
+
+Secuencia Problemática:
+replace_token_with_matches modifica la lista y libera memoria
+Después intentabas recalcular last_match = matches
+matches podía estar corrompido o apuntar a memoria inválida
+last_match->next devolvía NULL en lugar del siguiente token (*.txt)
+El bucle terminaba prematuramente sin procesar *.txt
+Causa Secundaria: Salto de Archivos en Directorio
+El primer cambio en create_match_tokens solucionó un problema menor donde se saltaban archivos del directorio por la doble llamada a readdir(), pero no era la causa principal del fallo con múltiples wildcards.
+
+Por Qué Ahora Funciona
+Preservación de Referencias: Al calcular last_match antes de replace_token_with_matches, conservas la referencia correcta al último nodo de la lista de matches.
+
+Punteros Consistentes: last_match->next ahora apunta correctamente al siguiente token en la lista original (*.txt), permitiendo que el bucle continúe.
+
+Procesamiento Secuencial: Cada wildcard se procesa correctamente en orden, manteniendo la integridad de la lista enlazada.
+
+Lección Aprendida
+El orden de las operaciones es crítico cuando trabajas con listas enlazadas que se modifican dinámicamente. Siempre conserva las referencias que necesitas antes de realizar operaciones que modifiquen la estructura de datos.
