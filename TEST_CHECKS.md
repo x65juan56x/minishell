@@ -557,15 +557,15 @@ echo 42
 
 20:
 >echo>
-/bin/rm -f echo
+/bin/rm -f echo ✅ mismo exits status = 0, aunque en el test la exit status de baash = 2
 
 21:
 <echo<
-/bin/rm -f echo
+/bin/rm -f echo ✅ mismo exits status = 0, aunque en el test la exit status de baash = 2
 
 22:
 >>echo>>
-/bin/rm -f echo
+/bin/rm -f echo ✅ mismo exits status = 0, aunque en el test la exit status de baash = 2
 
 # **************************************************************************** #
 #                                     WILD                                     #
