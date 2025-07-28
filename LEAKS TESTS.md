@@ -38,10 +38,10 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 - `ls *.noexiste`✅
 - `touch file{1..100}.txt; ls *.txt` ✅ (lo he probado creando los archivos por separado)
-- `ls a* b*` ❌ ()
+- `ls a* b*` ✅ 
 - `ls "*.c"` ✅
-- `ls *`
-- `ls .*`
+- `ls *` ✅
+- `ls .*` ✅
 
 ---
 
@@ -60,10 +60,10 @@ Esta lista cubre los casos más propensos a fugas de memoria en un shell. Úsala
 
 ## 5. Here-Document
 
-- `cat << EOF` (luego varias líneas, luego EOF)
-- `cat << EOF` (presiona Ctrl+C antes de EOF)
-- `cat << ""`
-- `cat << EOF | cat`
+- `cat << EOF` (luego varias líneas, luego EOF) ✅
+- `cat << EOF` (presiona Ctrl+C antes de EOF) ✅
+- `cat << ""` ✅
+- `cat << EOF | cat` ✅
 
 ---
 
