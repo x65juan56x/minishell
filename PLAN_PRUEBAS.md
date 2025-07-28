@@ -887,7 +887,7 @@ Verifica la correcta expansión de variables de entorno.
 
 - **Sin expansión en comillas dobles:**
   ```bash
-  ❌MiniShell $ echo $"USER"
+  ✅MiniShell $ echo $"USER"
   ```
   - **Salida esperada:** `USER`.
 

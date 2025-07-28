@@ -4,57 +4,57 @@
 
 ### comparing your input parsing to bash ###
 
-6: /bin/echo ""'$USER'""
+⚠️6: /bin/echo ""'$USER'""
 
-7: /bin/echo '"'$USER'"'
+⚠️7: /bin/echo '"'$USER'"'
 
-9: /bin/echo "'"'$USER'"'"
+⚠️9: /bin/echo "'"'$USER'"'"
 
-10: /bin/echo '"'"$USER"'"'
+⚠️10: /bin/echo '"'"$USER"'"'
 
-24: /bin/echo \$USER
+✅24: /bin/echo \$USER
 
-25: /bin/echo \\$USER
+✅25: /bin/echo \\$USER
 
-26: /bin/echo \\\$USER
+✅26: /bin/echo \\\$USER
 
-27: /bin/echo \\\\$USER
+✅27: /bin/echo \\\\$USER
 
-28: /bin/echo \\\\\$USER
+✅28: /bin/echo \\\\\$USER
 
-29: /bin/echo \\\\\\\\\$USER
+✅29: /bin/echo \\\\\\\\\$USER
 
-30: /bin/echo \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER \$PATH \\$PWD
+✅30: /bin/echo \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER \$PATH \\$PWD
 
-42: /bin/echo ''''''''''$USER''''''''''
+✅42: /bin/echo ''''''''''$USER''''''''''
 
-45: /bin/echo ""'""""""$USER""""""'""
+✅45: /bin/echo ""'""""""$USER""""""'""
 
-46: /bin/echo """"""""'$USER'""""""""
+✅46: /bin/echo """"""""'$USER'""""""""
 
-48: /bin/echo """"""'""$USER""'""""""
+✅48: /bin/echo """"""'""$USER""'""""""
 
-51: /bin/echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
+⚠️51: /bin/echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
 
-66: /bin/echo $USER$TESTNOTFOUND$HOME$
+⚠️66: /bin/echo $USER$TESTNOTFOUND$HOME$
 
 # **************************************************************************** #
 #                                PARSING HELL                                  #
 # **************************************************************************** #
 
-12:
+⚠️12:
 cat << $USER
 why
 not
 $USER
 
-14:
+⚠️14:
 cat << "$USER"
 why
 not
 $USER
 
-15:
+⚠️15:
 cat << "$US"E"R"
 because
 we
@@ -62,81 +62,81 @@ love
 bash
 $USER
 
-17:
+⚠️17:
 >> "$H"OM"E"
 cat OME
 /bin/rm -f OME
 
-22:
+⚠️22:
 cd "$H"O"ME"/Desktop/
 echo $?
 
-23:
+⚠️23:
 export T=n
 echo "-"$T$T
 
-25:
+⚠️25:
 export T=ech
 echo $T"o"
 
-26:
+⚠️26:
 export T=ech
 echo $T"o "
 
-27:
+⚠️27:
 export T=ech
 echo $T"o -n"
 
-28:
+⚠️28:
 export T=ech
 echo $T"o -n"
 
-29:
+⚠️29:
 export T=ech
 echo $T'o'
 
-30:
+❌30:
 export T="-n test1 -n test 2"
 echo $T
 
-31:
+⚠️31:
 export T=ech
 echo $T'o '
 
-41:
+⚠️41:
 export T=nnnnnnnn
 echo "-""$T"nnnnnnnnnnnnn -nnnnnnnn"$T" '-'"$T"
 
-42:
+⚠️42:
 export T=nnnnnnnn
 echo "-""$T"nnnnnnnnnnnnn -nnnnnnnn"$T" '-''$T'
 
-50:
+⚠️50:
 export T=e E=c S=h L=o
 $T$E$S$L -nn
 
-58:
+⚠️58:
 export T="l"
 $Ts -a
 
-77:
+⚠️77:
 export T="echo segfault | grep segfault"
 $T
 
-78:
+⚠️78:
 export T=-nnnnnnnn"nnnnnnn "
 echo $T
 
-101:
+⚠️101:
 '''''''''''''''' echo ok
 
-109:
+⚠️109:
 echo -nnnnnnnnnnnn
 
-123:
+❌123:
 >| echo sure
 
-124:
+✅124:
 cd --
 
 # **************************************************************************** #
@@ -145,41 +145,41 @@ cd --
 
 ### ECHO ###
 
-1: echo cd ~
+✅1: echo cd ~
 
-8: echo ""'$USER'""
+⚠️8: echo ""'$USER'""
 
-9: echo '"'$USER'"'
+⚠️9: echo '"'$USER'"'
 
-11: echo "'"'$USER'"'"
+⚠️11: echo "'"'$USER'"'"
 
-12: echo '"'"$USER"'"'
+⚠️12: echo '"'"$USER"'"'
 
-27: echo \$USER
+✅27: echo \$USER
 
-28: echo \\$USER
+✅28: echo \\$USER
 
-29: echo \\\$USER
+✅29: echo \\\$USER
 
-30: echo \\\\$USER
+✅30: echo \\\\$USER
 
-31: echo \\\\\$USER
+✅31: echo \\\\\$USER
 
-32: echo \\\\\\\\\$USER
+✅32: echo \\\\\\\\\$USER
 
-33: echo \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER \$PATH \\$PWD
+✅33: echo \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER \$PATH \\$PWD
 
-45: echo ''''''''''$USER''''''''''
+⚠️45: echo ''''''''''$USER''''''''''
 
-47: echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
+⚠️47: echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
 
-62: echo $USER$TESTNOTFOUND$HOME$
+⚠️62: echo $USER$TESTNOTFOUND$HOME$
 
-80: echo -n -nnnnnnn -n -nnn -nnnnn -n-n
+⚠️80: echo -n -nnnnnnn -n -nnn -nnnnn -n-n
 
-81: echo -n -nnnnnnn -n -nnn -nnnnn -n feel my pain
+⚠️81: echo -n -nnnnnnn -n -nnn -nnnnn -n feel my pain
 
-93: cd ..
+✅93: cd ..
 
 102: cd '/////' 2>/dev/null
 
@@ -187,19 +187,19 @@ cd --
 
 107: cd "wtf" 2>/dev/null
 
-128:
+✅128:
 pwd
 cd ~
 cd - ananas dot jpeg
 pwd
 
-131:
+✅131:
 pwd
 cd ~
 cd -
 pwd
 
-133:
+✅133:
 pwd
 cd ~
 pwd
@@ -231,7 +231,7 @@ ls | cat << stop | grep "asd"
 is this good
 stop
 
-26:
+✅26:
 ls | cat << stop | ls -la | cat << stop1
 12
 32232
@@ -241,7 +241,7 @@ awdaw
 daswd
 stop1
 
-27:
+✅27:
 ls | cat << stop | ls -la | cat << stop1 | ls | cat << stop2 | ls -la | cat << stop3
 $USER
 ad
