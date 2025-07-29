@@ -83,7 +83,12 @@ int	run_shell_loop(t_shell_context *shell_context)
 			return (1);
 //		debug_print_token_list(tokens);//DEBUG
 		if (extremes_ops_checker(tokens) || cosecutive_ops_checker(tokens))
-			return (cleanup_tokens(tokens), 2);
+		{
+			cleanup_tokens(tokens);
+			shell_context->exit_status = 2;
+			free (input);
+			continue;
+		}
 
 		while (are_quotes_unclosed(input) || is_lparen_and_or_open(input))
 		{
