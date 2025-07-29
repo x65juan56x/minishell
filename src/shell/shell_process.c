@@ -3,6 +3,11 @@
 static int	handle_parsing_error(t_token *tokens, t_ast_node *ast,
 			t_shell_context *shell_context)
 {
+	if (tokens == NULL)
+	{
+		ft_putstr_fd("minishell: syntax error\n", STDERR_FILENO);
+		return (2);
+	}
 	if (tokens && tokens->type != TOKEN_EOF)
 		ft_putstr_fd("minishell: syntax error\n", STDERR_FILENO);
 	if (shell_context->error_flag)

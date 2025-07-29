@@ -13,8 +13,12 @@ t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
 	ast = parse_or_expression(&parser);
 	if (parser.error)
 	{
-		shell_context->error_flag = 1;
-		return (cleanup_ast(ast), cleanup_tokens(tokens), NULL);
+		if(tokens == NULL)
+		{
+			shell_context->error_flag = 1;
+			cleanup_ast(ast);
+			return(NULL);
+		}	
 	}
 	return (ast);
 }
