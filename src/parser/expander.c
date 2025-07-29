@@ -89,7 +89,7 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 		else
 			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 	}
-	//free(tmp->value);
+	free(original_value);
 	tmp->value = var_expanded;
 }
 
@@ -117,7 +117,7 @@ char	*expander_line_content(char *line, t_shell_context *shell_context)
 	char 	*expanded_value;
 
 	//creamos un token temporal con la linea del heredoc
-	tmp_token = create_token(TOKEN_WORD, line);
+	tmp_token = create_token(TOKEN_WORD, ft_strdup(line));
 	if(!tmp_token)
 	{
 		return (NULL);
@@ -128,7 +128,9 @@ char	*expander_line_content(char *line, t_shell_context *shell_context)
 	update_tokens_values(shell_context, tmp_token);
 			//ahora el value de este token se corresponde con el valor expandido
 	//extraer el valor expandido
-	expanded_value = ft_strdup(tmp_token->value);
+	expanded_value = tmp_token->value;
+	tmp_token->value = NULL;
+	cleanup_tokens(tmp_token);
 	//limpiar el token temporal
 	//free(tmp_token);
 	return(expanded_value);
