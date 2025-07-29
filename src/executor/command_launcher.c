@@ -37,6 +37,7 @@ void	launch_command(char **args, char **envp)
 	path = find_command_path(args[0], envp);
 	if (!path)
 		exit(printnget_command_error(args[0]));
+	//arreglar la salida de error de ~? aqui, devolver 126
 	execve(path, args, envp);
 	perror("minishell: execve"); // Si execve retorna, es un error
 	free(path);

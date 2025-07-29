@@ -520,7 +520,7 @@ sleep 2
 cd ~/Desktop/
 pwd
 
-11:
+11: ✅
 export PATH=
 echo $PATH
 echo 1
@@ -549,11 +549,11 @@ echo 42
 #                                SYNTAX ERRORS                                 #
 # **************************************************************************** #
 
-8: ~
+8: ~   ⚠️ minishell = 127 bash = 126
 
-15: .
+15: .  ⚠️ minishell = 126 bash = 1
 
-16: ..
+16: .. ✅ mismo error exit en bash y en minishell = 126, en test dice que bash = 127
 
 20:
 >echo>
