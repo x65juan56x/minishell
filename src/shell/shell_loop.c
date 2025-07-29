@@ -123,11 +123,7 @@ int	run_shell_loop(t_shell_context *shell_context)
 			break ;
 		if (g_signal_status == SIGINT) // Si Ctrl+C fue presionado durante readline, g_signal_status será SIGINT.
 			shell_context->exit_status = 130;
-		if (handle_input_line(input))
-		{
-			free(input);
-			break ;
-		}
+		handle_input_line(input);
 		if (*input)
 		{
 			exit_code = process_command_line(tokens, shell_context);
