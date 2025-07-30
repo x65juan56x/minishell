@@ -10,7 +10,7 @@ t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
 	parser.tokens = tokens;
 	parser.current = tokens;
 	parser.error = 0;
-	ast = parse_or_expression(&parser);
+	ast = parse_logical_expression(&parser);
 	if (parser.error)
 	{
 		if(tokens == NULL)

@@ -143,3 +143,8 @@ Procesamiento Secuencial: Cada wildcard se procesa correctamente en orden, mante
 
 Lección Aprendida
 El orden de las operaciones es crítico cuando trabajas con listas enlazadas que se modifican dinámicamente. Siempre conserva las referencias que necesitas antes de realizar operaciones que modifiquen la estructura de datos.
+
+--------------------------
+
+cómo tu ejecutor maneja el status de los operadores lógicos y cómo lo propaga.
+

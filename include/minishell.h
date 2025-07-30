@@ -129,8 +129,9 @@ t_ast_node		*parse_command(t_parser *parser);
 t_token			*consume_token(t_parser *parser, t_token_type expected);
 
 /* PARSER EXPRESSIONS */
-t_ast_node		*parse_or_expression(t_parser *parser);
-t_ast_node		*parse_and_expression(t_parser *parser);
+t_ast_node		*parse_logical_expression(t_parser *parser);
+// t_ast_node		*parse_or_expression(t_parser *parser);
+// t_ast_node		*parse_and_expression(t_parser *parser);
 t_ast_node		*parse_pipe_expression(t_parser *parser);
 t_ast_node		*parse_primary_expression(t_parser *parser);
 t_ast_node		*parse_parenthesis_expression(t_parser *parser);
