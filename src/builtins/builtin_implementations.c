@@ -39,13 +39,18 @@ int	builtin_pwd(void)
 	return (0);
 }
 
-int	builtin_env(char **envp)
+int	builtin_env(char **envp, char **args)
 {
 	int	i;
 
 	if (!envp)
 	{
 		ft_putstr_fd("minishell: env: invalid environment\n", STDERR_FILENO);
+		return (1);
+	}
+	if (args[1])
+	{
+		ft_putstr_fd("minishell: env: too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
 	i = 0;
