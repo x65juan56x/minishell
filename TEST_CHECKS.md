@@ -408,7 +408,7 @@ touch "
 
 18: /bin/echo $'HOM'E$USER
 
-24: /bin/echo "$""$"
+⚠️ 24: /bin/echo "$""$"
 
 27: /bin/echo "$"$
 
@@ -485,27 +485,27 @@ export X="  A  B  "
 
 2: ""
 
-63: echo ''$PWD''
+❓63: echo ''$PWD''
 
-64: echo $USE"R"$HOME
+❓64: echo $USE"R"$HOME
 
-68: echo $'HOM'E$USER
+❓68: echo $'HOM'E$USER
 
-74: echo "$""$"
+❓74: echo "$""$"
 
-77: echo "$"$
+❓77: echo "$"$
 
-110:
+⚠️ 110:
 unset PATH
 cd /bin
 ls
 
-111:
+⚠️ 111:
 unset PATH
 cd /bin/../bin/
 ls
 
-113:
+⚠️ 113:
 unset PATH
 cd /bin/
 sleep 2
@@ -514,9 +514,9 @@ sleep 2
 #                                  PATH FAILS                                  #
 # **************************************************************************** #
 
-7: cd ~
+❓ 7: cd ~
 
-8:
+❓ 8:
 cd ~/Desktop/
 pwd
 
@@ -525,7 +525,7 @@ export PATH=
 echo $PATH
 echo 1
 
-12:
+1❓ 2:
 touch tmp_x_file1
 tmp_x_file1
 echo $?
@@ -596,8 +596,10 @@ echo $?
 # **************************************************************************** #
 #                                  PIPELINES                                   #
 # **************************************************************************** #
+⚠️ que se supone que tiene que pasar???
+funciona igual en uno que en otro
 
-ls | cat << stop | ls -la | cat << stop1 | ls | cat << stop2 | ls -la > > out | cat << stop3
+ls | cat << stop | ls -la | cat << stop1 | ls | cat << stop2 | ls -la >> out | cat << stop3
 fe
 wf
 fwe
