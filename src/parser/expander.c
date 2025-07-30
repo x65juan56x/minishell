@@ -75,9 +75,10 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 	var_expanded = ft_strdup("");
 	i = 0;
 	original_value = tmp->value;
+	//printf("originalvalue: %s\n", original_value);
 	while (i < (int)ft_strlen(original_value) && original_value[i] != '\0')
 	{
-		if (original_value[i] == '$')
+		if (original_value[i] == '$' && original_value[1 + i] != '\0')
 		{
 			i++;
 			tmp_expanded = do_expand(tmp, &i, shell_context);
@@ -86,6 +87,8 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 			var_expanded = temp_string;
 			free(tmp_expanded);
 		}
+		else if (original_value[i] == '$' && original_value[1 + i] == '\0')
+			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 		else
 			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 	}
@@ -102,6 +105,8 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 	{
 		if (tmp->expand != 1)
 		{
+			//printf("token-value: %s\n", tmp->value);
+			//printf("token-expand: %d\n", tmp->expand);
 			tmp = tmp->next;
 			continue ;
 		}

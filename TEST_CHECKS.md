@@ -386,9 +386,9 @@ lim
 #                                     SCMD                                     #
 # **************************************************************************** #
 
-4: ""
+⚠️ 4: ""  minishell 0 command not found / bash 127
 
-7:
+❌ 7: minishell no crea el archivo / bash si
 touch "
 "
 /bin/rm -f "
@@ -398,13 +398,13 @@ touch "
 #                                  BROKEN SCMD                                 #
 # **************************************************************************** #
 
-26: "."
+⚠️ 26: "." minishell 127 / bash 2 (ambos command not found)
 
 # **************************************************************************** #
 #                                  VARIABLES                                   #
 # **************************************************************************** #
 
-4: /bin/echo $HOME$NOTHING$USER$
+✅ 4: /bin/echo $HOME$NOTHING$USER$ (CORREGIDO)
 
 18: /bin/echo $'HOM'E$USER
 
@@ -412,7 +412,7 @@ touch "
 
 27: /bin/echo "$"$
 
-35: /bin/echo $TESTNOTFOUND$HOME$
+✅ 35: /bin/echo $TESTNOTFOUND$HOME$ (CORREGIDO)
 
 ### SCMD IN VARIABLE ###
 43:
