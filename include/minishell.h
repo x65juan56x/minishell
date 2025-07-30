@@ -219,6 +219,7 @@ int				builtin_exit(char **args);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);
 int				builtin_unset(char **args, t_shell_context *shell_context);
+int				get_exit_status_from_args(t_token *args_token);
 int				find_local_var(const char *name, t_list *local_vars);
 void			remove_local_var(const char *name, t_list **local_vars);
 

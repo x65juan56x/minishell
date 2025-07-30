@@ -23,7 +23,5 @@ int	handle_input_line(char *input)
 	if (*input)
 		if (isatty(STDIN_FILENO))
 			add_history(input);
-/* 	if (ft_strcmp(input, "exit") == 0)
-		return (1); */
 	return (0);
 }

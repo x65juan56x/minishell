@@ -113,19 +113,33 @@ int	run_shell_loop(t_shell_context *shell_context)
 			handle_input_line(input); // Añadir al historial
 			tokens = tokenize(input);
 			if (tokens)
-			{
-				exit_code = process_command_line(tokens, shell_context);
-				if (exit_code <= -2) // El builtin exit fue llamado
-				{
-					if (exit_code == -2)
-						shell_context->exit_status = 0;
-					else
-						shell_context->exit_status = -(exit_code + 2);
-					free(input);
-					return (shell_context->exit_status); // Salir del programa
-				}
-				shell_context->exit_status = exit_code;
-			}
+            {
+                // --- AÑADIR ESTA LÓGICA DE SALIDA CONTROLADA ---
+                // Comprobamos si el comando es 'exit' y no está en un pipe o subshell.
+                // Esta es una forma simple de detectar si debe terminar el shell principal.
+                if (tokens->type == TOKEN_WORD && ft_strcmp(tokens->value, "exit") == 0)
+                {
+                    // Si hay algo más que 'exit' y sus argumentos (como un pipe),
+                    // el ejecutor lo manejará en un subproceso.
+                    // Aquí solo manejamos el caso en que 'exit' debe terminar el shell.
+                    t_token *next_token = tokens->next;
+                    while (next_token && next_token->type == TOKEN_WORD)
+                        next_token = next_token->next;
+                    
+                    if (next_token->type == TOKEN_EOF)
+                    {
+//                      ft_putendl_fd("exit", STDOUT_FILENO);
+                        // Llamamos a una versión "falsa" de exit que solo calcula el status
+                        // y no termina el proceso, para devolverlo al main.
+                        exit_code = get_exit_status_from_args(tokens->next);
+                        cleanup_tokens(tokens);
+                        free(input);
+                        return (exit_code); // Devolvemos el status para que main() termine.
+                    }
+                }
+                exit_code = process_command_line(tokens, shell_context);
+                shell_context->exit_status = exit_code;
+            }
 			else // Tokenize falló (debería ser raro)
 				shell_context->exit_status = 2;
 		}
