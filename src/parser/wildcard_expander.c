@@ -77,11 +77,9 @@ t_token	*expand_wildcards(t_token *tokens)
 
     while (current)
     {
-        if (current->type == TOKEN_WORD && current->in_quotes == 0
-            && ft_strchr(current->value, '*'))
+        if (current->type == TOKEN_WORD && ft_strchr(current->value, '*'))
         {
             matches = create_match_tokens(current->value);
-			//debug_print_token_list(matches); //DEBUG
             if (matches)
             {
                 last_match = matches;

@@ -31,7 +31,6 @@ int	execute_heredoc(const char *filename, char *delimiter, t_shell_context *shel
 	pid_t			pid;
 	struct termios	orig_termios;
 
-//	disable_ctrl_echo(&orig_termios);
 	tcgetattr(STDIN_FILENO, &orig_termios);
 	ignore_signals();
 	pid = fork();
