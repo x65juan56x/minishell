@@ -46,8 +46,6 @@ int	read_heredoc_input(char *delimiter, int write_fd, t_shell_context *shell_con
  *   - `free`
 */
 
-// Esta función abre y escribe en un fichero cuyo nombre se le pasa.
-// Devuelve 0 en éxito, -1 en error.
 int	create_heredoc_file(const char *filename, char *delimiter, t_shell_context *shell_context)
 {
 	int	fd;
@@ -55,7 +53,10 @@ int	create_heredoc_file(const char *filename, char *delimiter, t_shell_context *
 	fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd < 0)
 		return (perror("minishell: heredoc"), -1);
-	read_heredoc_input(delimiter, fd, shell_context); // read_heredoc_input se encarga de leer del usuario y escribir en el fd.
+	read_heredoc_input(delimiter, fd, shell_context);
 	close(fd);
 	return (0);
 }
+// Esta función abre y escribe en un fichero cuyo nombre se le pasa.
+// Devuelve 0 en éxito, -1 en error.
+// read_heredoc_input se encarga de leer del usuario y escribir en el fd.

@@ -31,7 +31,6 @@ static int	open_redirect_file(char *file, t_node_type type)
  *   - `perror`
  */
 
-// Función auxiliar que solo aplica los dup2.
 int apply_redirections(t_ast_node *node)
 {
 	int fd;
@@ -54,3 +53,4 @@ int apply_redirections(t_ast_node *node)
 	close(fd);
 	return (0);
 }
+// Función auxiliar que solo aplica los dup2.

@@ -130,8 +130,6 @@ t_token			*consume_token(t_parser *parser, t_token_type expected);
 
 /* PARSER EXPRESSIONS */
 t_ast_node		*parse_logical_expression(t_parser *parser);
-// t_ast_node		*parse_or_expression(t_parser *parser);
-// t_ast_node		*parse_and_expression(t_parser *parser);
 t_ast_node		*parse_pipe_expression(t_parser *parser);
 t_ast_node		*parse_primary_expression(t_parser *parser);
 t_ast_node		*parse_parenthesis_expression(t_parser *parser);
@@ -140,7 +138,6 @@ t_ast_node		*parse_redirect_expression(t_parser *parser);
 /* PARSER REDIRECT UTILS */
 int				is_redirect_token(t_token_type type);
 int				is_redirect_node(t_node_type type);
-int				is_logical_node(t_node_type type);
 
 /* PARSER UTILS */
 int				handle_word_token(t_token **tp, char **args, int *idx);
@@ -148,7 +145,6 @@ void			skip_redirect_token(t_token **tp);
 int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
-//int				is_lparen_and_or_open(const char *s);
 int				are_parentheses_unclosed(const char *s);
 
 /* WILDCARD EXPANSION */
@@ -175,8 +171,6 @@ int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_
 int				execute_simple_command(t_ast_node *node, t_shell_context *shell_context);
 void			launch_command(char **args, char **envp);
 int				handle_variable_assignment(char **args, t_shell_context *context);
-
-/* EXECUTOR UTILS */
 void			print_signal_message(int signal_num);
 int				analyze_child_status(int status);
 int				apply_redirections(t_ast_node *node);
@@ -184,21 +178,14 @@ int				apply_redirections(t_ast_node *node);
 /* PIPE EXECUTOR */
 int				execute_pipe_line(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				wait_for_all_children(pid_t *pids, int num_cmds);
-
-/* PIPE EXECUTOR UTILS */
 int				count_pipe_commands(t_ast_node *ast);
 void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context);
 
-/* HEREDOC EXECUTOR */
+/* HEREDOC */
 int				execute_heredoc(const char *filename, char *delimiter, t_shell_context *shell_context);
-
-/* HEREDOC UTILS */
-// void			disable_ctrl_echo(struct termios *orig_termios);
 int				create_heredoc_file(const char *filename, char *delimiter, t_shell_context *shell_context);
-
-/* HEREDOC PREPROCESSOR */
 int				preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* PATH UTILS */

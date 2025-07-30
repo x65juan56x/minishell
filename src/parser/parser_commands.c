@@ -2,34 +2,23 @@
 
 t_token	*consume_token(t_parser *parser, t_token_type expected)
 {
-    t_token	*token;
+	t_token	*token;
 
-    if (!parser->current || parser->current->type != expected)
-    {
-        if (!parser->error) // Imprimir solo el primer error
-        {
-            ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
-            if (parser->current && parser->current->type != TOKEN_EOF)
-                ft_putstr_fd(parser->current->value, STDERR_FILENO);
-            else
-                ft_putstr_fd("newline", STDERR_FILENO);
-            ft_putstr_fd("'\n", STDERR_FILENO);
-        }
-        parser->error = 1;
-        return (NULL);
-    }
-    token = parser->current;
-    parser->current = parser->current->next;
-    return (token);
+	if (!parser->current || parser->current->type != expected)
+	{
+		if (!parser->error)
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+			if (parser->current && parser->current->type != TOKEN_EOF)
+				ft_putstr_fd(parser->current->value, STDERR_FILENO);
+			else
+				ft_putstr_fd("newline", STDERR_FILENO);
+			ft_putstr_fd("'\n", STDERR_FILENO);
+		}
+		parser->error = 1;
+		return (NULL);
+	}
+	token = parser->current;
+	parser->current = parser->current->next;
+	return (token);
 }
-/*
- * Propósito: Consumir el token actual si coincide con un tipo esperado y
- *            avanzar el puntero del parser. Es un validador y consumidor.
- * Mecanismo:
- *   1. Valida que el token actual exista y sea del tipo `expected`.
- *   2. Si no lo es, marca un error de sintaxis en el parser y retorna NULL.
- *   3. Si coincide, guarda el token actual, avanza el parser al siguiente y
- *      retorna el token guardado para su uso.
- * Llamado por: `parse_leading_redirects` y `apply_trailing_redirects` para
- *              consumir el `TOKEN_WORD` del nombre de archivo.
-*/

@@ -1,73 +1,11 @@
 #include "../../include/minishell.h"
 
-// static int	cosecutive_ops_checker(t_token *tokens)
-// {
-// 	t_token *curr = tokens;
-
-// 	while (curr && curr->next)
-//     {
-//         // Detecta dos operadores consecutivos (no permitidos)
-//         // PERO PERMITE: >|, |>, >>|, |>>, <|, |<, etc.
-//         if (curr->type != TOKEN_WORD && curr->type != TOKEN_EOF
-//             && curr->next->type != TOKEN_WORD && curr->next->type != TOKEN_EOF)
-//         {
-//             // Permitir redirección seguida de pipe y viceversa
-//             if ((is_redirect_token(curr->type) && curr->next->type == TOKEN_PIPE) ||
-//                 (curr->type == TOKEN_PIPE && is_redirect_token(curr->next->type)))
-//             {
-//                 curr = curr->next;
-//                 continue;
-//             }
-//             ft_putstr_fd("minishell: syntax error near unexpected token '", STDERR_FILENO);
-//             if (curr->next->type == TOKEN_EOF)
-//                 ft_putstr_fd("newline", STDERR_FILENO);
-//             else if (curr->next->value)
-//                 ft_putstr_fd(curr->next->value, STDERR_FILENO);
-//             else
-//                 ft_putstr_fd("?", STDERR_FILENO);
-//             ft_putstr_fd("'\n", STDERR_FILENO);
-//             return (1);
-//         }
-// 		curr = curr->next;
-// 	}
-// 	return (0);
-// }
-// static int	extremes_ops_checker(t_token *tokens)
-// {
-// 	t_token	*last;
-
-// 	if (tokens->next->type == 10 && (tokens->type == 0 || tokens->type == 8))
-// 		return (0);
-// 	if (tokens->next->type == 10 && (tokens->type > 0 && tokens->type < 10))
-// 	{
-// 		ft_putstr_fd("minishell: syntax error near unexpected token '",
-// 				STDERR_FILENO);
-// 		ft_putstr_fd(tokens->value, STDERR_FILENO);
-// 		return (ft_putstr_fd("'\n", STDERR_FILENO), 1); // Debo liberar las listas antes de retornar?
-// 	}
-// 	last = tokens;
-// 	while (last->next->next != NULL)
-// 		last = last->next;
-// 	if (tokens->type == 1 || tokens->type == 6 || last->type == 1)
-// 	{
-// 		ft_putstr_fd("minishell: syntax error near unexpected token '",
-// 				STDERR_FILENO);
-// 		if ((tokens->type == 1 || tokens->type == 6) && last->type != 1)
-// 			ft_putstr_fd(tokens->value, STDERR_FILENO);
-// 		else
-// 			ft_putstr_fd(last->value, STDERR_FILENO);
-// 		return (ft_putstr_fd("'\n", STDERR_FILENO), 1); // Debo liberar las listas antes de retornar?
-// 	}
-// 	return (0);
-// }
-
 int	run_shell_loop(t_shell_context *shell_context)
 {
 	char	*input;
 	char	*temp;
 	char	*full_input;
 	int		exit_code;
-//	int		should_exit;
 	t_token	*tokens;
 
 	while (1)

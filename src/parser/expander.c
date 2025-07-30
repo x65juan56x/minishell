@@ -75,7 +75,6 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 	var_expanded = ft_strdup("");
 	i = 0;
 	original_value = tmp->value;
-	//printf("originalvalue: %s\n", original_value);
 	while (i < (int)ft_strlen(original_value) && original_value[i] != '\0')
 	{
 		if (original_value[i] == '$' && original_value[1 + i] != '\0')
@@ -105,8 +104,6 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 	{
 		if (tmp->expand != 1)
 		{
-			//printf("token-value: %s\n", tmp->value);
-			//printf("token-expand: %d\n", tmp->expand);
 			tmp = tmp->next;
 			continue ;
 		}
@@ -121,24 +118,18 @@ char	*expander_line_content(char *line, t_shell_context *shell_context)
 	t_token *tmp_token;
 	char 	*expanded_value;
 
-	//creamos un token temporal con la linea del heredoc
 	tmp_token = create_token(TOKEN_WORD, ft_strdup(line));
 	if(!tmp_token)
-	{
 		return (NULL);
-	}
-	//marcar el token para que sea expandido
 	tmp_token->expand = 1;
-	//llamar a la funcion de actualización de tokens
 	update_tokens_values(shell_context, tmp_token);
-			//ahora el value de este token se corresponde con el valor expandido
-	//extraer el valor expandido
 	expanded_value = tmp_token->value;
 	tmp_token->value = NULL;
 	cleanup_tokens(tmp_token);
-	//limpiar el token temporal
-	//free(tmp_token);
 	return(expanded_value);
 }
-
-//PROBLEMA DE SEGMENTATION FAULT CUANDO ES UN ENV_VAR INCORRECTO
+// creamos un token temporal con la linea del heredoc
+// tmp_token->expand = 1; => marcar el token para que sea expandido
+// llamar a la funcion de actualización de tokens
+// ahora el value de este token se corresponde con el valor expandido
+// extraer el valor expandido

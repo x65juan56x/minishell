@@ -4,15 +4,15 @@ char	*get_user_input(void)
 {
 	char	*input;
 
-	if (isatty(STDIN_FILENO)) // Modo Interactivo
+	if (isatty(STDIN_FILENO))
 	{
-		input = readline(PROMPT); // Usamos readline para tener el prompt y el historial
-		if (!input) // Ctrl+D
+		input = readline(PROMPT);
+		if (!input)
 			return(NULL); //BORRAR Y DESCOMENTAR LA LINEA SIGUIENTE
 	//		return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
-	else // Modo No Interactivo
-		input = get_next_line(STDIN_FILENO); // Usamos GNL para leer del pipe sin imprimir nada
+	else
+		input = get_next_line(STDIN_FILENO);
 	return (input);
 }
 
@@ -25,3 +25,6 @@ int	handle_input_line(char *input)
 			add_history(input);
 	return (0);
 }
+// if (isatty(STDIN_FILENO)) => Modo Interactivo
+// else => Modo No Interactivo
+// Usamos GNL para leer del pipe sin imprimir nada

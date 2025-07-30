@@ -1,7 +1,5 @@
 #include "../../include/minishell.h"
 
-// Función auxiliar para actualizar una variable de entorno o crearla si no existe.
-// Es una versión simplificada de `export` para uso interno.
 static int	update_env_var(const char *var_name, const char *value,
 							t_shell_context *shell_context)
 {
@@ -16,7 +14,6 @@ static int	update_env_var(const char *var_name, const char *value,
 	free(temp);
 	if (!new_var)
 		return (1);
-	// Aquí simulamos la llamada a export con un solo argumento. (no la llamamos desde el ejecutor sino que la usamos directamente como auxiliar)
 	export_args[0] = "export";
 	export_args[1] = new_var;
 	export_args[2] = NULL;
@@ -24,6 +21,8 @@ static int	update_env_var(const char *var_name, const char *value,
 	free(new_var);
 	return (0);
 }
+// Función auxiliar para actualizar una variable de entorno o crearla si no existe.
+// Es una versión simplificada de `export` para uso interno.
 
 static int	go_to_path(const char *path, t_shell_context *shell_context)
 {
@@ -35,24 +34,26 @@ static int	go_to_path(const char *path, t_shell_context *shell_context)
 	old_pwd_copy = NULL;
 	if (old_pwd_val)
 	{
-		old_pwd_copy = ft_strdup(old_pwd_val); // Duplicamos para seguridad
+		old_pwd_copy = ft_strdup(old_pwd_val);
 		if (!old_pwd_copy)
-			return (1); // Error de malloc
+			return (1);
 	}
 	if (chdir(path) != 0)
 		return (perror("minishell: cd"), free(old_pwd_copy), 1);
 	if (old_pwd_copy)
 		update_env_var("OLDPWD", old_pwd_copy, shell_context);
 	free(old_pwd_copy);
-	new_pwd = getcwd(NULL, 0); // getcwd asigna memoria dinámicamente
+	new_pwd = getcwd(NULL, 0); 
 	if (new_pwd)
 		update_env_var("PWD", new_pwd, shell_context);
 	if (new_pwd)
-		free(new_pwd); // Liberamos la memoria asignada por getcwd
+		free(new_pwd);
 	else
 		return (perror("minishell: cd: getcwd"), 1);
 	return (0);
 }
+// getcwd asigna memoria dinámicamente
+// luego liberamos la memoria asignada por getcwd
 
 int	builtin_cd(char **args, t_shell_context *shell_context)
 {
@@ -73,7 +74,7 @@ int	builtin_cd(char **args, t_shell_context *shell_context)
 		path = get_env_value("OLDPWD", shell_context);
 		if (!path)
 			return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2), 1);
-		ft_putendl_fd(path, STDOUT_FILENO); // `cd -` vuelve al directorio anterior e imprime su ruta
+		ft_putendl_fd(path, STDOUT_FILENO);
 	}
 	else
 		path = args[1];

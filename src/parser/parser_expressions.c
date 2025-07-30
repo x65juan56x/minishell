@@ -12,23 +12,17 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	int			i;
 
 	if (parser->current && parser->current->type != TOKEN_WORD
-        && !is_redirect_token(parser->current->type))
-    {
-        // Si la expresión no empieza con una palabra o una redirección, es un error.
-        // Llamamos a consume_token_type para que genere el mensaje de error estándar.
-        consume_token_type(parser, TOKEN_WORD); // Esto fallará y establecerá el error.
-        return (NULL);
-    }
-	// 1. Primero, creamos un nodo de comando vacío.
+		&& !is_redirect_token(parser->current->type))
+		return (consume_token_type(parser, TOKEN_WORD), NULL);
 	cmd_node = create_ast_node(NODE_COMMAND);
 	if (!cmd_node)
 		return (NULL);
-	args = ft_calloc(1024, sizeof(char *)); // Usamos un array temporal grande para los argumentos.
+	args = ft_calloc(1024, sizeof(char *));
 	if (!args)
 		return (cleanup_ast(cmd_node), NULL);
 	arg_count = 0;
 	node = cmd_node;
-	while (parser->current && (parser->current->type == TOKEN_WORD // 2. Bucle principal: consume palabras y redirecciones.
+	while (parser->current && (parser->current->type == TOKEN_WORD
 			|| is_redirect_token(parser->current->type)))
 	{
 		if (parser->current->type == TOKEN_WORD)
@@ -37,13 +31,13 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 		{
 			op = consume_token(parser, parser->current->type);
 			file = consume_token(parser, TOKEN_WORD);
-			if (!file) // Error de sintaxis: > sin archivo
+			if (!file)
 			{
 				parser->error = 1;
 				ft_freearr(args);
 				return (cleanup_ast(node), NULL);
 			}
-			node = create_redirect_node(op->type, node, file->value); // Anidamos la redirección, envolviendo el nodo anterior.
+			node = create_redirect_node(op->type, node, file->value);
 			if (!node)
 			{
 				parser->error = 1;
@@ -54,10 +48,8 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	compact_args = malloc(sizeof(char *) * (arg_count + 2));
 	if (!compact_args)
 		return (ft_freearr(args), cleanup_ast(node), NULL);
-	if (arg_count == 0) // Si no hubo palabras, el comando es inválido.
+	if (arg_count == 0)
 	{
-		// Pero si hubo redirecciones, el nodo principal no es el de comando.
-		// Le damos un argumento vacío para que el ejecutor no lo ignore.
 		compact_args[0] = ft_strdup("");
 		compact_args[1] = NULL;
 	}
@@ -78,20 +70,29 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 		compact_args[arg_count] = NULL;
 	}
 	ft_freearr(args);
-	cmd_node->args = compact_args; // 3. Finalizamos el nodo de comando.
+	cmd_node->args = compact_args;
 	return (node);
 }
+// Si la expresión no empieza con una palabra o una redirección, es un error.
+//		Llamamos a consume_token_type para que genere el mensaje de error estándar.
+//		consume_token_type fallará y establecerá el error.
+// 1. Primero, creamos un nodo de comando vacío.
+//		Usamos un array temporal grande para los argumentos.
+// 2. Bucle principal: consume palabras y redirecciones.
+// if (arg_count == 0) => Si no hubo palabras, el comando es inválido.
+//		Pero si hubo redirecciones, el nodo principal no es el de comando.
+//		Le damos un argumento vacío para que el ejecutor no lo ignore.
 
 t_ast_node	*parse_parenthesis_expression(t_parser *parser)
 {
 	t_ast_node	*expr;
 
-	if (!consume_token_type(parser, TOKEN_LPAREN)) // Consumir '('
+	if (!consume_token_type(parser, TOKEN_LPAREN))
 		return (NULL);
-	expr = parse_logical_expression(parser); // Parsear la expresión interna (vuelve al nivel más alto)
+	expr = parse_logical_expression(parser);
 	if (!expr)
 		return (NULL);
-	if (!consume_token_type(parser, TOKEN_RPAREN)) // Consumir ')'
+	if (!consume_token_type(parser, TOKEN_RPAREN))
 		return (cleanup_ast(expr), NULL);
 	return (expr);
 }
@@ -150,80 +151,30 @@ t_ast_node	*parse_pipe_expression(t_parser *parser)
  *   - `cleanup_ast`: Para liberar memoria en caso de error.
 */
 
-// t_ast_node	*parse_and_expression(t_parser *parser)
-// {
-//     t_ast_node	*left;
-//     t_ast_node	*right;
-//     t_ast_node	*new_node;
-
-//     left = parse_or_expression(parser); // Changed: call parse_or_expression
-//     if (!left)
-//         return (NULL);
-//     while (parser->current && parser->current->type == TOKEN_AND)
-//     {
-//         consume_token_type(parser, TOKEN_AND);
-//         if (parser->error)
-//             return (cleanup_ast(left), NULL);
-//         right = parse_or_expression(parser); // Changed: call parse_or_expression
-//         if (!right)
-//             return (cleanup_ast(left), NULL);
-//         new_node = create_binary_node(TOKEN_AND, left, right);
-//         if (!new_node)
-//             return (cleanup_ast(left), cleanup_ast(right), NULL);
-//         left = new_node;
-//     }
-//     return (left);
-// }
-
-// t_ast_node	*parse_or_expression(t_parser *parser)
-// {
-//     t_ast_node	*left;
-//     t_ast_node	*right;
-//     t_ast_node	*new_node;
-
-//     left = parse_pipe_expression(parser); // Changed: call parse_pipe_expression directly
-//     if (!left)
-//         return (NULL);
-//     while (parser->current && parser->current->type == TOKEN_OR)
-//     {
-//         consume_token_type(parser, TOKEN_OR);
-//         if (parser->error)
-//             return (cleanup_ast(left), NULL);
-//         right = parse_pipe_expression(parser); // Changed: call parse_pipe_expression directly
-//         if (!right)
-//             return (cleanup_ast(left), NULL);
-//         new_node = create_binary_node(TOKEN_OR, left, right);
-//         if (!new_node)
-//             return (cleanup_ast(left), cleanup_ast(right), NULL);
-//         left = new_node;
-//     }
-//     return (left);
-// }
-
 t_ast_node	*parse_logical_expression(t_parser *parser)
 {
-    t_ast_node	*left;
-    t_ast_node	*right;
-    t_ast_node	*new_node;
-    t_token_type op_type;
+	t_ast_node	*left;
+	t_ast_node	*right;
+	t_ast_node	*new_node;
+	t_token_type op_type;
 
-    left = parse_pipe_expression(parser);
-    if (!left)
-        return (NULL);
-    while (parser->current && (parser->current->type == TOKEN_AND
-        || parser->current->type == TOKEN_OR))
-    {
-        op_type = parser->current->type;
-        consume_token_type(parser, op_type);
-        if (parser->error)
-            return (cleanup_ast(left), NULL);
-        right = parse_pipe_expression(parser);
-        if (!right)
-            return (cleanup_ast(left), NULL);
-        new_node = create_binary_node(op_type, left, right);
-        if (!new_node)
-            return (cleanup_ast(left), cleanup_ast(right), NULL);
-        left = new_node;
-    }
-    return (left);
+	left = parse_pipe_expression(parser);
+	if (!left)
+		return (NULL);
+	while (parser->current && (parser->current->type == TOKEN_AND
+		|| parser->current->type == TOKEN_OR))
+	{
+		op_type = parser->current->type;
+		consume_token_type(parser, op_type);
+		if (parser->error)
+			return (cleanup_ast(left), NULL);
+		right = parse_pipe_expression(parser);
+		if (!right)
+			return (cleanup_ast(left), NULL);
+		new_node = create_binary_node(op_type, left, right);
+		if (!new_node)
+			return (cleanup_ast(left), cleanup_ast(right), NULL);
+		left = new_node;
+	}
+	return (left);
 }

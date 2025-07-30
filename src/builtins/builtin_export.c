@@ -70,16 +70,10 @@ int	builtin_export(char **args, t_shell_context *shell_context)
 
 	exit_status = 0;
 	if (!args[1])
-	{
-		sort_and_print_export(shell_context->envp_cpy);
-		return (0);
-	}
-	i = 1;
-	while (args[i])
-	{
+		return (sort_and_print_export(shell_context->envp_cpy), 0);
+	i = 0;
+	while (args[++i])
 		if (process_export_arg(args[i], shell_context) != 0)
 			exit_status = 1;
-		i++;
-	}
 	return (exit_status);
 }

@@ -20,36 +20,36 @@ static char	*build_heredoc_filename(int heredoc_id)
 }
 
 int	preprocess_heredocs(t_ast_node **node_ptr, int *heredoc_id_ptr,
-        t_shell_context *shell_context)
+		t_shell_context *shell_context)
 {
-    t_ast_node	*node;
-    char		*temp_filename;
-    t_list		*new_list_node;
+	t_ast_node	*node;
+	char		*temp_filename;
+	t_list		*new_list_node;
 
-    if (!node_ptr || !*node_ptr)
-        return (0);
-    node = *node_ptr;
-    if (node->left)
-        if (preprocess_heredocs(&(node->left), heredoc_id_ptr, shell_context) != 0)
-            return (-1);
-    if (node->right)
-        if (preprocess_heredocs(&(node->right), heredoc_id_ptr, shell_context) != 0)
-            return (-1);
-    if (node->type == NODE_HEREDOC)
-    {
-        temp_filename = build_heredoc_filename(*heredoc_id_ptr);
-        if (!temp_filename)
-            return (-1);
-        if (execute_heredoc(temp_filename, node->file, shell_context) != 0)
-            return (free(temp_filename), -1);
-        new_list_node = ft_lstnew(ft_strdup(temp_filename)); // Guardamos una copia del nombre
-        if (!new_list_node || !new_list_node->content)
-            return (free(temp_filename), -1);
-        ft_lstadd_back(&shell_context->heredoc_files, new_list_node);
-        (*heredoc_id_ptr)++;
-        free(node->file);
-        node->file = temp_filename;
-        node->type = NODE_REDIRECT_IN;
-    }
-    return (0);
+	if (!node_ptr || !*node_ptr)
+		return (0);
+	node = *node_ptr;
+	if (node->left)
+		if (preprocess_heredocs(&(node->left), heredoc_id_ptr, shell_context) != 0)
+			return (-1);
+	if (node->right)
+		if (preprocess_heredocs(&(node->right), heredoc_id_ptr, shell_context) != 0)
+			return (-1);
+	if (node->type == NODE_HEREDOC)
+	{
+		temp_filename = build_heredoc_filename(*heredoc_id_ptr);
+		if (!temp_filename)
+			return (-1);
+		if (execute_heredoc(temp_filename, node->file, shell_context) != 0)
+			return (free(temp_filename), -1);
+		new_list_node = ft_lstnew(ft_strdup(temp_filename));
+		if (!new_list_node || !new_list_node->content)
+			return (free(temp_filename), -1);
+		ft_lstadd_back(&shell_context->heredoc_files, new_list_node);
+		(*heredoc_id_ptr)++;
+		free(node->file);
+		node->file = temp_filename;
+		node->type = NODE_REDIRECT_IN;
+	}
+	return (0);
 }

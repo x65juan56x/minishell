@@ -26,7 +26,8 @@ static int	handle_simple_command_fork(t_ast_node *ast,
 	return (exit_code);
 }
 
-static int	handle_logical_op(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context)
+static int	handle_logical_op(t_ast_node *ast, int *heredoc_id_ptr,
+			t_shell_context *shell_context)
 {
 	int	status;
 
@@ -38,7 +39,8 @@ static int	handle_logical_op(t_ast_node *ast, int *heredoc_id_ptr, t_shell_conte
 	return (execute_ast(ast->right, heredoc_id_ptr, shell_context));
 }
 
-int	execute_ast(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context)
+int	execute_ast(t_ast_node *ast, int *heredoc_id_ptr,
+	t_shell_context *shell_context)
 {
 	if (!ast)
 		return (0);

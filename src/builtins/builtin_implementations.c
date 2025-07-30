@@ -9,14 +9,14 @@ int	builtin_echo(char **args)
 	i = 1;
 	while (args[i] && (ft_strcmp(args[i], "-n") == 0))
 	{
-		newline = 0; // No imprimir \n al final
-		i++; // Empezar desde args[2]
+		newline = 0;
+		i++;
 	}
 	while(args[i])
 	{
 		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
-			ft_putchar_fd(' ', STDOUT_FILENO); // Espacio entre args
+			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
 	if (newline)
@@ -28,13 +28,10 @@ int	builtin_pwd(void)
 {
 	char	*cwd;
 
-	cwd = getcwd(NULL, 0); // Obtener directorio actual
+	cwd = getcwd(NULL, 0);
 	if (!cwd)
-	{
-		perror("minishell: pwd");
-		return (1);
-	}
-	ft_putendl_fd(cwd, STDOUT_FILENO); // liberar memoria alocada por getcwd()
+		return (perror("minishell: pwd"), 1);
+	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
 	return (0);
 }
@@ -56,60 +53,60 @@ int	builtin_env(char **envp, char **args)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_putstrplus_fd(STDOUT_FILENO, envp[i]) == -1) // Escribir la variable de entorno
+		if (ft_putstrplus_fd(STDOUT_FILENO, envp[i]) == -1)
 			return (perror("minishell: env"), 1);
-		if (ft_putcharplus_fd(STDOUT_FILENO, '\n') == -1) // Escribir el newline
+		if (ft_putcharplus_fd(STDOUT_FILENO, '\n') == -1)
 			return (perror("minishell: env"), 1);
 		i++;
 	}
 	return (0);
 }
 
-// Esta función calcula el código de salida para 'exit' sin terminar el proceso.
-// Se usa solo en el bucle principal para una salida limpia.
 int	get_exit_status_from_args(t_token *args_token)
 {
-    if (!args_token || args_token->type == TOKEN_EOF)
-        return (0); // exit sin argumentos
-    // 1. Primero, validar si el primer argumento es numérico.
-    if (!ft_isnumstr(args_token->value))
-    {
-        ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-        ft_putstr_fd(args_token->value, STDERR_FILENO);
-        ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-        return (2); // Bash sale con 2 en este caso.
-    }
-    // 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
-    if (args_token->next && args_token->next->type != TOKEN_EOF)
-    {
-        ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-        return (1); // No se sale, pero el comando falla con 1.
-    }
-    // 3. Si todo está bien, devolver el código de salida correcto.
-    return ((unsigned char)ft_atoi(args_token->value));
+	if (!args_token || args_token->type == TOKEN_EOF)
+		return (0);
+	if (!ft_isnumstr(args_token->value))
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(args_token->value, STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		return (2);
+	}
+	if (args_token->next && args_token->next->type != TOKEN_EOF)
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		return (1);
+	}
+	return ((unsigned char)ft_atoi(args_token->value));
 }
+// Esta función calcula el código de salida para 'exit' sin terminar el proceso.
+// Se usa solo en el bucle principal para una salida limpia.
+// 1. Primero, validar si el primer argumento es numérico.
+// 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
+// 3. Si todo está bien, devolver el código de salida correcto.
 
 int	builtin_exit(char **args)
 {
-    int	exit_code;
+	int	exit_code;
 
-    if (!args[1])
-        exit(0); // Salir con 0 si no hay argumentos.
-    // 1. Primero, validar si el primer argumento es numérico.
-    if (!ft_isnumstr(args[1]))
-    {
-        ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-        ft_putstr_fd(args[1], STDERR_FILENO);
-        ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-        exit(2); // Bash sale con 2 en este caso.
-    }
-    // 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
-    if (args[2])
-    {
-        ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-        return (1); // No salir, solo devolver error, como en bash.
-    }
-    // 3. Si todo está bien, salir con el código correcto.
-    exit_code = ft_atoi(args[1]);
-    exit((unsigned char)exit_code);
+	if (!args[1])
+		exit(0);
+	if (!ft_isnumstr(args[1]))
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		exit(2);
+	}
+	if (args[2])
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		return (1);
+	}
+	exit_code = ft_atoi(args[1]);
+	exit((unsigned char)exit_code);
 }
+// 1. Primero, validar si el primer argumento es numérico.
+// 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
+// 3. Si todo está bien, salir con el código correcto.
