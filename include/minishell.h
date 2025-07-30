@@ -212,7 +212,7 @@ void			ignore_signals(void);
 int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
-int				builtin_env(char **envp);
+int				builtin_env(char **envp, char **args);
 int				builtin_exit(char **args);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);

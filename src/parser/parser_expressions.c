@@ -15,14 +15,11 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	cmd_node = create_ast_node(NODE_COMMAND);
 	if (!cmd_node)
 		return (NULL);
-
 	args = ft_calloc(1024, sizeof(char *)); // Usamos un array temporal grande para los argumentos.
 	if (!args)
 		return (cleanup_ast(cmd_node), NULL);
 	arg_count = 0;
-
 	node = cmd_node;
-
 	while (parser->current && (parser->current->type == TOKEN_WORD // 2. Bucle principal: consume palabras y redirecciones.
 			|| is_redirect_token(parser->current->type)))
 	{
@@ -33,25 +30,25 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 		}
 		else if (is_redirect_token(parser->current->type))
 		{
-			debug_print_parser(parser);
+//			debug_print_parser(parser);
 			op = consume_token(parser, parser->current->type);
-			debug_print_token_list(op); //DEBUG
-			printf("Check -1\n");
-			debug_print_parser(parser);
-			printf("Check\n");
+//			debug_print_token_list(op); //DEBUG
+//			printf("Check -1\n");
+//			debug_print_parser(parser);
+//			printf("Check\n");
 			file = consume_token(parser, TOKEN_WORD);
-			debug_print_parser(parser);
-			printf("Check 1\n");
-			if (!file) // Error de sintaxis: > sin archivo
+//			debug_print_parser(parser);
+//			printf("Check 1\n");
+			if (!file /*&& parser->current->type != 1*/) // Error de sintaxis: > sin archivo
 			{
-				printf("Check no file\n");
+//				printf("Check no file\n");
 				parser->error = 1;
 				ft_freearr(args);
 				return (cleanup_ast(node), NULL);
 			}
-			printf("Check 2\n");
+//			printf("Check 2\n");
 			node = create_redirect_node(op->type, node, file->value); // Anidamos la redirección, envolviendo el nodo anterior.
-			printf("Check 3");
+//			printf("Check 3");
 			if (!node)
 			{
 				parser->error = 1;
