@@ -42,7 +42,7 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 			file = consume_token(parser, TOKEN_WORD);
 			debug_print_parser(parser);
 			printf("Check 1\n");
-			if (!file && parser->current->type != 1) // Error de sintaxis: > sin archivo
+			if (!file) // Error de sintaxis: > sin archivo
 			{
 				printf("Check no file\n");
 				parser->error = 1;
