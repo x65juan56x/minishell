@@ -1,0 +1,36 @@
+total 744
+drwxr-xr-x 10 jmondon 2024_42malaga   4096 Jul 30 16:09 .
+drwxr-xr-x 14 jmondon 2024_42malaga   4096 Jul 24 18:30 ..
+drwxr-xr-x  3 jmondon 2024_42malaga    131 Jul 28 11:33 42_minishell_tester
+drwxr-xr-x  2 jmondon 2024_42malaga     27 Jun 30 15:46 docs
+-rw-r--r--  1 jmondon 2024_42malaga      0 Jul 30 16:05 echo
+-rw-r--r--  1 jmondon 2024_42malaga 286539 Jul 14 16:42 es.eval.pdf
+-rw-r--r--  1 jmondon 2024_42malaga  41600 Jul  8 14:22 FLUJO_MINISHELL.md
+drwxr-xr-x  8 jmondon 2024_42malaga   4096 Jul 30 15:34 .git
+-rw-r--r--  1 jmondon 2024_42malaga    314 Jun 16 12:29 .gitignore
+-rw-r--r--  1 jmondon 2024_42malaga  11257 Jul  1 18:44 GUIA_CONCEPTUAL.md
+drwxr-xr-x  2 jmondon 2024_42malaga     25 Jul 29 18:04 include
+-rw-r--r--  1 jmondon 2024_42malaga   2995 Jul 28 15:41 LEAKS TESTS.md
+drwxr-xr-x  4 jmondon 2024_42malaga     40 Jul 22 16:49 libs
+-rw-r--r--  1 jmondon 2024_42malaga   2772 Jul 24 10:58 Makefile
+-rwxr-xr-x  1 jmondon 2024_42malaga  68200 Jul 30 15:41 minishell
+-rw-r--r--  1 jmondon 2024_42malaga    295 Jul 14 14:19 NORMAS.md
+drwxr-xr-x  7 jmondon 2024_42malaga     99 Jul 30 15:41 obj
+-rw-r--r--  1 jmondon 2024_42malaga   2306 Jul 30 16:09 out
+-rw-r--r--  1 jmondon 2024_42malaga      0 Jul 30 16:09 out0
+-rw-r--r--  1 jmondon 2024_42malaga  39407 Jul 28 15:17 PLAN_PRUEBAS.md
+-rw-r--r--  1 jmondon 2024_42malaga   4872 Jul 14 14:19 README.md
+-rw-r--r--  1 jmondon 2024_42malaga     19 Jul 24 10:50 script.sh
+drwxr-xr-x  7 jmondon 2024_42malaga     99 Jul 29 18:04 src
+-rwxr-xr-x  1 jmondon 2024_42malaga  13436 Jun 30 15:46 test_all_redirections.sh
+-rw-r--r--  1 jmondon 2024_42malaga  10824 Jul 30 15:34 TEST_CHECKS.md
+-rw-r--r--  1 jmondon 2024_42malaga   5136 Jun 30 15:46 TESTS.md
+-rw-r--r--  1 jmondon 2024_42malaga   4403 Jul 30 15:34 TEST_SUBJECT.txt
+-rw-r--r--  1 jmondon 2024_42malaga      0 Jul 30 16:09 tmp_err_bash
+-rw-r--r--  1 jmondon 2024_42malaga    268 Jul 30 16:09 tmp_err_minishell
+-rw-r--r--  1 jmondon 2024_42malaga      5 Jul 30 16:09 tmp_out_bash
+-rw-r--r--  1 jmondon 2024_42malaga     35 Jul 30 16:09 tmp_out_minishell
+-rw-r--r--  1 jmondon 2024_42malaga 119407 Jul 30 16:09 tmp_valgrind-out.txt
+-rw-r--r--  1 jmondon 2024_42malaga      0 Jul 29 17:01 ValgrindLog.txt
+drwxr-xr-x  2 jmondon 2024_42malaga     56 Jul 21 09:05 .vscode
+-rw-r--r--  1 jmondon 2024_42malaga   6028 Jul 28 11:51 ZZNOTASZZ.md
