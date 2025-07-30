@@ -60,27 +60,26 @@ int	extract_args(char **args, int max, t_token **token)
 
 t_token	*consume_token_type(t_parser *parser, t_token_type type)
 {
-	t_token	*temp;
+    t_token	*temp;
 
-	if (!parser->current || parser->current->type != type)
-	{
-		parser->error = 1;
-		return (NULL);
-	}
-	temp = parser->current;
-	parser->current = temp->next;
-	return (temp);
+    if (!parser->current || parser->current->type != type)
+    {
+        if (!parser->error) // Imprimir solo el primer error para evitar cascadas
+        {
+            ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+            if (parser->current && parser->current->type != TOKEN_EOF)
+                ft_putstr_fd(parser->current->value, STDERR_FILENO);
+            else
+                ft_putstr_fd("newline", STDERR_FILENO); // Error al final de la línea
+            ft_putstr_fd("'\n", STDERR_FILENO);
+        }
+        parser->error = 1;
+        return (NULL);
+    }
+    temp = parser->current;
+    parser->current = temp->next;
+    return (temp);
 }
-/*
- * Propósito: Consumir el token actual si y solo si coincide con un tipo
- *            específico. Es una versión más estricta de `consume_token`.
- * Mecanismo:
- *   1. Comprueba si el token actual existe y si su tipo es el esperado (`type`).
- *   2. Si no coincide, activa el flag de error del parser y retorna NULL.
- *   3. Si coincide, guarda el token, avanza el parser y lo retorna.
- * Llamado por: `parse_pipe_expression`, para consumir específicamente el
- *              token de `|`.
-*/
 
 int	are_quotes_unclosed(const char *s)
 {
@@ -100,20 +99,46 @@ int	are_quotes_unclosed(const char *s)
 	return (in_quote);
 }
 
-int	is_lparen_and_or_open(const char *s)
-{
-	int	i;
+// int	is_lparen_and_or_open(const char *s)
+// {
+// 	int	i;
 
-	i = 0;
-	while (s[i])
-	{
-		if (s[i + 1] == '&' && s[i + 2] == '&' && !s[i + 3])
-			return (1);
-		if (s[i + 1] == '|' && s[i + 2] == '|' && !s[i + 3])
-			return (1);
-		if (s[i] == '(' && !s[i + 1])
-			return (1);
-		i++;
-	}
-	return (0);
+// 	i = 0;
+// 	while (s[i])
+// 	{
+// 		if (s[i + 1] == '&' && s[i + 2] == '&' && !s[i + 3])
+// 			return (1);
+// 		if (s[i + 1] == '|' && s[i + 2] == '|' && !s[i + 3])
+// 			return (1);
+// 		if (s[i] == '(' && !s[i + 1])
+// 			return (1);
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+int	are_parentheses_unclosed(const char *s)
+{
+    int		i;
+    int		paren_level;
+    char	in_quote;
+
+    i = 0;
+    paren_level = 0;
+    in_quote = 0;
+    while (s[i])
+    {
+        if (s[i] == '\'' && in_quote == 0)
+            in_quote = '\'';
+        else if (s[i] == '"' && in_quote == 0)
+            in_quote = '"';
+        else if (s[i] == in_quote)
+            in_quote = 0;
+        else if (s[i] == '(' && in_quote == 0)
+            paren_level++;
+        else if (s[i] == ')' && in_quote == 0)
+            paren_level--;
+        i++;
+    }
+    return (paren_level > 0);
 }

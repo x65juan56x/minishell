@@ -11,6 +11,14 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	char		**compact_args;
 	int			i;
 
+	if (parser->current && parser->current->type != TOKEN_WORD
+        && !is_redirect_token(parser->current->type))
+    {
+        // Si la expresión no empieza con una palabra o una redirección, es un error.
+        // Llamamos a consume_token_type para que genere el mensaje de error estándar.
+        consume_token_type(parser, TOKEN_WORD); // Esto fallará y establecerá el error.
+        return (NULL);
+    }
 	// 1. Primero, creamos un nodo de comando vacío.
 	cmd_node = create_ast_node(NODE_COMMAND);
 	if (!cmd_node)

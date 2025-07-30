@@ -36,7 +36,7 @@
 
 ⚠️51: /bin/echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
 
-⚠️66: /bin/echo $USER$TESTNOTFOUND$HOME$
+✅66: /bin/echo $USER$TESTNOTFOUND$HOME$
 
 # **************************************************************************** #
 #                                PARSING HELL                                  #
@@ -173,7 +173,7 @@ cd --
 
 ⚠️47: echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
 
-⚠️62: echo $USER$TESTNOTFOUND$HOME$
+✅62: echo $USER$TESTNOTFOUND$HOME$
 
 ⚠️80: echo -n -nnnnnnn -n -nnn -nnnnn -n-n
 
@@ -181,11 +181,11 @@ cd --
 
 ✅93: cd ..
 
-102: cd '/////' 2>/dev/null
+✅102: cd '/////' 2>/dev/null
 
-105: cd "doesntexist" 2>/dev/null
+✅105: cd "doesntexist" 2>/dev/null
 
-107: cd "wtf" 2>/dev/null
+✅107: cd "wtf" 2>/dev/null
 
 ✅128:
 pwd

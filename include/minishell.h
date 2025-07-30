@@ -147,7 +147,8 @@ void			skip_redirect_token(t_token **tp);
 int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
-int				is_lparen_and_or_open(const char *s);
+//int				is_lparen_and_or_open(const char *s);
+int				are_parentheses_unclosed(const char *s);
 
 /* WILDCARD EXPANSION */
 t_token			*expand_wildcards(t_token *tokens);
