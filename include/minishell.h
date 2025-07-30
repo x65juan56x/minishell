@@ -243,5 +243,7 @@ void			cleanup_shell_context(t_shell_context *shell_context);
 void	debug_print_local_vars(t_shell_context *ctx);
 void	debug_print_token_list(t_token *head);
 void	debug_print_expand(t_token token);
+void	debug_print_ast(const t_ast_node *node);
+void	debug_print_parser(const t_parser *parser);
 
 #endif
