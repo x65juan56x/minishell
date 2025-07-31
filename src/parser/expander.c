@@ -64,11 +64,22 @@ char	*copy_non_expanded(char *value, int *i, char *var_expanded)
 	return (var_expanded);
 }
 
-void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
+static void	expand_dollar(t_shell_context *shell_context, t_token **tmp, int *i, char **var_expanded)
 {
 	char	*temp_string;
-	char	*original_value;
 	char	*tmp_expanded;
+	
+	(*i)++;
+	tmp_expanded = do_expand(*tmp, i, shell_context);
+	temp_string = ft_strjoin(*var_expanded, tmp_expanded);
+	free(*var_expanded);
+	*var_expanded = temp_string;
+	free(tmp_expanded);
+}
+
+void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
+{
+	char	*original_value;
 	char	*var_expanded;
 	int		i;
 
@@ -78,14 +89,7 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 	while (i < (int)ft_strlen(original_value) && original_value[i] != '\0')
 	{
 		if (original_value[i] == '$' && original_value[1 + i] != '\0')
-		{
-			i++;
-			tmp_expanded = do_expand(tmp, &i, shell_context);
-			temp_string = ft_strjoin(var_expanded, tmp_expanded);
-			free(var_expanded);
-			var_expanded = temp_string;
-			free(tmp_expanded);
-		}
+			expand_dollar(shell_context, &tmp, &i, &var_expanded);
 		else if (original_value[i] == '$' && original_value[1 + i] == '\0')
 			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 		else
@@ -115,8 +119,8 @@ void	expander_var(t_token *token_list, t_shell_context *shell_context)
 
 char	*expander_line_content(char *line, t_shell_context *shell_context)
 {
-	t_token *tmp_token;
-	char 	*expanded_value;
+	t_token	*tmp_token;
+	char	*expanded_value;
 
 	tmp_token = create_token(TOKEN_WORD, ft_strdup(line));
 	if(!tmp_token)

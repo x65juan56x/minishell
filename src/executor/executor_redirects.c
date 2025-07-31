@@ -31,10 +31,10 @@ static int	open_redirect_file(char *file, t_node_type type)
  *   - `perror`
  */
 
-int apply_redirections(t_ast_node *node)
+int	apply_redirections(t_ast_node *node)
 {
-	int fd;
-	int target_fd;
+	int	fd;
+	int	target_fd;
 
 	if (!node || !is_redirect_node(node->type))
 		return (0);
