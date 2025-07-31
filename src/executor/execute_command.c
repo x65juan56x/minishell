@@ -27,12 +27,12 @@ int	handle_variable_assignment(char **args, t_shell_context *context)
 	return (1);
 }
 
-int execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
+int	execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 {
-	t_ast_node *cmd_node;
-	t_ast_node *redirects[1024];
-	int i;
-	int j;
+	t_ast_node	*cmd_node;
+	t_ast_node	*redirects[1024];
+	int			i;
+	int			j;
 
 	i = 0;
 	cmd_node = node;

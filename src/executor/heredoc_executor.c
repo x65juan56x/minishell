@@ -16,7 +16,7 @@ static int	heredoc_parent_routine(pid_t pid, struct termios *orig_termios)
 	waitpid(pid, &status, 0);
 	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 	if (WIFSIGNALED(status) || (WIFEXITED(status)
-		&& WEXITSTATUS(status) == 130))
+			&& WEXITSTATUS(status) == 130))
 	{
 		g_signal_status = SIGINT;
 		write(STDOUT_FILENO, "\n", 1);

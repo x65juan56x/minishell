@@ -19,11 +19,12 @@ static char	*build_heredoc_filename(int heredoc_id)
 	return (filename);
 }
 
-static int  process_heredoc_node(t_ast_node *node, int *heredoc_id_ptr,
+static int	process_heredoc_node(t_ast_node *node, int *heredoc_id_ptr,
 		t_shell_context *shell_context)
 {
-	char        *temp_filename;
-	t_list      *new_list_node;
+	char	*temp_filename;
+	t_list	*new_list_node;
+
 	temp_filename = build_heredoc_filename(*heredoc_id_ptr);
 	if (!temp_filename)
 		return (-1);
@@ -39,10 +40,12 @@ static int  process_heredoc_node(t_ast_node *node, int *heredoc_id_ptr,
 	node->type = NODE_REDIRECT_IN;
 	return (0);
 }
-int preprocess_heredocs(t_ast_node **node_ptr, int *hd_id_ptr,
+
+int	preprocess_heredocs(t_ast_node **node_ptr, int *hd_id_ptr,
 		t_shell_context *shell_context)
 {
-	t_ast_node  *node;
+	t_ast_node	*node;
+
 	if (!node_ptr || !*node_ptr)
 		return (0);
 	node = *node_ptr;

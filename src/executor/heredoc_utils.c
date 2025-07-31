@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-static void	print_warning_hd()
+static void	print_warning_hd(void)
 {
 	if (isatty(STDIN_FILENO))
 	{
@@ -13,7 +13,7 @@ int	read_heredoc_input(char *delimiter, int write_fd,
 		t_shell_context *shell_context)
 {
 	char	*line;
-	char 	*expanded_line;
+	char	*expanded_line;
 
 	while (1)
 	{
