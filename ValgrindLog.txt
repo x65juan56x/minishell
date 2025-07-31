@@ -1,0 +1,56 @@
+MiniShell $ cat | cat | ls
+ 42_minishell_tester   GUIA_CONCEPTUAL.md   obj			       TEST_SUBJECT.txt
+ a		       include		    PLAN_PRUEBAS.md	       tmp_err_bash
+ b		       la		    README.md		       tmp_err_minishell
+ c		      'LEAKS TESTS.md'	    script.sh		       tmp_out_bash
+ cmds		       libs		    src			       tmp_out_minishell
+ docs		       Makefile		    test_all_redirections.sh   tmp_valgrind-out.txt
+ es.eval.pdf	       minishell	    TEST_CHECKS.md	       ValgrindLog.txt
+ FLUJO_MINISHELL.md    NORMAS.md	    TESTS.md		       ZZNOTASZZ.md
+==3875000== 
+==3875000== HEAP SUMMARY:
+==3875000==     in use at exit: 213,577 bytes in 323 blocks
+==3875000==   total heap usage: 600 allocs, 277 frees, 292,535 bytes allocated
+==3875000== 
+==3875000== LEAK SUMMARY:
+==3875000==    definitely lost: 0 bytes in 0 blocks
+==3875000==    indirectly lost: 0 bytes in 0 blocks
+==3875000==      possibly lost: 0 bytes in 0 blocks
+==3875000==    still reachable: 213,577 bytes in 323 blocks
+==3875000==         suppressed: 0 bytes in 0 blocks
+==3875000== Reachable blocks (those to which a pointer was found) are not shown.
+==3875000== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3875000== 
+==3875000== For lists of detected and suppressed errors, rerun with: -s
+==3875000== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+^C==3874999== 
+==3874999== Process terminating with default action of signal 2 (SIGINT)
+==3874999==    at 0x49B23E8: wait4 (wait4.c:30)
+==3874999==    by 0x4023CC: wait_for_all_children (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x401E26: execute_pipe_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x401511: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x40218E: child_process_logic (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x401FAD: execute_pipe_segment (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x401DC8: execute_pipe_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x401511: execute_ast (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x407573: process_command_line (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x40789E: run_shell_loop (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999==    by 0x40144C: main (in /home/jmondon/Documents/Git Personal/minishell/minishell)
+==3874999== 
+==3874999== HEAP SUMMARY:
+==3874999==     in use at exit: 219,729 bytes in 349 blocks
+==3874999==   total heap usage: 601 allocs, 252 frees, 292,543 bytes allocated
+==3874999== 
+
+
+==3874999== LEAK SUMMARY:
+==3874999==    definitely lost: 0 bytes in 0 blocks
+==3874999==    indirectly lost: 0 bytes in 0 blocks
+==3874999==      possibly lost: 0 bytes in 0 blocks
+==3874999==    still reachable: 219,729 bytes in 349 blocks
+==3874999==         suppressed: 0 bytes in 0 blocks
+==3874999== Reachable blocks (those to which a pointer was found) are not shown.
+==3874999== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874999== 
+==3874999== For lists of detected and suppressed errors, rerun with: -s
+==3874999== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
