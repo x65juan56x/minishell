@@ -41,7 +41,8 @@ SRC_FILES = minishell.c \
 			shell/shell_init.c \
 			shell/shell_input.c \
 			shell/shell_process.c \
-			shell/shell_loop.c
+			shell/shell_loop.c \
+			debugging/debugging.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
@@ -77,6 +78,7 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)/signals
 	@mkdir -p $(OBJ_DIR)/builtins
 	@mkdir -p $(OBJ_DIR)/shell
+	@mkdir -p $(OBJ_DIR)/debugging
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEAD) | $(OBJ_DIR)
 	@echo "$(GREEN)Compiling $<$(RESET)"
