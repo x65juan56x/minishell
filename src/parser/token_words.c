@@ -56,6 +56,7 @@ static void	handle_just_quotes(const char *s, int *quoted, int *k, char *quote)
 	*quote = s[(*k)++];
 
 }
+
 char	*process_quoted_string(const char *s, int start, int end, int *quoted)
 {
 	char	*result;
