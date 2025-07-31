@@ -11,7 +11,6 @@ static void interactive_sigint_handler(int signum)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
-
 /**
  * Manejador para SIGINT (Ctrl+C) en modo interactivo.
  * Esta función es llamada por el kernel. Debe ser simple y segura.
@@ -30,14 +29,12 @@ void setup_interactive_signals(void)
 	sa.sa_handler = interactive_sigint_handler;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
-	/* Ctrl+\  => ignorado en el prompt (bash no imprime nada) */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
-	/* Ctrl+Z  => ignorado en el prompt */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
@@ -77,24 +74,23 @@ void	setup_child_signals(void)
 static void	heredoc_sigint_handler(int signum)
 {
 	(void)signum;
-	exit(130); // Salir con código 130 para indicar interrupción por Ctrl+C
+	exit(130);
 }
 /**
  * Manejador de señal para el proceso hijo del heredoc.
+ * Salir con código 130 para indicar interrupción por Ctrl+C
  */
 
 void setup_heredoc_signals(void)
 {
 	struct sigaction sa;
 
-	/* Ctrl+C mata el heredoc child */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags   = SA_RESTART;
 	sa.sa_handler = heredoc_sigint_handler;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
-	/* Ctrl+\ ignorado, no queremos imprimir nada */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags   = SA_RESTART;
@@ -107,6 +103,7 @@ void setup_heredoc_signals(void)
  * Este proceso hijo necesita un manejo especial: al recibir
  *  Ctrl+C, debe salir inmediatamente para que el padre pueda
  *  detectarlo y cancelar la operación.
+ * Ctrl+\ ignorado, no queremos imprimir nada.
  */
 
 void	ignore_signals(void)
@@ -116,7 +113,7 @@ void	ignore_signals(void)
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
-	sa.sa_handler = SIG_IGN; // IGN = Ignore
+	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGINT,  &sa, NULL) == -1)
 		perror("minishell: sigaction");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
