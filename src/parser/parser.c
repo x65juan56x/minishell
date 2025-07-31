@@ -22,13 +22,13 @@ t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
 	}
 	if (parser.current->type != TOKEN_EOF)
 	{
-		// Usamos la función de error estándar para reportar el token inesperado.
 		consume_token_type(&parser, TOKEN_EOF); // Esto fallará a propósito y mostrará el error.
 		cleanup_ast(ast);
 		return (NULL);
 	}
 	return (ast);
 }
+// Usamos la función de error estándar para reportar el token inesperado.
 /*
  * Propósito: Orquestar el proceso de parsing, convirtiendo una lista plana de
  *            tokens en un Árbol de Sintaxis Abstracta (AST) que representa la

@@ -38,9 +38,9 @@ static int	find_word_end(const char *s, int start)
  * Llama a: `is_operator_char`.
 */
 
-static void	handle_dollar_quote (const char *s, int *k, int *quoted)
+static void	handle_dollar_quote(const char *s, int *k, int *quoted)
 {
-	if((s[*k] == '$') && (s[*k + 1] == '"' || s[*k + 1] == '\''))
+	if ((s[*k] == '$') && (s[*k + 1] == '"' || s[*k + 1] == '\''))
 	{
 		*quoted = 2;
 		(*k)++;
@@ -49,13 +49,13 @@ static void	handle_dollar_quote (const char *s, int *k, int *quoted)
 
 static void	handle_just_quotes(const char *s, int *quoted, int *k, char *quote)
 {
-	if(s[*k] == '"')
+	if (s[*k] == '"')
 		*quoted = 1;
-	if(s[*k] == '\'' )
+	if (s[*k] == '\'' )
 		*quoted = 2;
 	*quote = s[(*k)++];
-
 }
+
 char	*process_quoted_string(const char *s, int start, int end, int *quoted)
 {
 	char	*result;

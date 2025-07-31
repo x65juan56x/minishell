@@ -1,15 +1,68 @@
 #include "../../include/minishell.h"
 
+static int	parse_args_and_redirect(t_ast_node **node, char **args,
+		int *arg_count, t_parser *parser)
+{
+	t_token	*op;
+	t_token	*file;
+
+	if (parser->current->type == TOKEN_WORD)
+		args[(*arg_count)++] = ft_strdup(consume_token
+				(parser, TOKEN_WORD)->value);
+	else if (is_redirect_token(parser->current->type))
+	{
+		op = consume_token(parser, parser->current->type);
+		file = consume_token(parser, TOKEN_WORD);
+		if (!file)
+		{
+			parser->error = 1;
+			ft_freearr(args);
+			return (cleanup_ast(*node), -1);
+		}
+		*node = create_redirect_node(op->type, *node, file->value);
+		if (!*node)
+		{
+			parser->error = 1;
+			ft_freearr(args);
+			return (-1);
+		}
+	}
+	return (0);
+}
+
+static char	**create_compact_args(char **args, int *arg_count)
+{
+	char	**compact_args;
+	int		i;
+
+	i = 0;
+	compact_args = malloc(sizeof(char *) * (*arg_count + 2));
+	if (!compact_args)
+		return (NULL);
+	if (arg_count == 0)
+	{
+		compact_args[0] = ft_strdup("");
+		compact_args[1] = NULL;
+		return (compact_args);
+	}
+	i = 0;
+	while (i < *arg_count)
+	{
+		compact_args[i] = ft_strdup(args[i]);
+		if (!compact_args[i])
+			return (ft_freearr(compact_args), NULL);
+		i++;
+	}
+	compact_args[*arg_count] = NULL;
+	return (compact_args);
+}
+
 t_ast_node	*parse_redirect_expression(t_parser *parser)
 {
 	t_ast_node	*node;
 	t_ast_node	*cmd_node;
-	t_token		*op;
-	t_token		*file;
 	char		**args;
 	int			arg_count;
-	char		**compact_args;
-	int			i;
 
 	if (parser->current && parser->current->type != TOKEN_WORD
 		&& !is_redirect_token(parser->current->type))
@@ -24,54 +77,12 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 	node = cmd_node;
 	while (parser->current && (parser->current->type == TOKEN_WORD
 			|| is_redirect_token(parser->current->type)))
-	{
-		if (parser->current->type == TOKEN_WORD)
-			args[arg_count++] = ft_strdup(consume_token(parser, TOKEN_WORD)->value);
-		else if (is_redirect_token(parser->current->type))
-		{
-			op = consume_token(parser, parser->current->type);
-			file = consume_token(parser, TOKEN_WORD);
-			if (!file)
-			{
-				parser->error = 1;
-				ft_freearr(args);
-				return (cleanup_ast(node), NULL);
-			}
-			node = create_redirect_node(op->type, node, file->value);
-			if (!node)
-			{
-				parser->error = 1;
-				return (ft_freearr(args), NULL);
-			}
-		}
-	}
-	compact_args = malloc(sizeof(char *) * (arg_count + 2));
-	if (!compact_args)
+		if (parse_args_and_redirect(&node, args, &arg_count, parser) != 0)
+			return (NULL);
+	cmd_node->args = create_compact_args(args, &arg_count);
+	if (!cmd_node->args)
 		return (ft_freearr(args), cleanup_ast(node), NULL);
-	if (arg_count == 0)
-	{
-		compact_args[0] = ft_strdup("");
-		compact_args[1] = NULL;
-	}
-	else
-	{
-		i = 0;
-		while (i < arg_count)
-		{
-			compact_args[i] = ft_strdup(args[i]);
-			if (!compact_args[i])
-			{
-				ft_freearr(compact_args);
-				ft_freearr(args);
-				return (cleanup_ast(node), NULL);
-			}
-			i++;
-		}
-		compact_args[arg_count] = NULL;
-	}
-	ft_freearr(args);
-	cmd_node->args = compact_args;
-	return (node);
+	return (ft_freearr(args), node);
 }
 // Si la expresión no empieza con una palabra o una redirección, es un error.
 //		Llamamos a consume_token_type para que genere el mensaje de error estándar.
@@ -153,16 +164,16 @@ t_ast_node	*parse_pipe_expression(t_parser *parser)
 
 t_ast_node	*parse_logical_expression(t_parser *parser)
 {
-	t_ast_node	*left;
-	t_ast_node	*right;
-	t_ast_node	*new_node;
-	t_token_type op_type;
+	t_ast_node		*left;
+	t_ast_node		*right;
+	t_ast_node		*new_node;
+	t_token_type	op_type;
 
 	left = parse_pipe_expression(parser);
 	if (!left)
 		return (NULL);
 	while (parser->current && (parser->current->type == TOKEN_AND
-		|| parser->current->type == TOKEN_OR))
+			|| parser->current->type == TOKEN_OR))
 	{
 		op_type = parser->current->type;
 		consume_token_type(parser, op_type);
