@@ -17,8 +17,8 @@ int	count_pipe_commands(t_ast_node *ast)
 	return (count);
 }
 
-void	child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last,
-		int *heredoc_id_ptr, t_shell_context *shell_context)
+void	child_process_logic(t_pipe_state *st, int pipe_fd[2],
+		int is_last, t_child_context *ctx)
 {
 	free(st->pids);
 	setup_child_signals();
@@ -32,10 +32,10 @@ void	child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last,
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		exit(execute_ast(st->curr->left, heredoc_id_ptr, shell_context));
+		exit(execute_ast(st->curr->left, ctx->hd_id_ptr, ctx->shell_context));
 	}
 	else
-		exit(execute_ast(st->curr, heredoc_id_ptr, shell_context));
+		exit(execute_ast(st->curr, ctx->hd_id_ptr, ctx->shell_context));
 }
 
 int	parent_process_logic(t_pipe_state *st, int pipe_fd[2])

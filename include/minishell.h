@@ -86,11 +86,11 @@ typedef struct s_pipe_config
 
 typedef struct s_pipe_state
 {
-    pid_t		*pids;
-    int			num_cmds;
-    int			i;
-    int			prev_pipe_fd;
-    t_ast_node	*curr;
+	pid_t		*pids;
+	int			num_cmds;
+	int			i;
+	int			prev_pipe_fd;
+	t_ast_node	*curr;
 }	t_pipe_state;
 
 typedef struct s_shell_context
@@ -102,6 +102,11 @@ typedef struct s_shell_context
 	int				error_flag;
 } t_shell_context;
 
+typedef struct s_child_context
+{
+	int				*hd_id_ptr;
+	t_shell_context	*shell_context;
+}	t_child_context;
 
 /* TOKENIZER */
 t_token			*tokenize(const char *input);
@@ -179,7 +184,7 @@ int				apply_redirections(t_ast_node *node);
 int				execute_pipe_line(t_ast_node *ast, int *heredoc_id_ptr, t_shell_context *shell_context);
 int				wait_for_all_children(pid_t *pids, int num_cmds);
 int				count_pipe_commands(t_ast_node *ast);
-void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, int *heredoc_id_ptr, t_shell_context *shell_context);
+void			child_process_logic(t_pipe_state *st, int pipe_fd[2], int is_last, t_child_context *ctx);
 int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
 pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config, int *heredoc_id_ptr, t_shell_context *shell_context);
 
@@ -212,6 +217,7 @@ void			remove_local_var(const char *name, t_list **local_vars);
 
 /* BUILTINS UTILS */
 int				is_builtin(char *cmd);
+void			update_shell_level(t_shell_context *shell_context);
 int				is_builtin_parent(char *cmd);
 char			*get_env_value(const char *var_name, t_shell_context *shell_context);
 int				is_valid_identifier(const char *name);

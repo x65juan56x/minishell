@@ -12,8 +12,7 @@ static int	init_pipe_state(t_pipe_state *st, t_ast_node *ast)
 	return (0);
 }
 
-static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr,
-			t_shell_context *shell_context)
+static int	execute_pipe_segment(t_pipe_state *st, t_child_context *ctx)
 {
 	int	pipe_fd[2];
 
@@ -27,19 +26,18 @@ static int	execute_pipe_segment(t_pipe_state *st, int *heredoc_id_ptr,
 		return (perror("minishell: fork"), 1);
 	}
 	if (st->pids[st->i] == 0)
-		child_process_logic(st, pipe_fd, 0, heredoc_id_ptr, shell_context);
+		child_process_logic(st, pipe_fd, 0, ctx);
 	parent_process_logic(st, pipe_fd);
 	return (0);
 }
 
-static int	execute_last_command(t_pipe_state *st, int *heredoc_id_ptr,
-			t_shell_context *shell_context)
+static int	execute_last_command(t_pipe_state *st, t_child_context *ctx)
 {
 	st->pids[st->i] = fork();
 	if (st->pids[st->i] == -1)
 		return (perror("minishell: fork"), 1);
 	if (st->pids[st->i] == 0)
-		child_process_logic(st, NULL, 1, heredoc_id_ptr, shell_context);
+		child_process_logic(st, NULL, 1, ctx);
 	if (st->prev_pipe_fd != -1)
 		close(st->prev_pipe_fd);
 	return (0);
@@ -49,13 +47,16 @@ int	execute_pipe_line(t_ast_node *ast, int *heredoc_id_ptr,
 	t_shell_context *shell_context)
 {
 	t_pipe_state	st;
+	t_child_context	ctx;
 
+	ctx.hd_id_ptr = heredoc_id_ptr;
+	ctx.shell_context = shell_context;
 	if (init_pipe_state(&st, ast) != 0)
 		return (1);
 	while (st.curr->type == NODE_PIPE)
-		if (execute_pipe_segment(&st, heredoc_id_ptr, shell_context) != 0)
+		if (execute_pipe_segment(&st, &ctx) != 0)
 			return (free(st.pids), 1);
-	if (execute_last_command(&st, heredoc_id_ptr, shell_context) != 0)
+	if (execute_last_command(&st, &ctx) != 0)
 		return (free(st.pids), 1);
 	return (wait_for_all_children(st.pids, st.num_cmds));
 }

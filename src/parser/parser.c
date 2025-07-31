@@ -13,16 +13,16 @@ t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
 	ast = parse_logical_expression(&parser);
 	if (parser.error)
 	{
-		if(tokens == NULL)
+		if (tokens == NULL)
 		{
 			shell_context->error_flag = 1;
 			cleanup_ast(ast);
-			return(NULL);
-		}	
+			return (NULL);
+		}
 	}
 	if (parser.current->type != TOKEN_EOF)
 	{
-		consume_token_type(&parser, TOKEN_EOF); // Esto fallará a propósito y mostrará el error.
+		consume_token_type(&parser, TOKEN_EOF);
 		cleanup_ast(ast);
 		return (NULL);
 	}

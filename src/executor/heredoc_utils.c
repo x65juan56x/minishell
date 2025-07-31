@@ -50,7 +50,8 @@ int	read_heredoc_input(char *delimiter, int write_fd,
  *   - `free`
 */
 
-int	create_heredoc_file(const char *filename, char *delimiter, t_shell_context *shell_context)
+int	create_heredoc_file(const char *filename, char *delimiter,
+		t_shell_context *shell_context)
 {
 	int	fd;
 

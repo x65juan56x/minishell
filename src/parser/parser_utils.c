@@ -66,7 +66,8 @@ t_token	*consume_token_type(t_parser *parser, t_token_type type)
 	{
 		if (!parser->error)
 		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+			ft_putstr_fd("minishell: syntax error near", STDERR_FILENO);
+			ft_putstr_fd(" unexpected token `", STDERR_FILENO);
 			if (parser->current && parser->current->type != TOKEN_EOF)
 				ft_putstr_fd(parser->current->value, STDERR_FILENO);
 			else

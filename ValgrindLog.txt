@@ -265,3 +265,36 @@ MiniShell $
 ==3874641== For lists of detected and suppressed errors, rerun with: -s
 ==3874641== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ➜  minishell git:(main) 
+
+Lo que estás viendo es un comportamiento normal y esperado cuando interrumpes un proceso con Ctrl+C. Te explico por qué.
+
+Análisis del Log de Valgrind
+Process terminating with default action of signal 2 (SIGINT)
+
+Esta es la línea más importante. Significa que tu minishell no terminó de forma normal. No llegó al final de main ni ejecutó exit(). Fue asesinado desde fuera por la señal SIGINT (Ctrl+C).
+at 0x49B23E8: wait4 (wait4.c:30)
+
+Este es el stack trace (la pila de llamadas) en el momento de la interrupción. Muestra que tu shell estaba bloqueado en la llamada al sistema wait4 (o waitpid), esperando a que los procesos hijos (cat, cat, ls) terminaran.
+Esto es correcto. Tu shell principal debe esperar a que la pipeline finalice.
+HEAP SUMMARY: in use at exit: 219,729 bytes
+
+Esta es la memoria que estaba en uso en el instante en que el proceso fue terminado.
+Como el proceso fue "asesinado", no tuvo la oportunidad de ejecutar su código de limpieza. Las funciones como cleanup_ast, cleanup_tokens, y cleanup_shell_context nunca se llamaron.
+¿Por qué no es un Leak?
+La diferencia clave está en el LEAK SUMMARY:
+
+==3874999== LEAK SUMMARY:
+==3874999==    definitely lost: 0 bytes in 0 blocks
+==3874999==    indirectly lost: 0 bytes in 0 blocks
+==3874999==      possibly lost: 0 bytes in 0 blocks
+==3874999==    still reachable: 219,729 bytes in 349 blocks
+
+definitely lost: 0 bytes: Esto confirma que no tienes leaks. Un leak real es memoria que has perdido y a la que ya no tienes ningún puntero para poder liberarla.
+still reachable: 219,729 bytes: Esta es la memoria que estaba en uso y a la que tu programa todavía tenía punteros válidos (el AST, la lista de tokens, el shell_context, etc.). Simplemente no tuvo tiempo de liberarla.
+En Resumen
+Situación	¿Se ejecuta la limpieza?	Valgrind Reporta	¿Es un Leak?
+Salida normal (exit)	Sí	in use at exit: 0 (o casi, por readline)	No
+Interrupción (Ctrl+C)	No	in use at exit: > 0 (still reachable)	No
+El sistema operativo se encarga de reclamar toda la memoria de un proceso cuando este termina, sin importar cómo. El propósito de Valgrind es ayudarte a encontrar memoria que tú pierdes durante la ejecución, no la que queda sin liberar por una terminación abrupta.
+
+Conclusión: Tu código se comporta correctamente. El log de Valgrind demuestra que tu shell espera a los hijos como debe y que, en una salida normal, no tienes fugas de memoria. ¡Buen trabajo

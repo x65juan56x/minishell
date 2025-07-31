@@ -85,11 +85,31 @@ static t_token	*replace_token_with_matches(t_token *prev, t_token *current,
 }
 // Reemplaza un token de wildcard por una lista de tokens de coincidencias.
 
+static void	process_wildcard_token(t_token **current_ptr, t_token **prev_ptr,
+									t_token **head_ptr)
+{
+	t_token	*matches;
+	t_token	*current;
+	t_token	*prev;
+
+	current = *current_ptr;
+	prev = *prev_ptr;
+	matches = create_match_tokens(current->value);
+	if (matches)
+	{
+		prev = replace_token_with_matches(prev, current, matches);
+		if (!(*head_ptr) || *head_ptr == current)
+			*head_ptr = matches;
+		*current_ptr = prev;
+	}
+	*prev_ptr = *current_ptr;
+	*current_ptr = (*current_ptr)->next;
+}
+
 t_token	*expand_wildcards(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*prev;
-	t_token	*matches;
 	t_token	*head;
 
 	head = tokens;
@@ -98,19 +118,12 @@ t_token	*expand_wildcards(t_token *tokens)
 	while (current)
 	{
 		if (current->type == TOKEN_WORD && ft_strchr(current->value, '*'))
+			process_wildcard_token(&current, &prev, &head);
+		else
 		{
-			matches = create_match_tokens(current->value);
-			if (matches)
-			{
-				prev = replace_token_with_matches(prev, current, matches);
-				if (!head || head == current)
-					head = matches;
-				current = prev->next;
-				continue ;
-			}
+			prev = current;
+			current = current->next;
 		}
-		prev = current;
-		current = current->next;
 	}
 	return (head);
 }

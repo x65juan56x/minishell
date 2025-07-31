@@ -64,11 +64,12 @@ char	*copy_non_expanded(char *value, int *i, char *var_expanded)
 	return (var_expanded);
 }
 
-static void	expand_dollar(t_shell_context *shell_context, t_token **tmp, int *i, char **var_expanded)
+static void	expand_dollar(t_shell_context *shell_context, t_token **tmp, int *i,
+			char **var_expanded)
 {
 	char	*temp_string;
 	char	*tmp_expanded;
-	
+
 	(*i)++;
 	tmp_expanded = do_expand(*tmp, i, shell_context);
 	temp_string = ft_strjoin(*var_expanded, tmp_expanded);
@@ -123,14 +124,14 @@ char	*expander_line_content(char *line, t_shell_context *shell_context)
 	char	*expanded_value;
 
 	tmp_token = create_token(TOKEN_WORD, ft_strdup(line));
-	if(!tmp_token)
+	if (!tmp_token)
 		return (NULL);
 	tmp_token->expand = 1;
 	update_tokens_values(shell_context, tmp_token);
 	expanded_value = tmp_token->value;
 	tmp_token->value = NULL;
 	cleanup_tokens(tmp_token);
-	return(expanded_value);
+	return (expanded_value);
 }
 // creamos un token temporal con la linea del heredoc
 // tmp_token->expand = 1; => marcar el token para que sea expandido
