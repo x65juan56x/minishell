@@ -1,6 +1,16 @@
 #include "../../include/minishell.h"
 
-int	read_heredoc_input(char *delimiter, int write_fd, t_shell_context *shell_context)
+static void	print_warning_hd()
+{
+	if (isatty(STDIN_FILENO))
+	{
+		ft_putstr_fd("minishell: warning: here-docu", STDERR_FILENO);
+		ft_putstr_fd("ment delimited by end-of-file\n", STDERR_FILENO);
+	}
+}
+
+int	read_heredoc_input(char *delimiter, int write_fd,
+		t_shell_context *shell_context)
 {
 	char	*line;
 	char 	*expanded_line;
@@ -12,13 +22,7 @@ int	read_heredoc_input(char *delimiter, int write_fd, t_shell_context *shell_con
 		else
 			line = get_next_line(STDIN_FILENO);
 		if (!line)
-		{
-			if (isatty(STDIN_FILENO))
-				ft_putstr_fd("minishell: warning: here-docu", STDERR_FILENO);
-			if (isatty(STDIN_FILENO))
-				ft_putstr_fd("ment delimited by end-of-file\n", STDERR_FILENO);
-			return (1);
-		}
+			return (print_warning_hd(), 1);
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);

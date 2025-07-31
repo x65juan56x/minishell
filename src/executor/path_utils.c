@@ -88,10 +88,10 @@ static char	*search_cmd_in_dirs(char **dirs, char *cmd)
 static int	check_direct_path(char *cmd)
 {
 	if (access(cmd, F_OK) != 0)
-		return (127); //Archivo no existe
+		return (127);
 	if (access(cmd, X_OK) != 0)
-		return (126); //Archivo existe pero no tiene permiso de ejecución
-	return (0); //Todo OK
+		return (126);
+	return (0);
 }
 
 char	*find_command_path(char *cmd, char **envp)

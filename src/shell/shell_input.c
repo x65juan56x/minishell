@@ -8,7 +8,7 @@ char	*get_user_input(void)
 	{
 		input = readline(PROMPT);
 		if (!input)
-			return(NULL); //BORRAR Y DESCOMENTAR LA LINEA SIGUIENTE
+			return(NULL); //BORRAR ESTA LINEA Y DESCOMENTAR LA LINEA SIGUIENTE
 	//		return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
 	else
