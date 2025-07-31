@@ -1,3 +1,164 @@
+minishell git:(main) ✗ valgrind --leak-check=full ./minishell
+==3874240== Memcheck, a memory error detector
+==3874240== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3874240== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3874240== Command: ./minishell
+==3874240== 
+MiniShell $ ls
+ 42_minishell_tester  'LEAKS TESTS.md'	 script.sh		    tmp_out_bash
+ cmds		       libs		 src			    tmp_out_minishell
+ docs		       Makefile		 test_all_redirections.sh   tmp_valgrind-out.txt
+ es.eval.pdf	       minishell	 TEST_CHECKS.md		    ValgrindLog.txt
+ FLUJO_MINISHELL.md    NORMAS.md	 TESTS.md		    ZZNOTASZZ.md
+ GUIA_CONCEPTUAL.md    obj		 TEST_SUBJECT.txt
+ include	       PLAN_PRUEBAS.md	 tmp_err_bash
+ la		       README.md	 tmp_err_minishell
+MiniShell $ echo prueba >c>b>a
+==3874339== 
+==3874339== HEAP SUMMARY:
+==3874339==     in use at exit: 213,563 bytes in 325 blocks
+==3874339==   total heap usage: 550 allocs, 225 frees, 250,685 bytes allocated
+==3874339== 
+==3874339== LEAK SUMMARY:
+==3874339==    definitely lost: 0 bytes in 0 blocks
+==3874339==    indirectly lost: 0 bytes in 0 blocks
+==3874339==      possibly lost: 0 bytes in 0 blocks
+==3874339==    still reachable: 213,563 bytes in 325 blocks
+==3874339==         suppressed: 0 bytes in 0 blocks
+==3874339== Reachable blocks (those to which a pointer was found) are not shown.
+==3874339== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874339== 
+==3874339== For lists of detected and suppressed errors, rerun with: -s
+==3874339== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+MiniShell $ cat a
+prueba
+MiniShell $ echo prueba2 >>c>>b>>a
+==3874436== 
+==3874436== HEAP SUMMARY:
+==3874436==     in use at exit: 213,944 bytes in 336 blocks
+==3874436==   total heap usage: 629 allocs, 293 frees, 268,676 bytes allocated
+==3874436== 
+==3874436== LEAK SUMMARY:
+==3874436==    definitely lost: 0 bytes in 0 blocks
+==3874436==    indirectly lost: 0 bytes in 0 blocks
+==3874436==      possibly lost: 0 bytes in 0 blocks
+==3874436==    still reachable: 213,944 bytes in 336 blocks
+==3874436==         suppressed: 0 bytes in 0 blocks
+==3874436== Reachable blocks (those to which a pointer was found) are not shown.
+==3874436== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874436== 
+==3874436== For lists of detected and suppressed errors, rerun with: -s
+==3874436== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+MiniShell $ cat a
+prueba
+prueba2
+MiniShell $ exit
+==3874240== 
+==3874240== HEAP SUMMARY:
+==3874240==     in use at exit: 208,479 bytes in 225 blocks
+==3874240==   total heap usage: 671 allocs, 446 frees, 277,635 bytes allocated
+==3874240== 
+==3874240== LEAK SUMMARY:
+==3874240==    definitely lost: 0 bytes in 0 blocks
+==3874240==    indirectly lost: 0 bytes in 0 blocks
+==3874240==      possibly lost: 0 bytes in 0 blocks
+==3874240==    still reachable: 208,479 bytes in 225 blocks
+==3874240==         suppressed: 0 bytes in 0 blocks
+==3874240== Reachable blocks (those to which a pointer was found) are not shown.
+==3874240== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874240== 
+==3874240== For lists of detected and suppressed errors, rerun with: -s
+==3874240== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ valgrind --leak-check=full ./minishell
+==3874641== Memcheck, a memory error detector
+==3874641== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3874641== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3874641== Command: ./minishell
+==3874641== 
+MiniShell $ ls | grep a
+a
+es.eval.pdf
+la
+Makefile
+test_all_redirections.sh
+tmp_err_bash
+tmp_out_bash
+tmp_valgrind-out.txt
+ValgrindLog.txt
+==3874665== 
+==3874665== HEAP SUMMARY:
+==3874665==     in use at exit: 213,346 bytes in 312 blocks
+==3874665==   total heap usage: 536 allocs, 224 frees, 250,403 bytes allocated
+==3874665== 
+==3874665== LEAK SUMMARY:
+==3874665==    definitely lost: 0 bytes in 0 blocks
+==3874665==    indirectly lost: 0 bytes in 0 blocks
+==3874665==      possibly lost: 0 bytes in 0 blocks
+==3874665==    still reachable: 213,346 bytes in 312 blocks
+==3874665==         suppressed: 0 bytes in 0 blocks
+==3874665== Reachable blocks (those to which a pointer was found) are not shown.
+==3874665== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874665== 
+==3874665== For lists of detected and suppressed errors, rerun with: -s
+==3874665== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3874666== 
+==3874666== HEAP SUMMARY:
+==3874666==     in use at exit: 213,346 bytes in 312 blocks
+==3874666==   total heap usage: 536 allocs, 224 frees, 250,403 bytes allocated
+==3874666== 
+==3874666== LEAK SUMMARY:
+==3874666==    definitely lost: 0 bytes in 0 blocks
+==3874666==    indirectly lost: 0 bytes in 0 blocks
+==3874666==      possibly lost: 0 bytes in 0 blocks
+==3874666==    still reachable: 213,346 bytes in 312 blocks
+==3874666==         suppressed: 0 bytes in 0 blocks
+==3874666== Reachable blocks (those to which a pointer was found) are not shown.
+==3874666== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874666== 
+==3874666== For lists of detected and suppressed errors, rerun with: -s
+==3874666== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+MiniShell $ cat | ls
+ 42_minishell_tester   GUIA_CONCEPTUAL.md   obj			       TEST_SUBJECT.txt
+ a		       include		    PLAN_PRUEBAS.md	       tmp_err_bash
+ b		       la		    README.md		       tmp_err_minishell
+ c		      'LEAKS TESTS.md'	    script.sh		       tmp_out_bash
+ cmds		       libs		    src			       tmp_out_minishell
+ docs		       Makefile		    test_all_redirections.sh   tmp_valgrind-out.txt
+ es.eval.pdf	       minishell	    TEST_CHECKS.md	       ValgrindLog.txt
+ FLUJO_MINISHELL.md    NORMAS.md	    TESTS.md		       ZZNOTASZZ.md
+==3874761== 
+==3874761== HEAP SUMMARY:
+==3874761==     in use at exit: 213,342 bytes in 312 blocks
+==3874761==   total heap usage: 563 allocs, 251 frees, 267,276 bytes allocated
+==3874761== 
+==3874761== LEAK SUMMARY:
+==3874761==    definitely lost: 0 bytes in 0 blocks
+==3874761==    indirectly lost: 0 bytes in 0 blocks
+==3874761==      possibly lost: 0 bytes in 0 blocks
+==3874761==    still reachable: 213,342 bytes in 312 blocks
+==3874761==         suppressed: 0 bytes in 0 blocks
+==3874761== Reachable blocks (those to which a pointer was found) are not shown.
+==3874761== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874761== 
+==3874761== For lists of detected and suppressed errors, rerun with: -s
+==3874761== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+^C
+==3874760== 
+==3874760== HEAP SUMMARY:
+==3874760==     in use at exit: 213,342 bytes in 312 blocks
+==3874760==   total heap usage: 563 allocs, 251 frees, 267,276 bytes allocated
+==3874760== 
+==3874760== LEAK SUMMARY:
+==3874760==    definitely lost: 0 bytes in 0 blocks
+==3874760==    indirectly lost: 0 bytes in 0 blocks
+==3874760==      possibly lost: 0 bytes in 0 blocks
+==3874760==    still reachable: 213,342 bytes in 312 blocks
+==3874760==         suppressed: 0 bytes in 0 blocks
+==3874760== Reachable blocks (those to which a pointer was found) are not shown.
+==3874760== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874760== 
+==3874760== For lists of detected and suppressed errors, rerun with: -s
+==3874760== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 MiniShell $ cat | cat | ls
  42_minishell_tester   GUIA_CONCEPTUAL.md   obj			       TEST_SUBJECT.txt
  a		       include		    PLAN_PRUEBAS.md	       tmp_err_bash
@@ -54,3 +215,53 @@ MiniShell $ cat | cat | ls
 ==3874999== 
 ==3874999== For lists of detected and suppressed errors, rerun with: -s
 ==3874999== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+MiniShell $ ==3875002== 
+==3875002== HEAP SUMMARY:
+==3875002==     in use at exit: 213,577 bytes in 323 blocks
+==3875002==   total heap usage: 601 allocs, 278 frees, 292,543 bytes allocated
+==3875002== 
+==3875001== 
+==3875001== HEAP SUMMARY:
+==3875001==     in use at exit: 213,577 bytes in 323 blocks
+==3875001==   total heap usage: 601 allocs, 278 frees, 292,543 bytes allocated
+==3875001== 
+==3875002== LEAK SUMMARY:
+==3875002==    definitely lost: 0 bytes in 0 blocks
+==3875002==    indirectly lost: 0 bytes in 0 blocks
+==3875002==      possibly lost: 0 bytes in 0 blocks
+==3875002==    still reachable: 213,577 bytes in 323 blocks
+==3875002==         suppressed: 0 bytes in 0 blocks
+==3875002== Reachable blocks (those to which a pointer was found) are not shown.
+==3875002== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3875002== 
+==3875002== For lists of detected and suppressed errors, rerun with: -s
+==3875002== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3875001== LEAK SUMMARY:
+==3875001==    definitely lost: 0 bytes in 0 blocks
+==3875001==    indirectly lost: 0 bytes in 0 blocks
+==3875001==      possibly lost: 0 bytes in 0 blocks
+==3875001==    still reachable: 213,577 bytes in 323 blocks
+==3875001==         suppressed: 0 bytes in 0 blocks
+==3875001== Reachable blocks (those to which a pointer was found) are not shown.
+==3875001== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3875001== 
+==3875001== For lists of detected and suppressed errors, rerun with: -s
+==3875001== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+MiniShell $ 
+==3874641== 
+==3874641== HEAP SUMMARY:
+==3874641==     in use at exit: 208,222 bytes in 222 blocks
+==3874641==   total heap usage: 635 allocs, 413 frees, 293,187 bytes allocated
+==3874641== 
+==3874641== LEAK SUMMARY:
+==3874641==    definitely lost: 0 bytes in 0 blocks
+==3874641==    indirectly lost: 0 bytes in 0 blocks
+==3874641==      possibly lost: 0 bytes in 0 blocks
+==3874641==    still reachable: 208,222 bytes in 222 blocks
+==3874641==         suppressed: 0 bytes in 0 blocks
+==3874641== Reachable blocks (those to which a pointer was found) are not shown.
+==3874641== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3874641== 
+==3874641== For lists of detected and suppressed errors, rerun with: -s
+==3874641== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) 
