@@ -23,10 +23,60 @@ static char	**copy_envp(char **envp)
 	return (new_envp);
 }
 
+static int	count_env_vars(char **envp)
+{
+	int	count;
+
+	count = 0;
+	if (!envp)
+		return (0);
+	while (envp[count])
+		count++;
+	return (count);
+}
+
+static void	print_empty_env_warning(void)
+{
+	ft_putstr_fd("minishell: warning: no environment", STDERR_FILENO);
+	ft_putstr_fd(" variables detected\n", STDERR_FILENO);
+	ft_putstr_fd("minishell: warning: shell behavior", STDERR_FILENO);
+	ft_putstr_fd(" may be unexpected\n", STDERR_FILENO);
+	ft_putstr_fd("minishell: warning: PATH not set ", STDERR_FILENO);
+	ft_putstr_fd("- external commands will fail\n", STDERR_FILENO);
+}
+
+static int	has_essential_vars(char **envp)
+{
+	int	i;
+	int	has_path;
+	int	has_home;
+
+	if (!envp)
+		return (0);
+	has_path = 0;
+	has_home = 0;
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			has_path = 1;
+		if (ft_strncmp(envp[i], "HOME=", 5) == 0)
+			has_home = 1;
+		i++;
+	}
+	return (has_path || has_home);
+}
+
 char	**init_shell_environment(char **envp, t_shell_context *shell_context)
 {
 	char	**envp_copy;
+	int		env_count;
 
+	env_count = count_env_vars(envp);
+	
+	if (env_count == 0 || !has_essential_vars(envp))
+		print_empty_env_warning();
+	
 	envp_copy = copy_envp(envp);
 	if (!envp_copy)
 	{

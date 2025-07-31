@@ -148,3 +148,15 @@ El orden de las operaciones es crítico cuando trabajas con listas enlazadas que
 
 cómo tu ejecutor maneja el status de los operadores lógicos y cómo lo propaga.
 
+Valgrind, tiene leaks si lo cierro con ctrl+C
+cat | cat | ls
+
+Valgrind, tiene leaks si lo cierro con ctrl+C
+<< EOF << fin
+
+Gestionar (ver que no haga seg fault en ningun lado)
+env -i
+
+✅Export
+convertir el entorno a lista para ordenarlo
+
