@@ -1,0 +1,68 @@
+==3855414== Memcheck, a memory error detector
+==3855414== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3855414== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==3855414== Command: .//minishell
+==3855414== Parent PID: 3855094
+==3855414== 
+--3855414-- 
+--3855414-- Valgrind options:
+--3855414--    --leak-check=full
+--3855414--    --show-leak-kinds=all
+--3855414--    --track-origins=yes
+--3855414--    --verbose
+--3855414--    --log-file=tmp_valgrind-out.txt
+--3855414-- Contents of /proc/version:
+--3855414--   Linux version 6.10.9-1-t2-jammy (root@c717d23fd605) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #1 SMP PREEMPT_DYNAMIC Sun Sep  8 09:34:45 UTC 2024
+--3855414-- 
+--3855414-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--3855414-- Page sizes: currently 4096, max supported 4096
+--3855414-- Valgrind library directory: /usr/libexec/valgrind
+--3855414-- Reading syms from /home/jmondon/Documents/Git Personal/minishell/minishell
+--3855414-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--3855414--   Considering /usr/lib/debug/.build-id/9c/b53985768bb99f138f48655f7b8bf7e420d13d.debug ..
+--3855414--   .. build-id is valid
+--3855414-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--3855414--    object doesn't have a symbol table
+--3855414--    object doesn't have a dynamic symbol table
+--3855414-- Scheduler: using generic scheduler lock implementation.
+--3855414-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==3855414== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-3855414-by-jmondon-on-???
+==3855414== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-3855414-by-jmondon-on-???
+==3855414== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-3855414-by-jmondon-on-???
+==3855414== 
+==3855414== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==3855414== don't want to do, unless you know exactly what you're doing,
+==3855414== or are doing some strange experiment):
+==3855414==   /usr/bin/vgdb --pid=3855414 ...command...
+==3855414== 
+==3855414== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==3855414==   /path/to/gdb .//minishell
+==3855414== and then give GDB the following command
+==3855414==   target remote | /usr/bin/vgdb --pid=3855414
+==3855414== --pid is optional if only one valgrind process is running
+==3855414== 
+--3855414-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--3855414-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+==3855414== 
+==3855414== Process terminating with default action of signal 2 (SIGINT)
+==3855414==    at 0x4026B16: __open_nocancel (open64_nocancel.c:39)
+==3855414==    by 0x4007658: open_verify.constprop.1 (dl-load.c:1626)
+==3855414==    by 0x400A5B3: _dl_map_object (dl-load.c:2265)
+==3855414==    by 0x40203D8: map_doit (rtld.c:666)
+==3855414==    by 0x401D349: _dl_catch_exception (dl-error-skeleton.c:208)
+==3855414==    by 0x401D3F2: _dl_catch_error (dl-error-skeleton.c:227)
+==3855414==    by 0x4021820: do_preload (rtld.c:841)
+==3855414==    by 0x4021820: handle_preload_list (rtld.c:917)
+==3855414==    by 0x4024AB8: dl_main (rtld.c:1847)
+==3855414==    by 0x401F83B: _dl_sysdep_start (dl-sysdep.c:256)
+==3855414==    by 0x4021597: _dl_start_final (rtld.c:507)
+==3855414==    by 0x4021597: _dl_start (rtld.c:596)
+==3855414==    by 0x4020297: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+==3855414== 
+==3855414== HEAP SUMMARY:
+==3855414==     in use at exit: 0 bytes in 0 blocks
+==3855414==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==3855414== 
+==3855414== All heap blocks were freed -- no leaks are possible
+==3855414== 
+==3855414== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
