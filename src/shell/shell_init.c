@@ -73,10 +73,8 @@ char	**init_shell_environment(char **envp, t_shell_context *shell_context)
 	int		env_count;
 
 	env_count = count_env_vars(envp);
-	
 	if (env_count == 0 || !has_essential_vars(envp))
 		print_empty_env_warning();
-	
 	envp_copy = copy_envp(envp);
 	if (!envp_copy)
 	{

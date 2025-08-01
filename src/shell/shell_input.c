@@ -8,8 +8,7 @@ char	*get_user_input(void)
 	{
 		input = readline(PROMPT);
 		if (!input)
-			return(NULL); //BORRAR ESTA LINEA Y DESCOMENTAR LA LINEA SIGUIENTE
-	//		return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
+			return (/*ft_putstr_fd("exit\n", STDOUT_FILENO), */NULL);
 	}
 	else
 		input = get_next_line(STDIN_FILENO);
