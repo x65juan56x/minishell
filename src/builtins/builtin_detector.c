@@ -40,7 +40,7 @@ int	execute_builtin(char **args, t_shell_context *shell_context)
 	return (1);
 }
 
-int is_builtin_parent(char *cmd)
+int	is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);

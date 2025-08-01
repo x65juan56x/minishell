@@ -1,17 +1,5 @@
 #include "../../include/minishell.h"
 
-void	print_token_values(t_token *head)
-{
-	t_token	*curr;
-
-	curr = head;
-	while (curr)
-	{
-		printf("%s\n", curr->value);
-		curr = curr->next;
-	}
-}
-
 static int	match_file(const char *pattern, const char *filename)
 {
 	if ((pattern[0] == '.' || filename[0] != '.')
@@ -49,22 +37,6 @@ static t_token	*create_match_tokens(const char *pattern)
 	closedir(dir);
 	return (matches_head);
 }
-// Crea una nueva lista de tokens a
-//partir de los nombres de fichero que coinciden.
-
-/* static t_token *find_last_token(t_token *token_list)
-{
-	t_token * last;
-
-	if (!token_list)
-		return (NULL);
-	last = token_list;
-	while(last->next)
-	{
-		last = last->next;
-	}
-	return (last);
-} */
 
 static t_token	*replace_token_with_matches(t_token *prev, t_token *current,
 										t_token *matches)
@@ -83,7 +55,6 @@ static t_token	*replace_token_with_matches(t_token *prev, t_token *current,
 	free(current);
 	return (last_match);
 }
-// Reemplaza un token de wildcard por una lista de tokens de coincidencias.
 
 static void	process_wildcard_token(t_token **current_ptr, t_token **prev_ptr,
 									t_token **head_ptr)
@@ -127,5 +98,3 @@ t_token	*expand_wildcards(t_token *tokens)
 	}
 	return (head);
 }
-// Función principal que recorre la lista de tokens y expande los wildcards.
-// Devuelve la nueva cabeza de la lista, que puede haber cambiado.

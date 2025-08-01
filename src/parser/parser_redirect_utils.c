@@ -7,17 +7,6 @@ int	is_redirect_token(t_token_type type)
 		|| type == TOKEN_REDIRECT_APPEND
 		|| type == TOKEN_HEREDOC);
 }
-/*
- * Propósito: Comprobar si un tipo de token corresponde a un operador de
- *            redirección (`<`, `>`, `<<`, `>>`).
- * Mecanismo: Compara el `type` con los enums de todos los tokens de
- *            redirección.
- * Llamado por:
- *   - `count_command_args`, `extract_args`: Para saber si deben
- * 		ignorar un token.
- *   - `parse_leading_redirects`, `apply_trailing_redirects`: Para saber si
- *     deben procesar un token como redirección.
-*/
 
 int	is_redirect_node(t_node_type type)
 {
@@ -26,11 +15,60 @@ int	is_redirect_node(t_node_type type)
 		|| type == NODE_REDIRECT_APPEND
 		|| type == NODE_HEREDOC);
 }
-/*
- * Propósito: Comprobar si un tipo de nodo del AST corresponde a un nodo de
- *            redirección.
- * Mecanismo: Compara el `type` con los enums de todos los nodos de
- *            redirección.
- * Llamado por: `parse_redirect_expression`, para saber hasta dónde recorrer
- *              la lista de nodos de redirección iniciales.
-*/
+
+int	parse_args_and_redirect(t_ast_node **node, char **args,
+		int *arg_count, t_parser *parser)
+{
+	t_token	*op;
+	t_token	*file;
+
+	if (parser->current->type == TOKEN_WORD)
+		args[(*arg_count)++] = ft_strdup(consume_token
+				(parser, TOKEN_WORD)->value);
+	else if (is_redirect_token(parser->current->type))
+	{
+		op = consume_token(parser, parser->current->type);
+		file = consume_token(parser, TOKEN_WORD);
+		if (!file)
+		{
+			parser->error = 1;
+			ft_freearr(args);
+			return (cleanup_ast(*node), -1);
+		}
+		*node = create_redirect_node(op->type, *node, file->value);
+		if (!*node)
+		{
+			parser->error = 1;
+			ft_freearr(args);
+			return (-1);
+		}
+	}
+	return (0);
+}
+
+char	**create_compact_args(char **args, int *arg_count)
+{
+	char	**compact_args;
+	int		i;
+
+	i = 0;
+	compact_args = malloc(sizeof(char *) * (*arg_count + 2));
+	if (!compact_args)
+		return (NULL);
+	if (arg_count == 0)
+	{
+		compact_args[0] = ft_strdup("");
+		compact_args[1] = NULL;
+		return (compact_args);
+	}
+	i = 0;
+	while (i < *arg_count)
+	{
+		compact_args[i] = ft_strdup(args[i]);
+		if (!compact_args[i])
+			return (ft_freearr(compact_args), NULL);
+		i++;
+	}
+	compact_args[*arg_count] = NULL;
+	return (compact_args);
+}

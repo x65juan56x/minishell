@@ -30,4 +30,3 @@ int	process_command_line(t_token *tokens, t_shell_context *shell_context)
 	cleanup_tokens(tokens);
 	return (exit_status);
 }
-// El shell debe ignorar las señales mientras el AST se ejecuta.

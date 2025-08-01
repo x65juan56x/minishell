@@ -21,8 +21,6 @@ static int	update_env_var(const char *var_name, const char *value,
 	free(new_var);
 	return (0);
 }
-// Función auxiliar para actualizar una variable de entorno o crearla si no existe.
-// Es una versión simplificada de `export` para uso interno.
 
 static int	go_to_path(const char *path, t_shell_context *shell_context)
 {
@@ -43,7 +41,7 @@ static int	go_to_path(const char *path, t_shell_context *shell_context)
 	if (old_pwd_copy)
 		update_env_var("OLDPWD", old_pwd_copy, shell_context);
 	free(old_pwd_copy);
-	new_pwd = getcwd(NULL, 0); 
+	new_pwd = getcwd(NULL, 0);
 	if (new_pwd)
 		update_env_var("PWD", new_pwd, shell_context);
 	if (new_pwd)
@@ -52,8 +50,6 @@ static int	go_to_path(const char *path, t_shell_context *shell_context)
 		return (perror("minishell: cd: getcwd"), 1);
 	return (0);
 }
-// getcwd asigna memoria dinámicamente
-// luego liberamos la memoria asignada por getcwd
 
 int	builtin_cd(char **args, t_shell_context *shell_context)
 {

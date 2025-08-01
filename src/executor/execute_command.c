@@ -55,11 +55,3 @@ int	execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 		return (execute_builtin(cmd_node->args, shell_context));
 	return (launch_command(cmd_node->args, shell_context->envp_cpy), 127);
 }
-// t_ast_node *redirects[1024]; => Array para guardar punteros a nodos de redirect
-// 1º while() => Recolectar todos los nodos de redirección y encontrar el
-//		comando base.
-// 2º while() => Aplicar las redirecciones en el orden en que se encontraron.
-//		La última en la línea de comandos es la primera en el array, y será la
-//		última en ser aplicada en este bucle, por lo que "gana".
-// 2º if() después de los while( =ª) Ahora cmd_node apunta al comando real
-//		y lo Ejecuta.

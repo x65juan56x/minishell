@@ -26,23 +26,29 @@ SRC_FILES = minishell.c \
 			parser/parser_commands.c \
 			parser/parser_expressions.c \
 			parser/parser_utils.c \
+			parser/parser_unclosed_utils.c \
 			parser/parser_redirect_utils.c \
 			parser/expander.c \
 			parser/expander_utils.c \
+			parser/expander_updater.c \
 			parser/wildcard_expander.c \
 			parser/wildcard_utils.c \
 			signals/signals.c \
+			signals/heredoc_signals.c \
 			builtins/builtin_detector.c \
 			builtins/builtin_implementations.c \
 			builtins/builtin_cd.c \
 			builtins/builtin_export.c \
+			builtins/builtin_export_utils.c \
 			builtins/builtin_unset.c \
 			builtins/builtin_env_utils.c \
 			shell/shell_init.c \
 			shell/shell_input.c \
+			shell/shell_level_init.c \
 			shell/shell_process.c \
 			shell/shell_loop.c \
-			debugging/debugging.c
+			debugging/debugging.c \
+			debugging/ast_debugging.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))

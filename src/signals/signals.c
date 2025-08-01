@@ -2,7 +2,7 @@
 
 volatile sig_atomic_t	g_signal_status = 0;
 
-static void interactive_sigint_handler(int signum)
+static void	interactive_sigint_handler(int signum)
 {
 	(void)signum;
 	g_signal_status = SIGINT;
@@ -11,18 +11,11 @@ static void interactive_sigint_handler(int signum)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
-/**
- * Manejador para SIGINT (Ctrl+C) en modo interactivo.
- * Esta función es llamada por el kernel. Debe ser simple y segura.
- * Establece el estado global, escribe una nueva línea y usa las
- * funciones seguras de readline para refrescar el prompt.
- */
 
-void setup_interactive_signals(void)
+void	setup_interactive_signals(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
-	/* Ctrl+C  */
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
@@ -42,14 +35,6 @@ void setup_interactive_signals(void)
 	if (sigaction(SIGTSTP, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 }
-/**
- * Configura las señales para el modo interactivo (el prompt principal).
- * Usa sigaction para un manejo robusto y portable.
- * - SIGINT (Ctrl+C) es capturado para mostrar un nuevo prompt sin salir.
- * - SIGQUIT (Ctrl+\) es ignorado, como pide el subject.
- * - SA_RESTART reinicia llamadas al sistema lentas (como read) si son
- *   interrumpidas por una señal, evitando errores.
- */
 
 void	setup_child_signals(void)
 {
@@ -58,53 +43,12 @@ void	setup_child_signals(void)
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
-	sa.sa_handler = SIG_DFL; // DFL = Default action
+	sa.sa_handler = SIG_DFL;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 }
-/**
- * Configura las señales para los procesos hijos (comandos externos).
- * Los comandos ejecutados (como `cat`, `sleep`) no deben heredar
- *  el manejo de señales del shell. Deben tener el comportamiento
- *  por defecto (terminar al recibir SIGINT o SIGQUIT).
- */
-
-static void	heredoc_sigint_handler(int signum)
-{
-	(void)signum;
-	exit(130);
-}
-/**
- * Manejador de señal para el proceso hijo del heredoc.
- * Salir con código 130 para indicar interrupción por Ctrl+C
- */
-
-void setup_heredoc_signals(void)
-{
-	struct sigaction sa;
-
-	ft_bzero(&sa, sizeof(sa));
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags   = SA_RESTART;
-	sa.sa_handler = heredoc_sigint_handler;
-	if (sigaction(SIGINT, &sa, NULL) == -1)
-		perror("minishell: sigaction");
-	ft_bzero(&sa, sizeof(sa));
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags   = SA_RESTART;
-	sa.sa_handler = SIG_IGN;
-	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		perror("minishell: sigaction");
-}
-/**
- * Configura las señales para el proceso hijo que lee un here-document.
- * Este proceso hijo necesita un manejo especial: al recibir
- *  Ctrl+C, debe salir inmediatamente para que el padre pueda
- *  detectarlo y cancelar la operación.
- * Ctrl+\ ignorado, no queremos imprimir nada.
- */
 
 void	ignore_signals(void)
 {
@@ -114,14 +58,8 @@ void	ignore_signals(void)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = SIG_IGN;
-	if (sigaction(SIGINT,  &sa, NULL) == -1)
+	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 		perror("minishell: sigaction");
 }
-/**
- * Ignora las señales temporalmente.
- * El shell principal debe ignorar SIGINT y SIGQUIT mientras
- *  un comando se está ejecutando en primer plano. De esta forma,
- *  Ctrl+C solo afecta al hijo y no al shell.
- */

@@ -1,6 +1,7 @@
 #include "../../include/minishell.h"
 
-static void	handle_export_with_value(char *arg, char *name, t_shell_context *shell_context)
+static void	handle_export_with_value(char *arg, char *name,
+			t_shell_context *shell_context)
 {
 	int	i;
 

@@ -20,6 +20,3 @@ int	match_wildcard(const char *str, const char *pattern)
 		return (match_wildcard(str + 1, pattern + 1));
 	return (0);
 }
-// Función recursiva para comparar una cadena con un patrón.
-// str: el nombre del fichero (ej: "minishell.c")
-// pattern: el patrón con wildcard (ej: "*.c")

@@ -35,20 +35,6 @@ int	read_heredoc_input(char *delimiter, int write_fd,
 	}
 	return (0);
 }
-/*
- * Propósito: Leer líneas hasta encontrar el delimitador y volcar al pipe.
- * Mecanismo:
- *   1. Bucle infinito llamando a `readline("> ")`.
- *   2. Si `line` es NULL o coincide con `delimiter`, sale del bucle.
- *   3. En caso contrario, escribe la línea en `write_fd` y repite.
- *   4. Libera cada `line` después de usarla.
- * Llamado por: `execute_heredoc`.
- * Llama a:
- *   - `readline`
- *   - `ft_strcmp`
- *   - `write_line_to_pipe`
- *   - `free`
-*/
 
 int	create_heredoc_file(const char *filename, char *delimiter,
 		t_shell_context *shell_context)
@@ -62,6 +48,3 @@ int	create_heredoc_file(const char *filename, char *delimiter,
 	close(fd);
 	return (0);
 }
-// Esta función abre y escribe en un fichero cuyo nombre se le pasa.
-// Devuelve 0 en éxito, -1 en error.
-// read_heredoc_input se encarga de leer del usuario y escribir en el fd.

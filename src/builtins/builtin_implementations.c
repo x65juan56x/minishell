@@ -12,7 +12,7 @@ int	builtin_echo(char **args)
 		newline = 0;
 		i++;
 	}
-	while(args[i])
+	while (args[i])
 	{
 		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
@@ -80,11 +80,6 @@ int	get_exit_status_from_args(t_token *args_token)
 	}
 	return ((unsigned char)ft_atoi(args_token->value));
 }
-// Esta función calcula el código de salida para 'exit' sin terminar el proceso.
-// Se usa solo en el bucle principal para una salida limpia.
-// 1. Primero, validar si el primer argumento es numérico.
-// 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
-// 3. Si todo está bien, devolver el código de salida correcto.
 
 int	builtin_exit(char **args)
 {

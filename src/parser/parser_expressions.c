@@ -1,62 +1,5 @@
 #include "../../include/minishell.h"
 
-static int	parse_args_and_redirect(t_ast_node **node, char **args,
-		int *arg_count, t_parser *parser)
-{
-	t_token	*op;
-	t_token	*file;
-
-	if (parser->current->type == TOKEN_WORD)
-		args[(*arg_count)++] = ft_strdup(consume_token
-				(parser, TOKEN_WORD)->value);
-	else if (is_redirect_token(parser->current->type))
-	{
-		op = consume_token(parser, parser->current->type);
-		file = consume_token(parser, TOKEN_WORD);
-		if (!file)
-		{
-			parser->error = 1;
-			ft_freearr(args);
-			return (cleanup_ast(*node), -1);
-		}
-		*node = create_redirect_node(op->type, *node, file->value);
-		if (!*node)
-		{
-			parser->error = 1;
-			ft_freearr(args);
-			return (-1);
-		}
-	}
-	return (0);
-}
-
-static char	**create_compact_args(char **args, int *arg_count)
-{
-	char	**compact_args;
-	int		i;
-
-	i = 0;
-	compact_args = malloc(sizeof(char *) * (*arg_count + 2));
-	if (!compact_args)
-		return (NULL);
-	if (arg_count == 0)
-	{
-		compact_args[0] = ft_strdup("");
-		compact_args[1] = NULL;
-		return (compact_args);
-	}
-	i = 0;
-	while (i < *arg_count)
-	{
-		compact_args[i] = ft_strdup(args[i]);
-		if (!compact_args[i])
-			return (ft_freearr(compact_args), NULL);
-		i++;
-	}
-	compact_args[*arg_count] = NULL;
-	return (compact_args);
-}
-
 t_ast_node	*parse_redirect_expression(t_parser *parser)
 {
 	t_ast_node	*node;
@@ -84,15 +27,6 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 		return (ft_freearr(args), cleanup_ast(node), NULL);
 	return (ft_freearr(args), node);
 }
-// Si la expresión no empieza con una palabra o una redirección, es un error.
-//		Llamamos a consume_token_type para que genere el mensaje de error estándar.
-//		consume_token_type fallará y establecerá el error.
-// 1. Primero, creamos un nodo de comando vacío.
-//		Usamos un array temporal grande para los argumentos.
-// 2. Bucle principal: consume palabras y redirecciones.
-// if (arg_count == 0) => Si no hubo palabras, el comando es inválido.
-//		Pero si hubo redirecciones, el nodo principal no es el de comando.
-//		Le damos un argumento vacío para que el ejecutor no lo ignore.
 
 t_ast_node	*parse_parenthesis_expression(t_parser *parser)
 {
@@ -140,27 +74,6 @@ t_ast_node	*parse_pipe_expression(t_parser *parser)
 	}
 	return (left);
 }
-/*
- * Propósito: Parsear expresiones de pipe ('|'), que tienen la menor
- *            precedencia de todos los operadores.
- * Mecanismo:
- *   1. Llama a `parse_redirect_expression` para obtener el subárbol del lado
- *      izquierdo (que es una unidad de mayor precedencia).
- *   2. Entra en un bucle que se ejecuta mientras el token actual sea `TOKEN_PIPE`.
- *   3. Dentro del bucle, consume el token '|'.
- *   4. Llama de nuevo a `parse_redirect_expression` para obtener el subárbol
- *      del lado derecho.
- *   5. Crea un `NODE_PIPE` que une los subárboles `left` y `right`.
- *   6. Actualiza `left` para que apunte a este nuevo nodo de pipe, manejando
- *      así la asociatividad a la izquierda (ej: `a | b | c` se agrupa como
- *      `(a | b) | c`).
- * Llamado por: `parse`, ya que es el punto de partida del análisis de expresiones.
- * Llama a:
- *   - `parse_redirect_expression`: Para parsear los operandos.
- *   - `consume_token_type`: Para consumir el token `|`.
- *   - `create_binary_node`: Para construir el nodo de pipe.
- *   - `cleanup_ast`: Para liberar memoria en caso de error.
-*/
 
 t_ast_node	*parse_logical_expression(t_parser *parser)
 {

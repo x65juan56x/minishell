@@ -8,7 +8,7 @@ char	*get_user_input(void)
 	{
 		input = readline(PROMPT);
 		if (!input)
-			return (/*ft_putstr_fd("exit\n", STDOUT_FILENO), */NULL);
+			return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
 	else
 		input = get_next_line(STDIN_FILENO);
@@ -24,6 +24,3 @@ int	handle_input_line(char *input)
 			add_history(input);
 	return (0);
 }
-// if (isatty(STDIN_FILENO)) => Modo Interactivo
-// else => Modo No Interactivo
-// Usamos GNL para leer del pipe sin imprimir nada

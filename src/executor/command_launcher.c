@@ -42,18 +42,3 @@ void	launch_command(char **args, char **envp)
 	free(path);
 	exit(126);
 }
-/*
- * Propósito: Resolver y ejecutar un comando externo.
- * Mecanismo:
- *   1. Verifica que `args` y `args[0]` sean válidos; si no, sale 127.
- *   2. Llama a `find_command_path` para obtener la ruta absoluta.
- *   3. Si no existe, invoca `exit_command_not_found`.
- *   4. Llama a `execve(path, args, envp)`.
- *   5. Si `execve` retorna, invoca `exit_execve_error`.
- * Llamado por: Procesos hijos que deben ejecutar un `NODE_COMMAND`.
- * Llama a:
- *   - `find_command_path`
- *   - `execve`
- *   - `exit_command_not_found`
- *   - `exit_execve_error`
- */
