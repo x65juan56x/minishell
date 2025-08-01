@@ -42,7 +42,6 @@ SRC_FILES = ft_toupper.c \
 			ft_putnbr_fd.c \
 			ft_error.c \
 			ft_freearr.c \
-			ft_split_args.c \
 			ft_lstnew.c \
 			ft_lstadd_front.c \
 			ft_lstsize.c \

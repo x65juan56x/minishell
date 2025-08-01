@@ -6,7 +6,7 @@
 /*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/23 22:22:37 by juan             ###   ########.fr       */
+/*   Updated: 2025/08/01 19:02:52 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,5 @@ void	ft_error(void);
 /* MISC */
 
 void	*ft_freearr(char **arr);
-
-char	**ft_split_args(char const *s);
 
 #endif

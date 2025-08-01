@@ -12,10 +12,10 @@ int	ft_putcharplus_fd(int fd, char c)
 			return (0);
 		if (bytes_written == -1)
 		{
-			if (errno == EINTR) // Interrupción por señal, reintentar
-				continue;
-			return (-1); // Error real
+			if (errno == EINTR)
+				continue ;
+			return (-1);
 		}
-		return (-1); // bytes_written == 0 es EOF inesperado
+		return (-1);
 	}
 }

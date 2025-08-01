@@ -18,11 +18,11 @@ int	ft_putstrplus_fd(int fd, const char *str)
 		bytes_written = write(fd, str + total_written, len - total_written);
 		if (bytes_written == -1)
 		{
-			if (errno == EINTR) // Interrupción por señal, reintentar
-				continue;
-			return (-1); // Error real
+			if (errno == EINTR)
+				continue ;
+			return (-1);
 		}
-		if (bytes_written == 0) // EOF inesperado
+		if (bytes_written == 0)
 			return (-1);
 		total_written += bytes_written;
 	}

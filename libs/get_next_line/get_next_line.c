@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 16:54:03 by jmondon           #+#    #+#             */
-/*   Updated: 2025/07/21 13:27:15 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/08/01 19:07:51 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 char	*ft_get_line(t_list_gnl *frst_nd)
 {
-	size_t	ln_len;
-	size_t	i;
-	size_t	j;
+	size_t		ln_len;
+	size_t		i;
+	size_t		j;
 	t_list_gnl	*aux_nd;
-	char	*line;
+	char		*line;
 
 	aux_nd = frst_nd;
 	ln_len = ft_ln_len(frst_nd);
