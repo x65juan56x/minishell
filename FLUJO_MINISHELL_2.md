@@ -82,28 +82,32 @@ int main(int ac, char **av, char **envp)
     return (exit_status);
 }
 ```
-🧠 Análisis línea por línea
-(void)ac; (void)av; - Suprime warnings del compilador por parámetros no utilizados (norma de 42).
-shell_context = malloc(sizeof(t_shell_context)); - Aloca memoria para el contexto principal del shell.
-if (!shell_context) return (1); - Verifica que malloc no falló. Retorna código 1 (error) si no hay memoria.
-shell_context->exit_status = 0; - Inicializa el código de salida en 0 (éxito).
-shell_context->heredoc_files = NULL; - Inicializa la lista de archivos heredoc como vacía.
-shell_context->local_vars = NULL; - Inicializa la lista de variables locales como vacía.
-shell_context->envp_cpy = init_shell_environment(envp, shell_context); - CRÍTICO: Copia y prepara las variables de entorno.
-update_shell_level(shell_context); - Incrementa la variable SHLVL para indicar anidamiento de shells.
-shell_context->error_flag = 0; - Inicializa el flag de error.
-exit_status = run_shell_loop(shell_context); - PUNTO CENTRAL: Ejecuta el bucle principal del shell.
-rl_clear_history(); - Limpia el historial de readline al salir.
-cleanup_shell_context(shell_context); - Libera todos los recursos.
-return (exit_status); - Retorna el código de salida al sistema operativo.
-🎯 Propósito de la función
-Función de entrada principal que:
+### 🧠 **Análisis línea por línea**
+1. **`(void)ac; (void)av;`** - Suprime warnings del compilador por parámetros no utilizados (norma de 42).
+2. **`shell_context = malloc(sizeof(t_shell_context));`** - Aloca memoria para el contexto principal del shell.
+3. **`if (!shell_context) return (1);`** - Verifica que malloc no falló. Retorna código 1 (error) si no hay memoria.
+4. **`shell_context->exit_status = 0;`** - Inicializa el código de salida en 0 (éxito).
+5. **`shell_context->heredoc_files = NULL;`** - Inicializa la lista de archivos heredoc como vacía.
+6. **`shell_context->local_vars = NULL;`** - Inicializa la lista de variables locales como vacía.
+7. **`shell_context->envp_cpy = init_shell_environment(envp, shell_context);`** - **CRÍTICO:** Copia y prepara las variables de entorno.
+8. **`update_shell_level(shell_context);`** - Incrementa la variable SHLVL para indicar anidamiento de shells.
+9. **`shell_context->error_flag = 0;`** - Inicializa el flag de error.
+10. **`exit_status = run_shell_loop(shell_context);`** - **PUNTO CENTRAL:** Ejecuta el bucle principal del shell.
+11. **`rl_clear_history();`** - Limpia el historial de readline al salir.
+12. **`cleanup_shell_context(shell_context);`** - Libera todos los recursos.
+13. **`return (exit_status);`** - Retorna el código de salida al sistema operativo.
 
-Inicializa el contexto completo del shell
-Configura el entorno de ejecución
-Ejecuta el bucle interactivo principal
-Limpia recursos al finalizar
-🔄 Flujo de ejecución completo
+### 🎯 **Propósito de la función**
+
+**Función de entrada principal que:**
+
+* Inicializa el contexto completo del shell
+* Configura el entorno de ejecución
+* Ejecuta el bucle interactivo principal
+* Limpia recursos al finalizar
+
+### 🔄 **Flujo de ejecución completo**
+
 ```
 main()
   ↓
@@ -126,20 +130,25 @@ cleanup_shell_context()
   ↓
 return exit_status → SO
 ```
-🛡️ Cobertura de errores y validaciones
-✅ Verificación de malloc: Comprueba que shell_context se allocó correctamente
-✅ Inicialización completa: Todos los campos se inicializan explícitamente
-✅ Limpieza garantizada: cleanup_shell_context() siempre se ejecuta
-✅ Gestión de readline: Limpia el historial antes de salir
-❌ No verifica errores de init_shell_environment() - Si falla, el shell continúa con un entorno inválido
-❌ No maneja señales en main() - Las señales se configuran dentro del bucle
 
-🔒 Consideraciones de seguridad y memoria
-Inicialización defensiva: Todos los punteros se inicializan a NULL explícitamente
-Orden de operaciones: La inicialización sigue un orden lógico (contexto → entorno → bucle → limpieza)
-Gestión de recursos: Garantiza que todos los recursos se liberen, incluso si el shell termina abruptamente
-Códigos de salida estándar: Sigue convenciones UNIX (0=éxito, 1=error de sistema)
-📊 Representación del estado inicial
+### 🛡️ **Cobertura de errores y validaciones**
+
+✅ **Verificación de malloc:** Comprueba que shell_context se allocó correctamente  
+✅ **Inicialización completa:** Todos los campos se inicializan explícitamente  
+✅ **Limpieza garantizada:** cleanup_shell_context() siempre se ejecuta  
+✅ **Gestión de readline:** Limpia el historial antes de salir  
+❌ **No verifica errores de init_shell_environment()** - Si falla, el shell continúa con un entorno inválido  
+❌ **No maneja señales en main()** - Las señales se configuran dentro del bucle
+
+### 🔒 **Consideraciones de seguridad y memoria**
+
+- **Inicialización defensiva:** Todos los punteros se inicializan a NULL explícitamente
+- **Orden de operaciones:** La inicialización sigue un orden lógico (contexto → entorno → bucle → limpieza)
+- **Gestión de recursos:** Garantiza que todos los recursos se liberen, incluso si el shell termina abruptamente
+- **Códigos de salida estándar:** Sigue convenciones UNIX (0=éxito, 1=error de sistema)
+
+### 📊 **Representación del estado inicial**
+
 ```
 shell_context
 ├── exit_status: 0
@@ -148,30 +157,37 @@ shell_context
 ├── envp_cpy: ["PATH=/bin:/usr/bin", "HOME=/home/user", ...]
 └── error_flag: 0
 ```
-📝 Notas clave para evaluación oral
-¿Por qué usar una estructura en lugar de variables globales?
 
-Encapsulación y claridad del código
-Facilita el paso de estado entre funciones
-Cumple con la restricción de 42 de una sola variable global (g_signal_status)
-¿Por qué copiar envp en lugar de usar el original?
+## 📝 **Notas clave para evaluación oral**
 
-El shell necesita poder modificar variables de entorno (export, unset)
-El envp original es read-only en algunos sistemas
-Permite reset completo del entorno si es necesario
-¿Qué pasa si malloc falla en la línea 10?
+**¿Por qué usar una estructura en lugar de variables globales?**
 
-El programa retorna inmediatamente con código 1
-No hay memory leaks porque no se allocó nada más
-Es la única función que puede fallar "silenciosamente" sin mensaje de error
-¿Por qué se llama update_shell_level() antes del bucle?
+- Encapsulación y claridad del código
+- Facilita el paso de estado entre funciones
+- Cumple con la restricción de 42 de una sola variable global (`g_signal_status`)
 
-SHLVL debe incrementarse cuando el shell inicia, no en cada comando
-Permite que los procesos hijos hereden el nivel correcto
-Es parte de la compatibilidad con bash estándar
+**¿Por qué copiar envp en lugar de usar el original?**
+
+- El shell necesita poder modificar variables de entorno (`export`, `unset`)
+- El `envp` original es read-only en algunos sistemas
+- Permite reset completo del entorno si es necesario
+
+**¿Qué pasa si malloc falla en la línea 10?**
+
+- El programa retorna inmediatamente con código 1
+- No hay memory leaks porque no se allocó nada más
+- Es la única función que puede fallar "silenciosamente" sin mensaje de error
+
+**¿Por qué se llama update_shell_level() antes del bucle?**
+
+- `SHLVL` debe incrementarse cuando el shell inicia, no en cada comando
+- Permite que los procesos hijos hereden el nivel correcto
+- Es parte de la compatibilidad con bash estándar
 
 ---
-⭐ Función: init_shell_environment()
+
+## ⭐ Función: `init_shell_environment()`
+
 ```c
 char **init_shell_environment(char **envp, t_shell_context *shell_context)
 {
@@ -192,19 +208,24 @@ char **init_shell_environment(char **envp, t_shell_context *shell_context)
     return (envp_copy);
 }
 ```
-🧠 Análisis línea por línea:
 
-env_count = count_env_vars(envp); - Cuenta las variables de entorno disponibles
-if (env_count == 0 || !has_essential_vars(envp)) - Verifica si el entorno está vacío o le faltan variables críticas
-print_empty_env_warning(); - Muestra advertencias si el entorno es problemático
-envp_copy = copy_envp(envp); - CRÍTICO: Crea una copia completa del entorno
-if (!envp_copy) - Verifica que la copia fue exitosa
-cleanup_shell_context(shell_context); exit(1); - Si falla, limpia y termina el programa
-🎯 Propósito de la función:
-Crear una copia independiente del entorno que el shell puede modificar
-Validar que el entorno contiene variables esenciales (PATH, HOME)
-Proporcionar advertencias tempranas sobre problemas de configuración
-🔍 Funciones auxiliares críticas:
+### 🧠 **Análisis línea por línea:**
+
+1. **`env_count = count_env_vars(envp);`** - Cuenta las variables de entorno disponibles
+2. **`if (env_count == 0 || !has_essential_vars(envp))`** - Verifica si el entorno está vacío o le faltan variables críticas
+3. **`print_empty_env_warning();`** - Muestra advertencias si el entorno es problemático
+4. **`envp_copy = copy_envp(envp);`** - **CRÍTICO:** Crea una copia completa del entorno
+5. **`if (!envp_copy)`** - Verifica que la copia fue exitosa
+6. **`cleanup_shell_context(shell_context); exit(1);`** - Si falla, limpia y termina el programa
+
+### 🎯 **Propósito de la función:**
+
+- Crear una copia independiente del entorno que el shell puede modificar
+- Validar que el entorno contiene variables esenciales (`PATH`, `HOME`)
+- Proporcionar advertencias tempranas sobre problemas de configuración
+
+### 🔍 **Funcion auxiliar crítica: `copy_envp()`**
+
 ```c
 static char **copy_envp(char **envp)
 {
@@ -225,8 +246,11 @@ static char **copy_envp(char **envp)
     return (new_envp);
 }
 ```
+
 ---
-⭐ Función: run_shell_loop()
+
+## ⭐ Función: `run_shell_loop()`
+
 ```c
 int run_shell_loop(t_shell_context *shell_context)
 {
@@ -256,24 +280,28 @@ int run_shell_loop(t_shell_context *shell_context)
     return (shell_context->exit_status);
 }
 ```
-🧠 Análisis línea por línea:
 
-setup_interactive_signals(); - Configura manejo de señales (Ctrl+C, Ctrl+, Ctrl+D)
-g_signal_status = 0; - Resetea el estado de señales global
-input = get_user_input(); - PUNTO CENTRAL: Obtiene entrada del usuario
-if (!input) break; - Si readline devuelve NULL (Ctrl+D), sale del bucle
-multiline_status = handle_multiline_input(&input); - Maneja comillas/paréntesis sin cerrar
-if (g_signal_status == SIGINT) - Si hubo Ctrl+C, establece código de salida 130
-process_input(input, shell_context); - CRÍTICO: Procesa el comando
-free(input); - Libera memoria de la entrada
-🎯 Propósito de la función:
+### 🧠 **Análisis línea por línea:**
 
-Bucle infinito que mantiene el shell activo
-Gestión completa del ciclo de vida de cada comando
-Manejo robusto de señales y entrada multilinea
+1. **`setup_interactive_signals();`** - Configura manejo de señales (Ctrl+C, Ctrl+, Ctrl+D)
+2. **`g_signal_status = 0;`** - Resetea el estado de señales global
+3. **`input = get_user_input();`** - PUNTO CENTRAL: Obtiene entrada del usuario
+4. **`if (!input) break;`** - Si readline devuelve NULL (Ctrl+D), sale del bucle
+5. **`multiline_status = handle_multiline_input(&input);`** - Maneja comillas/paréntesis sin cerrar
+6. **`if (g_signal_status == SIGINT)`** - Si hubo Ctrl+C, establece código de salida 130
+7. **`process_input(input, shell_context);`** - **CRÍTICO:** Procesa el comando
+8. **`free(input);`** - Libera memoria de la entrada
+
+### 🎯 **Propósito de la función:**
+
+- Bucle infinito que mantiene el shell activo
+- Gestión completa del ciclo de vida de cada comando
+- Manejo robusto de señales y entrada multilinea
 
 ---
-⭐ Función: get_user_input()
+
+## ⭐ Función: `get_user_input()`
+
 ```c
 char *get_user_input(void)
 {
@@ -290,25 +318,30 @@ char *get_user_input(void)
     return (input);
 }
 ```
-🧠 Análisis línea por línea:
 
-if (isatty(STDIN_FILENO)) - IMPORTANTE: Detecta si es terminal interactiva
-input = readline(PROMPT); - Usa readline para entrada interactiva (con historial)
-if (!input) return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL); - Maneja Ctrl+D
-input = get_next_line(STDIN_FILENO); - Para entrada no-interactiva (pipes, archivos)
-🎯 Propósito de la función:
+### 🧠 **Análisis línea por línea:**
 
-Adaptarse automáticamente al contexto (interactivo vs no-interactivo)
-Proporcionar funcionalidad de historial solo cuando es apropiado
-Manejar EOF (Ctrl+D) de forma elegante
-💡 Detalles técnicos importantes:
+1. **`if (isatty(STDIN_FILENO))`** - **IMPORTANTE:** Detecta si es terminal interactiva
+2. **`input = readline(PROMPT);`** - Usa readline para entrada interactiva (con historial)
+3. **`if (!input) return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);`** - Maneja Ctrl+D
+5. **`input = get_next_line(STDIN_FILENO);`** - Para entrada no-interactiva (pipes, archivos)
 
-isatty() distingue entre minishell y echo "ls" | ./minishell
-readline() proporciona historial, autocompletado y edición de línea
-get_next_line() es más eficiente para entrada programática
+### 🎯 **Propósito de la función:**
+
+- Adaptarse automáticamente al contexto (interactivo vs no-interactivo)
+- Proporcionar funcionalidad de historial solo cuando es apropiado
+- Manejar EOF (Ctrl+D) de forma elegante
+
+### 💡 **Detalles técnicos importantes:**
+
+- **`isatty()`** distingue entre `minishell` y `echo "ls" | ./minishell`
+- **`readline()`** proporciona historial, autocompletado y edición de línea
+- **`get_next_line()`** es más eficiente para entrada programática
 
 ---
-⭐ Función: process_command_line()
+
+## ⭐ Función: `process_command_line()`
+
 ```c
 int process_command_line(t_token *tokens, t_shell_context *shell_context)
 {
@@ -332,25 +365,29 @@ int process_command_line(t_token *tokens, t_shell_context *shell_context)
     return (exit_status);
 }
 ```
-🧠 Análisis línea por línea:
 
-heredoc_id = 0; shell_context->heredoc_files = NULL; - Inicializa estado para heredocs
-expander_var(tokens, shell_context); - CRÍTICO: Expande variables ($VAR, $?, $$)
-tokens = expand_wildcards(tokens); - Expande wildcards (.txt, src/)
-ast = parse(tokens, shell_context); - PUNTO CENTRAL: Convierte tokens en AST
-if (!ast) return (handle_parsing_error(tokens, ast)); - Maneja errores de sintaxis
-ignore_signals(); - Durante ejecución, ignora señales en el padre
-exit_status = execute_ast(ast, &heredoc_id, shell_context); - EJECUTA el comando
-setup_interactive_signals(); - Restaura manejo interactivo de señales
-Limpieza completa de todos los recursos
-🎯 Propósito de la función:
+### 🧠 **Análisis línea por línea:**
 
-Coordinador central del procesamiento de comandos
-Gestión del pipeline completo: expansión → parsing → ejecución → limpieza
-Manejo robusto de errores y recursos
+1. **`heredoc_id = 0; shell_context->heredoc_files = NULL;`** - Inicializa estado para heredocs
+2. **`expander_var(tokens, shell_context);`** - **CRÍTICO:** Expande variables (`$VAR`, `$?`, `$$`)
+3. **`tokens = expand_wildcards(tokens);`** - Expande wildcards (`.txt`, `src/`)
+4. **`ast = parse(tokens, shell_context);`** - **PUNTO CENTRAL:** Convierte tokens en `AST`
+5. **`if (!ast) return (handle_parsing_error(tokens, ast));`** - Maneja errores de sintaxis
+6. **`ignore_signals();`** - Durante ejecución, ignora señales en el padre
+7. **`exit_status = execute_ast(ast, &heredoc_id, shell_context);`** - **EJECUTA** el comando
+8. **`setup_interactive_signals();`** - Restaura manejo interactivo de señales
+9. Limpieza completa de todos los recursos
+
+### 🎯 **Propósito de la función:**
+
+- Coordinador central del procesamiento de comandos
+- Gestión del pipeline completo: expansión → parsing → ejecución → limpieza
+- Manejo robusto de errores y recursos
 
 ---
-⭐ Función: tokenize()
+
+## ⭐ Función: tokenize()
+
 ```c
 t_token *tokenize(const char *input)
 {
@@ -371,17 +408,22 @@ t_token *tokenize(const char *input)
     return (head);
 }
 ```
-🧠 Análisis línea por línea
-if (!input) return (NULL); - Protección básica contra entrada nula
-head = NULL; current = NULL; - Inicializa los punteros de la lista enlazada
-if (generate_token_list(input, &head, &current) != 0) - CRÍTICO: Función que hace el trabajo real de tokenización
-return (cleanup_tokens(head), NULL); - Si falla, limpia memoria parcial y retorna NULL
-new_token = create_token(TOKEN_EOF, NULL); - Añade token de fin obligatorio
-add_token(&head, &current, new_token); - Añade EOF al final de la lista
-🎯 Propósito de la función
-Punto de entrada principal del sistema de tokenización. Convierte una cadena de texto cruda del usuario en una lista enlazada estructurada de tokens que el parser puede procesar.
 
-🔄 Flujo de tokenización
+### 🧠 **Análisis línea por línea**
+
+1. **`if (!input) return (NULL);`** - Protección básica contra entrada nula
+2. **`head = NULL; current = NULL;`** - Inicializa los punteros de la lista enlazada
+3. **`if (generate_token_list(input, &head, &current) != 0)`** - **CRÍTICO:** Función que hace el trabajo real de tokenización
+4. **`return (cleanup_tokens(head), NULL);`** - Si falla, limpia memoria parcial y retorna NULL
+5. **`new_token = create_token(TOKEN_EOF, NULL);`** - Añade token de fin obligatorio
+6. **`add_token(&head, &current, new_token);`** - Añade `EOF` al final de la lista
+
+### 🎯 **Propósito de la función**
+
+**Punto de entrada principal del sistema de tokenización.** Convierte una cadena de texto cruda del usuario en una lista enlazada estructurada de tokens que el parser puede procesar.
+
+### 🔄 **Flujo de tokenización**
+
 ```
 "echo hello > file.txt"
          ↓
@@ -389,14 +431,18 @@ generate_token_list()
          ↓
 [TOKEN_WORD:"echo"] → [TOKEN_WORD:"hello"] → [TOKEN_REDIRECT_OUT:">"] → [TOKEN_WORD:"file.txt"] → [TOKEN_EOF:NULL]
 ```
-🛡️ Cobertura de errores
-✅ Protección contra NULL: Verifica entrada válida
-✅ Limpieza en fallos: Si generate_token_list falla, limpia tokens parciales
-✅ EOF obligatorio: Garantiza que siempre hay un token de terminación
-❌ No valida sintaxis: Solo tokeniza, no verifica si los tokens forman comandos válidos
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Protección contra NULL:** Verifica entrada válida  
+✅ **Limpieza en fallos:** Si generate_token_list falla, limpia tokens parciales  
+✅ **EOF obligatorio:** Garantiza que siempre hay un token de terminación  
+❌ **No valida sintaxis:** Solo tokeniza, no verifica si los tokens forman comandos válidos  
 
 ---
-⭐ Función: generate_token_list() (auxiliar crítica)
+
+## ⭐ Función: `generate_token_list()` (auxiliar crítica)
+
 ```c
 static int generate_token_list(const char *input, t_token **head, t_token **current)
 {
@@ -421,19 +467,24 @@ static int generate_token_list(const char *input, t_token **head, t_token **curr
     return (0);
 }
 ```
-🧠 Análisis línea por línea
-while (input[i] && (input[i] == ' ' || input[i] == '\t')) - Salta espacios en blanco
-if (!input[i]) break; - Si llegamos al final, termina el bucle
-if (is_operator_char(input[i])) - DECISIÓN CRÍTICA: ¿Es operador o palabra?
-new_token = process_operator(input, &i); - Procesa operadores (|, >, <, &&, etc.)
-new_token = process_word(input, &i); - Procesa palabras (comandos, argumentos, archivos)
-if (!new_token) return (1); - Si falla la creación del token, aborta
-add_token(head, current, new_token); - Añade el token a la lista
-🎯 Propósito de la función
-Corazón del tokenizador. Implementa la lógica de clasificación que decide si cada carácter es parte de un operador o una palabra, manejando espacios y construyendo la lista de tokens.
+
+### 🧠 **Análisis línea por línea**
+1. **`while (input[i] && (input[i] == ' ' || input[i] == '\t'))`** - Salta espacios en blanco
+2. **`if (!input[i]) break;`** - Si llegamos al final, termina el bucle
+3. **`if (is_operator_char(input[i]))`** - **DECISIÓN CRÍTICA:** ¿Es operador o palabra?
+4. **`new_token = process_operator(input, &i);`** - Procesa operadores (`|`, `>`, `<`, `&&`, etc.)
+5. **`new_token = process_word(input, &i);`** - Procesa palabras (comandos, argumentos, archivos)
+6. **`if (!new_token) return (1);`** - Si falla la creación del token, aborta
+7. **`add_token(head, current, new_token);`** - Añade el token a la lista
+
+### 🎯 **Propósito de la función**
+
+**Corazón del tokenizador.** Implementa la lógica de clasificación que decide si cada carácter es parte de un operador o una palabra, manejando espacios y construyendo la lista de tokens.
 
 ---
-⭐ Función: expander_var()
+
+## ⭐ Función: `expander_var()`
+
 ```c
 void expander_var(t_token *token_list, t_shell_context *shell_context)
 {
@@ -453,21 +504,27 @@ void expander_var(t_token *token_list, t_shell_context *shell_context)
     return;
 }
 ```
-🧠 Análisis línea por línea
-tmp = token_list; - Comienza desde el primer token
-while (tmp != NULL) - Itera por toda la lista de tokens
-if (tmp->expand != 1) - FILTRO INTELIGENTE: Solo procesa tokens marcados para expansión
-tmp = tmp->next; continue; - Salta tokens que no necesitan expansión
-update_tokens_values(shell_context, tmp); - CRÍTICO: Hace la expansión real de variables
-tmp = tmp->next; - Avanza al siguiente token
-🎯 Propósito de la función
-Coordinador de expansión de variables. Filtra eficientemente qué tokens necesitan expansión de variables ($VAR, $?, $$) y delega el trabajo real a update_tokens_values().
 
-💡 Detalle técnico importante
-El campo expand en cada token se establece durante la tokenización con is_expand_needed(). Esto evita procesar innecesariamente tokens que no contienen variables.
+### 🧠 **Análisis línea por línea**
+1. **`tmp = token_list;`** - Comienza desde el primer token
+2. **`while (tmp != NULL)`** - Itera por toda la lista de tokens
+3. **`if (tmp->expand != 1)`** - FILTRO INTELIGENTE: Solo procesa tokens marcados para expansión
+5. **`tmp = tmp->next; continue;`** - Salta tokens que no necesitan expansión
+6. **`update_tokens_values(shell_context, tmp);`** - **CRÍTICO:** Hace la expansión real de variables
+7. **`tmp = tmp->next;`** - Avanza al siguiente token
+
+### 🎯 **Propósito de la función**
+
+**Coordinador de expansión de variables.** Filtra eficientemente qué tokens necesitan expansión de variables (`$VAR`, `$?`, `$$`) y delega el trabajo real a `update_tokens_values()`.
+
+### 💡 **Detalle técnico importante**
+
+El campo `expand` en cada token se establece durante la tokenización con `is_expand_needed()`. Esto evita procesar innecesariamente tokens que no contienen variables.
 
 ---
-⭐ Función: parse()
+
+## ⭐ Función: `parse()`
+
 ```c
 t_ast_node *parse(t_token *tokens, t_shell_context *shell_context)
 {
@@ -498,19 +555,24 @@ t_ast_node *parse(t_token *tokens, t_shell_context *shell_context)
     return (ast);
 }
 ```
-🧠 Análisis línea por línea
-if (!tokens) return (NULL); - Protección contra lista de tokens vacía
-parser.tokens = tokens; parser.current = tokens; parser.error = 0; - Inicializa estructura del parser
-ast = parse_logical_expression(&parser); - PUNTO CENTRAL: Inicia parsing desde el nivel más alto
-if (parser.error) - Verifica si hubo errores de sintaxis durante el parsing
-shell_context->error_flag = 1; - Marca error en el contexto global
-if (parser.current->type != TOKEN_EOF) - VALIDACIÓN CRÍTICA: Debe consumir todos los tokens
-consume_token_type(&parser, TOKEN_EOF); - Muestra error si quedan tokens sin procesar
-cleanup_ast(ast); return (NULL); - Limpia AST parcial en caso de error
-🎯 Propósito de la función
-Punto de entrada del sistema de parsing. Convierte la lista lineal de tokens en un árbol de sintaxis abstracta (AST) que representa la estructura jerárquica del comando.
 
-📊 Estructura t_parser revelada
+### 🧠 **Análisis línea por línea**
+
+**`if (!tokens) return (NULL);`** - Protección contra lista de tokens vacía
+**`parser.tokens = tokens; parser.current = tokens; parser.error = 0;`** - Inicializa estructura del parser
+**`ast = parse_logical_expression(&parser);`** - **PUNTO CENTRAL:** Inicia parsing desde el nivel más alto
+**`if (parser.error)`** - Verifica si hubo errores de sintaxis durante el parsing
+**`shell_context->error_flag = 1;`** - Marca error en el contexto global
+**`if (parser.current->type != TOKEN_EOF)`** - **VALIDACIÓN CRÍTICA:** Debe consumir todos los tokens
+**`consume_token_type(&parser, TOKEN_EOF);`** - Muestra error si quedan tokens sin procesar
+**`cleanup_ast(ast); return (NULL);`** - Limpia AST parcial en caso de error
+
+🎯 **Propósito de la función**
+
+**Punto de entrada del sistema de parsing.** Convierte la lista lineal de tokens en un árbol de sintaxis abstracta (AST) que representa la estructura jerárquica del comando.
+
+### 📊 **Estructura `t_parser` revelada**
+
 ```c
 typedef struct s_parser
 {
@@ -519,9 +581,11 @@ typedef struct s_parser
     int         error;      // Flag de error (0 = sin errores, 1 = error detectado)
 } t_parser;
 ```
-Propósito: Mantiene el estado del parsing, permitiendo que las funciones de parsing sepan dónde están y si encontraron errores.
 
-🔄 Flujo de parsing jerárquico
+**Propósito:** Mantiene el estado del parsing, permitiendo que las funciones de parsing sepan dónde están y si encontraron errores.
+
+### 🔄 **Flujo de parsing jerárquico**
+
 ```
 parse()
   ↓
@@ -533,38 +597,47 @@ parse_primary_expression() → Decide entre () y comandos
   ↓
 parse_redirect_expression() → Maneja redirecciones y argumentos
 ```
-🛡️ Cobertura de errores
-✅ Validación de tokens: Verifica que la lista no sea NULL
-✅ Estado de error persistente: parser.error se mantiene entre llamadas
-✅ Consumo completo: Verifica que todos los tokens se procesaron
-✅ Limpieza en fallos: Siempre limpia AST parcial si hay error
-❌ Mensajes específicos: Los errores son genéricos, no indican ubicación exacta
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Validación de tokens:** Verifica que la lista no sea NULL  
+✅ **Estado de error persistente:** `parser.error` se mantiene entre llamadas  
+✅ **Consumo completo:** Verifica que todos los tokens se procesaron  
+✅ **Limpieza en fallos:** Siempre limpia AST parcial si hay error  
+❌ **Mensajes específicos:** Los errores son genéricos, no indican ubicación exacta
 
 ---
-📝 Notas clave para evaluación oral
-¿Por qué usar una lista enlazada para tokens en lugar de un array?
 
-Flexibilidad: No sabemos cuántos tokens habrá
-Expansión de wildcards puede generar tokens adicionales dinámicamente
-Memoria eficiente: Solo aloca lo necesario
-¿Qué hace que el tokenizer sea "inteligente"?
+## 📝 **Notas clave para evaluación oral**
 
-Reconoce operadores de múltiples caracteres (>>, &&, ||)
-Maneja comillas correctamente durante la tokenización
-Marca automáticamente qué tokens necesitan expansión de variables
-¿Por qué el parser usa "recursive descent"?
+**¿Por qué usar una lista enlazada para tokens en lugar de un array?**
 
-Refleja la precedencia natural de operadores (logical > pipe > redirect)
-Cada función maneja un nivel de precedencia específico
-Fácil de entender y debuggear
-¿Qué pasa si hay un error de sintaxis?
+- Flexibilidad: No sabemos cuántos tokens habrá
+- Expansión de wildcards puede generar tokens adicionales dinámicamente
+- Memoria eficiente: Solo aloca lo necesario
 
-El parser se detiene inmediatamente
-El AST parcial se limpia para evitar memory leaks
-El contexto del shell se marca con error para que el bucle principal lo maneje
+**¿Qué hace que el tokenizer sea "inteligente"?**
+
+- Reconoce operadores de múltiples caracteres (`>>`, `&&`, `||`)
+- Maneja comillas correctamente durante la tokenización
+- Marca automáticamente qué tokens necesitan expansión de variables
+
+**¿Por qué el parser usa "recursive descent"?**
+
+- Refleja la precedencia natural de operadores (logical > pipe > redirect)
+- Cada función maneja un nivel de precedencia específico
+- Fácil de entender y debuggear
+
+**¿Qué pasa si hay un error de sintaxis?**
+
+- El parser se detiene inmediatamente
+- El AST parcial se limpia para evitar memory leaks
+- El contexto del shell se marca con error para que el bucle principal lo maneje
 
 ---
+
 ## ⭐ Función: `parse_logical_expression()`
+
 ```c
 t_ast_node	*parse_logical_expression(t_parser *parser)
 {
@@ -594,20 +667,25 @@ t_ast_node	*parse_logical_expression(t_parser *parser)
     return (left);
 }
 ```
-🧠 Análisis línea por línea
-left = parse_pipe_expression(parser); - CRÍTICO: Delega al siguiente nivel de precedencia (pipes)
-if (!left) return (NULL); - Si no hay expresión válida, termina inmediatamente
-while (parser->current && (parser->current->type == TOKEN_AND || parser->current->type == TOKEN_OR)) - BUCLE PRINCIPAL: Procesa operadores lógicos de izquierda a derecha
-op_type = parser->current->type; - Guarda el tipo de operador (&&, ||)
-consume_token_type(parser, op_type); - Consume el operador y avanza el parser
-if (parser->error) return (cleanup_ast(left), NULL); - Protección ante errores de sintaxis
-right = parse_pipe_expression(parser); - Parsea la expresión del lado derecho
-new_node = create_binary_node(op_type, left, right); - CONSTRUCCIÓN DEL AST: Crea nodo binario
-left = new_node; - TÉCNICA DE ASOCIATIVIDAD IZQUIERDA: El nuevo nodo se convierte en el izquierdo para la siguiente iteración
-🎯 Propósito de la función
-Nivel más alto del parsing jerárquico. Maneja operadores lógicos (&&, ||) con asociatividad izquierda y evaluación de cortocircuito. Es el punto de entrada del sistema de precedencia de operadores.
 
-🔄 Flujo de precedencia jerárquica
+### 🧠 **Análisis línea por línea**
+
+1. **`left = parse_pipe_expression(parser);`** - **CRÍTICO:** Delega al siguiente nivel de precedencia (pipes)
+2. **`if (!left) return (NULL);`** - Si no hay expresión válida, termina inmediatamente
+3. **`while (parser->current && (parser->current->type == TOKEN_AND || parser->current->type == TOKEN_OR))`** - **BUCLE PRINCIPAL:** Procesa operadores lógicos de izquierda a derecha
+4. **`op_type = parser->current->type;`** - Guarda el tipo de operador (`&&`, `||`)
+5. **`consume_token_type(parser, op_type);`** - Consume el operador y avanza el parser
+6. **`if (parser->error) return (cleanup_ast(left), NULL);`** - Protección ante errores de sintaxis
+7. **`right = parse_pipe_expression(parser);`** - Parsea la expresión del lado derecho
+8. **`new_node = create_binary_node(op_type, left, right);`** - **CONSTRUCCIÓN DEL AST:** Crea nodo binario
+9. **`left = new_node;`** - **TÉCNICA DE ASOCIATIVIDAD IZQUIERDA:** El nuevo nodo se convierte en el izquierdo para la siguiente iteración
+
+### 🎯 **Propósito de la función**
+
+**Nivel más alto del parsing jerárquico.** Maneja operadores lógicos (&&, ||) con asociatividad izquierda y evaluación de cortocircuito. Es el punto de entrada del sistema de precedencia de operadores.
+
+### 🔄 **Flujo de precedencia jerárquica**
+
 ```
 parse_logical_expression() → && y ||  (precedencia más baja)
          ↓
@@ -626,14 +704,18 @@ Para el comando: cmd1 | cmd2 && cmd3 || cmd4
 /        \
 [cmd1]   [cmd2]
 ```
-🛡️ Cobertura de errores
-✅ Limpieza en fallos: Si parse_pipe_expression falla, limpia el AST izquierdo
-✅ Verificación de memoria: Si create_binary_node falla, limpia ambos lados
-✅ Estado persistente: Respeta parser->error de niveles inferiores
-❌ No valida sintaxis lógica: Acepta && || sin comando intermedio
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Limpieza en fallos:** Si parse_pipe_expression falla, limpia el AST izquierdo 
+✅ **Verificación de memoria:** Si create_binary_node falla, limpia ambos lados 
+✅ **Estado persistente:** Respeta `parser->error` de niveles inferiores 
+❌ **No valida sintaxis lógica:** Acepta `&&` `||` sin comando intermedio
 
 ---
-⭐ Función: execute_ast()
+
+## ⭐ Función: `execute_ast()`
+
 ```c
 int	execute_ast(t_ast_node *ast, int *heredoc_id_ptr,
     t_shell_context *shell_context)
@@ -649,17 +731,22 @@ int	execute_ast(t_ast_node *ast, int *heredoc_id_ptr,
     return (handle_simple_command_fork(ast, shell_context));
 }
 ```
-🧠 Análisis línea por línea
-if (!ast) return (0); - Protección básica contra AST nulo
-if (preprocess_heredocs(&ast, heredoc_id_ptr, shell_context) != 0) - CRÍTICO: Procesa heredocs ANTES de ejecutar
-return (130); - Si heredoc falla (Ctrl+C), retorna código de señal SIGINT
-if (ast->type == NODE_OR || ast->type == NODE_AND) - DESPACHO POR TIPO: Operadores lógicos
-if (ast->type == NODE_PIPE) - DESPACHO POR TIPO: Pipelines
-return (handle_simple_command_fork(ast, shell_context)); - CASO BASE: Comandos simples
-🎯 Propósito de la función
-Ejecutor principal del AST. Implementa el patrón Strategy para despachar diferentes tipos de nodos a sus ejecutores específicos. Coordina el procesamiento de heredocs y la gestión de códigos de salida.
 
-📊 Función auxiliar crítica: handle_logical_op()
+### 🧠 **Análisis línea por línea**
+
+1. **`if (!ast) return (0);`** - Protección básica contra AST nulo
+2. **`if (preprocess_heredocs(&ast, heredoc_id_ptr, shell_context) != 0)`** - **CRÍTICO:** Procesa heredocs ANTES de ejecutar
+3. **`return (130);`** - Si heredoc falla (Ctrl+C), retorna código de señal `SIGINT`
+4. **`if (ast->type == NODE_OR || ast->type == NODE_AND)`** - **DESPACHO POR TIPO:** Operadores lógicos
+5. **`if (ast->type == NODE_PIPE)`** - **DESPACHO POR TIPO:** Pipelines
+6. **`return (handle_simple_command_fork(ast, shell_context));`** - **CASO BASE:** Comandos simples
+
+### 🎯 **Propósito de la función**
+
+**Ejecutor principal del AST.** Implementa el **patrón Strategy** para despachar diferentes tipos de nodos a sus ejecutores específicos. Coordina el procesamiento de heredocs y la gestión de códigos de salida.
+
+### 📊 **Función auxiliar crítica: handle_logical_op()**
+
 ```c
 static int	handle_logical_op(t_ast_node *ast, int *heredoc_id_ptr,
             t_shell_context *shell_context)
@@ -674,11 +761,14 @@ static int	handle_logical_op(t_ast_node *ast, int *heredoc_id_ptr,
     return (execute_ast(ast->right, heredoc_id_ptr, shell_context));
 }
 ```
-Implementa evaluación de cortocircuito:
 
-OR (||): Si el izquierdo tiene éxito (0), no ejecuta el derecho
-AND (&&): Si el izquierdo falla (≠0), no ejecuta el derecho
-🔄 Flujo de ejecución recursiva
+**Implementa evaluación de cortocircuito:**
+
+- **OR (||):** Si el izquierdo tiene éxito (0), no ejecuta el derecho
+- **AND (&&):** Si el izquierdo falla (≠0), no ejecuta el derecho
+
+### 🔄 **Flujo de ejecución recursiva**
+
 ```
 execute_ast(root)
     ↓
@@ -689,14 +779,18 @@ Despacho por tipo:
 ├── NODE_PIPE → execute_pipe_line() (fork múltiple)
 └── NODE_COMMAND → handle_simple_command_fork() (fork simple)
 ```
-🛡️ Cobertura de errores
-✅ Heredocs interrumpidos: Retorna 130 si Ctrl+C durante heredoc
-✅ AST nulo: Maneja graciosamente árboles vacíos
-✅ Propagación de errores: Mantiene códigos de salida a través de la recursión
-❌ No valida estructura del AST: Asume que el parser generó un árbol válido
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Heredocs interrumpidos:** Retorna 130 si Ctrl+C durante heredoc  
+✅ **AST nulo:** Maneja graciosamente árboles vacíos  
+✅ **Propagación de errores:** Mantiene códigos de salida a través de la recursión  
+❌ **No valida estructura del AST:** Asume que el parser generó un árbol válido
 
 ---
-⭐ Función: apply_redirections()
+
+## ⭐ Función: `apply_redirections()`
+
 ```c
 int	apply_redirections(t_ast_node *node)
 {
@@ -721,19 +815,24 @@ int	apply_redirections(t_ast_node *node)
     return (0);
 }
 ```
-🧠 Análisis línea por línea
-if (!node || !is_redirect_node(node->type)) return (0); - FILTRO: Solo procesa nodos de redirección
-if (node->type == NODE_HEREDOC) - CASO ESPECIAL: Heredocs ya están procesados como archivos temporales
-fd = open_redirect_file(node->file, node->type); - DELEGACIÓN: Abre archivo según tipo de redirección
-if (fd < 0) return (1); - MANEJO DE ERRORES: Archivo no existe o sin permisos
-if (node->type == NODE_REDIRECT_IN || node->type == NODE_HEREDOC) - DECISIÓN CRÍTICA: ¿Entrada o salida?
-target_fd = STDIN_FILENO; else target_fd = STDOUT_FILENO; - Establece el descriptor objetivo
-if (dup2(fd, target_fd) == -1) - OPERACIÓN ATÓMICA: Redirige el flujo
-close(fd); - LIMPIEZA: Cierra el descriptor original
-🎯 Propósito de la función
-Núcleo del sistema de redirecciones. Convierte nodos del AST en operaciones de sistema (open, dup2) para redirigir flujos de entrada/salida estándar.
 
-📊 Función auxiliar: open_redirect_file()
+### 🧠 **Análisis línea por línea**
+
+1. **`if (!node || !is_redirect_node(node->type)) return (0);`** - **FILTRO:** Solo procesa nodos de redirección
+2. **`if (node->type == NODE_HEREDOC) - CASO ESPECIAL:`** Heredocs ya están procesados como archivos temporales
+3. **`fd = open_redirect_file(node->file, node->type);`** - **DELEGACIÓN:** Abre archivo según tipo de redirección
+4. **`if (fd < 0) return (1);`** - **MANEJO DE ERRORES:** Archivo no existe o sin permisos
+5. **if (node->type == NODE_REDIRECT_IN || node->type == NODE_HEREDOC)** - **DECISIÓN CRÍTICA:** ¿Entrada o salida?
+6. **`target_fd = STDIN_FILENO; else target_fd = STDOUT_FILENO;`** - Establece el descriptor objetivo
+7. **`if (dup2(fd, target_fd) == -1)`** - **OPERACIÓN ATÓMICA:** Redirige el flujo
+8. **`close(fd);`** - **LIMPIEZA:** Cierra el descriptor original
+
+### 🎯 **Propósito de la función**
+
+**Núcleo del sistema de redirecciones.** Convierte nodos del AST en operaciones de sistema (`open`, `dup2`) para redirigir flujos de entrada/salida estándar.
+
+### 📊 **Función auxiliar: `open_redirect_file()`**
+
 ```c
 static int	open_redirect_file(char *file, t_node_type type)
 {
@@ -752,12 +851,15 @@ static int	open_redirect_file(char *file, t_node_type type)
     return (fd);
 }
 ```
-Mapeo de tipos a flags de open():
 
-<: O_RDONLY (solo lectura)
->: O_WRONLY | O_CREAT | O_TRUNC (sobrescribe)
->>: O_WRONLY | O_CREAT | O_APPEND (añade al final)
-🔄 Flujo de redirección
+**Mapeo de tipos a flags de open():**
+
+- **`<`: `O_RDONLY`** (solo lectura)
+- **`>`: `O_WRONLY | O_CREAT | O_TRUNC`** (sobrescribe)
+- **`>>`: `O_WRONLY | O_CREAT | O_APPEND`** (añade al final)
+
+### 🔄 **Flujo de redirección**
+
 ```
 node->file: "output.txt"
 node->type: NODE_REDIRECT_OUT
@@ -768,15 +870,19 @@ dup2(3, STDOUT_FILENO) → STDOUT ahora apunta a output.txt
          ↓
 close(3) → Libera descriptor original
 ```
-🛡️ Cobertura de errores
-✅ Archivos inexistentes: perror() muestra mensaje descriptivo
-✅ Permisos insuficientes: Detecta y reporta errores de acceso
-✅ Fallos de dup2(): Limpia descriptor en caso de error
-✅ Tipos inválidos: Retorna -1 para tipos no reconocidos
-❌ No restaura descriptores: Una vez redirigido, no hay vuelta atrás
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Archivos inexistentes:** `perror()` muestra mensaje descriptivo
+✅ **Permisos insuficientes:** Detecta y reporta errores de acceso
+✅ **Fallos de `dup2()`:** Limpia descriptor en caso de error
+✅ **Tipos inválidos:** Retorna -1 para tipos no reconocidos
+❌ **No restaura descriptores:** Una vez redirigido, no hay vuelta atrás
 
 ---
-⭐ Función: execute_simple_command()
+
+## ⭐ **Función: `execute_simple_command()`**
+
 ```c
 int	execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 {
@@ -807,23 +913,28 @@ int	execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
     return (launch_command(cmd_node->args, shell_context->envp_cpy), 127);
 }
 ```
-🧠 Análisis línea por línea
-i = 0; cmd_node = node; - Inicializa recorrido del árbol de redirecciones
-while (cmd_node && is_redirect_node(cmd_node->type)) - RECOLECCIÓN: Encuentra todas las redirecciones
-redirects[i++] = cmd_node; cmd_node = cmd_node->left; - ARRAY FIJO: Almacena redirecciones en orden reverso
-j = i - 1; while (j >= 0) - APLICACIÓN REVERSA: Aplica redirecciones en orden correcto
-if (apply_redirections(redirects[j--]) != 0) return (1); - Si una redirección falla, aborta
-if (cmd_node && cmd_node->args && cmd_node->args[0] && ft_strchr(cmd_node->args[0], '=')) - DETECCIÓN: ¿Es asignación de variable?
-if (!cmd_node || !cmd_node->args || !cmd_node->args[0]) - VALIDACIÓN: ¿Hay comando válido?
-if (is_builtin(cmd_node->args[0])) - DESPACHO: ¿Builtin o comando externo?
-return (launch_command(cmd_node->args, shell_context->envp_cpy), 127); - EJECUCIÓN EXTERNA: Fork + execve
-🎯 Propósito de la función
-Ejecutor de comandos simples. Coordina la aplicación de redirecciones, detección de builtins, asignaciones de variables y lanzamiento de comandos externos. Es el caso base del sistema de ejecución.
 
-⚠️ Problema de diseño identificado
-t_ast_node *redirects[1024]; - RIESGO DE SEGURIDAD: Array de tamaño fijo puede causar buffer overflow con muchas redirecciones.
+### 🧠 **Análisis línea por línea**
 
-🔄 Flujo de ejecución de comando simple
+1. **`i = 0; cmd_node = node;`** - Inicializa recorrido del árbol de redirecciones
+2. **`while (cmd_node && is_redirect_node(cmd_node->type))`** - **RECOLECCIÓN:** Encuentra todas las redirecciones
+3. **`redirects[i++] = cmd_node; cmd_node = cmd_node->left;`** - **ARRAY FIJO:** Almacena redirecciones en orden reverso
+4. **`j = i - 1; while (j >= 0)`** - **APLICACIÓN REVERSA:** Aplica redirecciones en orden correcto
+5. **`if (apply_redirections(redirects[j--]) != 0) return (1);`** - Si una redirección falla, aborta
+6. **`if (cmd_node && cmd_node->args && cmd_node->args[0] && ft_strchr(cmd_node->args[0], '='))`** - **DETECCIÓN:** ¿Es asignación de variable?
+7. **`if (!cmd_node || !cmd_node->args || !cmd_node->args[0])`** - **VALIDACIÓN:** ¿Hay comando válido?
+8. **`if (is_builtin(cmd_node->args[0]))`** - **DESPACHO:** ¿Builtin o comando externo?
+9. **`return (launch_command(cmd_node->args, shell_context->envp_cpy), 127);`** - **EJECUCIÓN EXTERNA:** Fork + execve
+
+### 🎯 **Propósito de la función**
+
+**Ejecutor de comandos simples.** Coordina la aplicación de redirecciones, detección de builtins, asignaciones de variables y lanzamiento de comandos externos. Es el caso base del sistema de ejecución.
+
+⚠️ **Problema de diseño identificado**
+**t_ast_node *redirects[1024];** - **RIESGO DE SEGURIDAD:** Array de tamaño fijo puede causar buffer overflow con muchas redirecciones.
+
+### 🔄 **Flujo de ejecución de comando simple**
+
 ```
 execute_simple_command()
         ↓
@@ -839,8 +950,11 @@ Aplicar redirecciones en orden reverso
         ↓
 Comando externo → launch_command() → fork + execve
 ```
-📊 Ejemplo de estructura de redirecciones
-Para: cmd < in.txt > out.txt
+
+### 📊 **Ejemplo de estructura de redirecciones**
+
+Para: `cmd < in.txt > out.txt`
+
 ```AST estructura:
     [REDIRECT_OUT (>)]
            |
@@ -856,40 +970,48 @@ Aplicación (orden reverso):
 1. Apply REDIRECT_IN  (< in.txt)
 2. Apply REDIRECT_OUT (> out.txt)
 ```
-🛡️ Cobertura de errores
-✅ Redirecciones fallidas: Retorna 1 si alguna redirección falla
-✅ Comandos vacíos: Maneja comandos sin argumentos
-✅ Validación de argumentos: Verifica estructura de cmd_node->args
-⚠️ Buffer overflow potencial: Array fijo de 1024 redirecciones
-❌ No limpia redirecciones aplicadas: Si falla a mitad, quedan descriptores abiertos
+
+### 🛡️ **Cobertura de errores**
+
+✅ **Redirecciones fallidas:** Retorna 1 si alguna redirección falla  
+✅ **Comandos vacíos:** Maneja comandos sin argumentos  
+✅ **Validación de argumentos:** Verifica estructura de `cmd_node->args`  
+⚠️ **Buffer overflow potencial:** Array fijo de 1024 redirecciones  
+❌ **No limpia redirecciones aplicadas:** Si falla a mitad, quedan descriptores abiertos
 
 ---
-📝 Notas clave para evaluación oral
-¿Por qué parse_logical_expression() es el nivel más alto?
 
-Los operadores lógicos (&&, ||) tienen la precedencia más baja
-Evalúan después de pipes y redirecciones
-Implementan cortocircuito como en bash
-¿Cómo funciona la evaluación de cortocircuito?
+## 📝 **Notas clave para evaluación oral**
 
-cmd1 && cmd2: Si cmd1 falla, cmd2 no se ejecuta
-cmd1 || cmd2: Si cmd1 tiene éxito, cmd2 no se ejecuta
-Optimización y compatibilidad con bash
-¿Por qué aplicar redirecciones en orden reverso?
+**¿Por qué parse_logical_expression() es el nivel más alto?**
 
-El AST se construye de derecha a izquierda
-La última redirección debe "ganar": cmd > file1 > file2 → escribe en file2
-El orden reverso simula la precedencia de bash
-¿Cuál es la diferencia entre builtin y comando externo?
+- Los operadores lógicos (`&&`, `||`) tienen la **precedencia más baja**
+- Evalúan `después` de pipes y redirecciones
+- Implementan `cortocircuito` como en bash
 
-Builtins: Ejecutan en el proceso del shell (no hay fork)
-Comandos externos: Requieren fork + execve (proceso separado)
-Algunos builtins especiales (cd, export) deben ejecutarse en el padre
-¿Qué pasa si una redirección falla?
+**¿Cómo funciona la evaluación de cortocircuito?**
 
-El comando no se ejecuta
-Se retorna código 1 (error estándar)
-En bash: cmd < noexiste → error, pero shell continúa
+- **`cmd1 && cmd2`:** Si `cmd1` falla, `cmd2` no se ejecuta
+- **`cmd1 || cmd2`:** Si `cmd1` tiene éxito, `cmd2` no se ejecuta
+- Optimización y compatibilidad con bash
+
+**¿Por qué aplicar redirecciones en orden reverso?**
+
+- El AST se construye de **derecha a izquierda**
+- **La última redirección debe "ganar"**: `cmd > file1 > file2` → escribe en `file2`
+- El orden reverso simula la **precedencia de bash**
+
+**¿Cuál es la diferencia entre builtin y comando externo?**
+
+- **Builtins:** Ejecutan en el **proceso del shell** (no hay fork)
+- **Comandos externos:** Requieren **fork + execve** (proceso separado)
+- **Algunos builtins especiales** (`cd`, `export`) deben ejecutarse en el padre
+
+**¿Qué pasa si una redirección falla?**
+
+- El comando **no se ejecuta**
+- Se retorna **código 1** (error estándar)
+- En bash: `cmd < noexiste` → error, pero shell continúa
 
 ---
 
