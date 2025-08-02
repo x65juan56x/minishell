@@ -6,7 +6,7 @@
 /*   By: juan <juan@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 16:52:58 by jmondon           #+#    #+#             */
-/*   Updated: 2025/08/01 19:02:52 by juan             ###   ########.fr       */
+/*   Updated: 2025/08/02 18:18:45 by juan             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include <unistd.h>
 
 # include <stdlib.h>
-
-//# include <stdio.h>/*DEBUG*/
 
 typedef struct s_node
 {

@@ -46,7 +46,7 @@ static int	check_for_exit_command(t_token *tokens)
 		current = current->next;
 	if (current && current->type != TOKEN_EOF)
 		return (-1);
-	ft_putendl_fd("exit", STDOUT_FILENO);
+//	ft_putendl_fd("exit", STDOUT_FILENO);
 	exit_code = get_exit_status_from_args(tokens->next);
 	cleanup_tokens(tokens);
 	exit(exit_code);

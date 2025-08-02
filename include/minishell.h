@@ -144,12 +144,15 @@ t_ast_node		*parse_primary_expression(t_parser *parser);
 t_ast_node		*parse_parenthesis_expression(t_parser *parser);
 t_ast_node		*parse_redirect_expression(t_parser *parser);
 
+/* PARSER EXPRESSIONS UTILS */
+
+char			**convert_arg_list_to_array(t_list *arg_list);
+int				process_tokens_loop(t_parser *parser, t_list **arg_list,
+				t_ast_node **node);
+
 /* PARSER REDIRECT UTILS */
 int				is_redirect_token(t_token_type type);
 int				is_redirect_node(t_node_type type);
-int				parse_args_and_redirect(t_ast_node **node, char **args,
-					int *arg_count, t_parser *parser);
-char			**create_compact_args(char **args, int *arg_count);
 
 /* PARSER UTILS */
 int				handle_word_token(t_token **tp, char **args, int *idx);

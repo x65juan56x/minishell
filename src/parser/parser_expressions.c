@@ -4,28 +4,23 @@ t_ast_node	*parse_redirect_expression(t_parser *parser)
 {
 	t_ast_node	*node;
 	t_ast_node	*cmd_node;
-	char		**args;
-	int			arg_count;
+	t_list		*arg_list;
 
-	if (parser->current && parser->current->type != TOKEN_WORD
-		&& !is_redirect_token(parser->current->type))
+	if (!parser->current || (parser->current->type != TOKEN_WORD
+			&& !is_redirect_token(parser->current->type)))
 		return (consume_token_type(parser, TOKEN_WORD), NULL);
 	cmd_node = create_ast_node(NODE_COMMAND);
 	if (!cmd_node)
 		return (NULL);
-	args = ft_calloc(1024, sizeof(char *));
-	if (!args)
-		return (cleanup_ast(cmd_node), NULL);
-	arg_count = 0;
+	arg_list = NULL;
 	node = cmd_node;
-	while (parser->current && (parser->current->type == TOKEN_WORD
-			|| is_redirect_token(parser->current->type)))
-		if (parse_args_and_redirect(&node, args, &arg_count, parser) != 0)
-			return (NULL);
-	cmd_node->args = create_compact_args(args, &arg_count);
+	if (process_tokens_loop(parser, &arg_list, &node) != 0)
+		return (ft_lstclear(&arg_list, free), cleanup_ast(node), NULL);
+	cmd_node->args = convert_arg_list_to_array(arg_list);
+	ft_lstclear(&arg_list, free);
 	if (!cmd_node->args)
-		return (ft_freearr(args), cleanup_ast(node), NULL);
-	return (ft_freearr(args), node);
+		return (cleanup_ast(node), NULL);
+	return (node);
 }
 
 t_ast_node	*parse_parenthesis_expression(t_parser *parser)
