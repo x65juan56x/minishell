@@ -51,14 +51,17 @@ shell_context
     ├── heredoc_files → cleanup_heredoc_files()
     └── shell_context → free()
 ```
-🛡️ Cobertura de errores
+### 🛡️ **Cobertura de errores**
+
 ✅ **Protección contra NULL:** Verifica que shell_context no sea `NULL`  
 ✅ **Verificación de campos:** Comprueba cada campo antes de liberarlo  
 ✅ **Orden de liberación:** Libera primero el contenido, luego el contenedor  
-❌ **No verifica errores de unlink()** en cleanup_heredoc_files()  
+❌ **No verifica errores de unlink()** en `cleanup_heredoc_files()`  
 
 ---
-## ⭐ **Función: main**
+
+## ⭐ **Función: `main()`**
+
 ```c
 int main(int ac, char **av, char **envp)
 {
@@ -693,8 +696,11 @@ parse_pipe_expression() → |           (precedencia media)
          ↓
 parse_primary_expression() → comandos (precedencia más alta)
 ```
-📊 Representación del AST generado
-Para el comando: cmd1 | cmd2 && cmd3 || cmd4
+
+### 📊 **Representación del AST generado**
+
+Para el comando: **`cmd1 | cmd2 && cmd3 || cmd4`**
+
 ```
         [OR (||)]
         /        \
@@ -707,9 +713,9 @@ Para el comando: cmd1 | cmd2 && cmd3 || cmd4
 
 ### 🛡️ **Cobertura de errores**
 
-✅ **Limpieza en fallos:** Si parse_pipe_expression falla, limpia el AST izquierdo 
-✅ **Verificación de memoria:** Si create_binary_node falla, limpia ambos lados 
-✅ **Estado persistente:** Respeta `parser->error` de niveles inferiores 
+✅ **Limpieza en fallos:** Si parse_pipe_expression falla, limpia el AST izquierdo  
+✅ **Verificación de memoria:** Si create_binary_node falla, limpia ambos lados  
+✅ **Estado persistente:** Respeta `parser->error` de niveles inferiores  
 ❌ **No valida sintaxis lógica:** Acepta `&&` `||` sin comando intermedio
 
 ---
