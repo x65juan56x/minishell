@@ -873,10 +873,10 @@ close(3) → Libera descriptor original
 
 ### 🛡️ **Cobertura de errores**
 
-✅ **Archivos inexistentes:** `perror()` muestra mensaje descriptivo
-✅ **Permisos insuficientes:** Detecta y reporta errores de acceso
-✅ **Fallos de `dup2()`:** Limpia descriptor en caso de error
-✅ **Tipos inválidos:** Retorna -1 para tipos no reconocidos
+✅ **Archivos inexistentes:** `perror()` muestra mensaje descriptivo  
+✅ **Permisos insuficientes:** Detecta y reporta errores de acceso  
+✅ **Fallos de `dup2()`:** Limpia descriptor en caso de error  
+✅ **Tipos inválidos:** Retorna -1 para tipos no reconocidos  
 ❌ **No restaura descriptores:** Una vez redirigido, no hay vuelta atrás
 
 ---

@@ -289,8 +289,8 @@ typedef enum e_node_type
     NODE_REDIRECT_IN,    // Redirect: cmd < file
     NODE_REDIRECT_APPEND, // Append: cmd >> file
     NODE_HEREDOC,        // Here doc: cmd << EOF
-    NODE_AND,            // Lógico AND: cmd1 && cmd2 (Bonus, todavía no implementado)
-    NODE_OR              // Lógico OR: cmd1 || cmd2 (Bonus, todavía no implementado)
+    NODE_AND,            // Lógico AND: cmd1 && cmd2 (Bonus)
+    NODE_OR              // Lógico OR: cmd1 || cmd2 (Bonus)
 } t_node_type;
 ```
 
