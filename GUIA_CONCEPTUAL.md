@@ -469,6 +469,7 @@ int create_heredoc(char *delimiter)
 ```bash
 
 ```
+execve() sobreescribe el proceso que lo llama, esa es la razón por la cual hay que llamarlo en un proceso hijo, caso contrario sobreescribiría el proceso de la minishell
 ```bash
 
 ```

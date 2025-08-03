@@ -5,7 +5,7 @@ char	*expand_pid(int *i)
 	pid_t	pid;
 	char	*pid_str;
 
-	pid = getpid();
+	pid = ft_getpid();
 	pid_str = ft_itoa(pid);
 	*i = *i + 2;
 	return (pid_str);

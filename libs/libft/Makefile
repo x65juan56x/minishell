@@ -50,7 +50,8 @@ SRC_FILES = ft_toupper.c \
 			ft_lstdelone.c \
 			ft_lstclear.c \
 			ft_lstiter.c \
-			ft_lstmap.c
+			ft_lstmap.c \
+			ft_getpid.c
 
 SRC = $(SRC_FILES)
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))

@@ -25,6 +25,7 @@ SRC_FILES = minishell.c \
 			parser/ast_utils.c \
 			parser/parser_commands.c \
 			parser/parser_expressions.c \
+			parser/parser_expressions_utils.c \
 			parser/parser_utils.c \
 			parser/parser_unclosed_utils.c \
 			parser/parser_redirect_utils.c \

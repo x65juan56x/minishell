@@ -7,7 +7,7 @@ static char	*build_heredoc_filename(int heredoc_id)
 	char	*id_str;
 	char	*temp;
 
-	pid_str = ft_itoa(getpid());
+	pid_str = ft_itoa(ft_getpid());
 	id_str = ft_itoa(heredoc_id);
 	temp = ft_strjoin("/tmp/minishell-", pid_str);
 	free(pid_str);
