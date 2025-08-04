@@ -164,3 +164,6 @@ convertir el entorno a lista para ordenarlo
 
 Esto no tiene que ejecutar (minishell no tiene que ejecutar archivos binarios, Bash no lo hace)
 ./minishell ./minishell
+
+Probar
+$? luego de hacer Ctrl+C

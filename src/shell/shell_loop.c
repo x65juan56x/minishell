@@ -1,38 +1,5 @@
 #include "../../include/minishell.h"
 
-static void	print_ueof_message(char **input_ptr)
-{
-	ft_putstr_fd("minishell: syntax error: unexpected end of file\n", 2);
-	free(*input_ptr);
-	*input_ptr = ft_strdup("");
-}
-
-static int	handle_multiline_input(char **input_ptr)
-{
-	char	*full_input;
-	char	*temp;
-	char	*new_input;
-
-	while (are_quotes_unclosed(*input_ptr)
-		|| are_parentheses_unclosed(*input_ptr))
-	{
-		if (!isatty(STDIN_FILENO))
-			return (print_ueof_message(input_ptr), 0);
-		full_input = readline("> ");
-		if (!full_input)
-			return (print_ueof_message(input_ptr), 0);
-		temp = ft_strjoin(*input_ptr, " ");
-		new_input = ft_strjoin(temp, full_input);
-		free(temp);
-		free(full_input);
-		free(*input_ptr);
-		*input_ptr = new_input;
-		if (!*input_ptr)
-			return (1);
-	}
-	return (0);
-}
-
 static int	check_for_exit_command(t_token *tokens,
 				t_shell_context *shell_context)
 {
@@ -46,7 +13,7 @@ static int	check_for_exit_command(t_token *tokens,
 		current = current->next;
 	if (current && current->type != TOKEN_EOF)
 		return (-1);
-//	ft_putendl_fd("exit", STDOUT_FILENO); DESCOMENTAR!! NO BORRAR
+	ft_putendl_fd("exit", STDOUT_FILENO);
 	exit_code = get_exit_status_from_args(tokens->next);
 	shell_context->should_exit = 1;
 	shell_context->exit_status = exit_code;

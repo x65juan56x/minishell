@@ -161,6 +161,7 @@ int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
 int				are_parentheses_unclosed(const char *s);
+int				has_pending_logical_operator(const char *input);
 
 /* WILDCARD EXPANSION */
 t_token			*expand_wildcards(t_token *tokens);
@@ -256,6 +257,7 @@ char			**init_shell_environment(char **envp,
 					t_shell_context *shell_context);
 char			*get_user_input(void);
 int				handle_input_line(char *input);
+int				handle_multiline_input(char **input_ptr);
 int				process_command_line(t_token *tokens,
 					t_shell_context *shell_context);
 int				run_shell_loop(t_shell_context *shell_context);
