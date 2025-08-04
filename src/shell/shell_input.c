@@ -8,12 +8,13 @@ char	*get_user_input(void)
 	{
 		input = readline(CORAL_BOLD "MiniShell" RESET_COLOR " $ ");
 		if (!input)
-			return (/*ft_putstr_fd("exit\n", STDOUT_FILENO), */NULL);
+			return (NULL);
 	}
 	else
 		input = get_next_line(STDIN_FILENO);
 	return (input);
 }
+/*ft_putstr_fd("exit\n", STDOUT_FILENO), */
 
 int	handle_input_line(char *input)
 {
