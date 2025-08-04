@@ -52,7 +52,6 @@ static int	check_for_exit_command(t_token *tokens,
 	shell_context->exit_status = exit_code;
 	return (exit_code);
 }
-//	ft_putendl_fd("exit", STDOUT_FILENO);
 
 static void	process_input(char *input, t_shell_context *shell_context)
 {
