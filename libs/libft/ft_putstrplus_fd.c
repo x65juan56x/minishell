@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_putstrplus_fd.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 13:14:31 by jmondon           #+#    #+#             */
+/*   Updated: 2025/08/04 13:26:41 by jmondon          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include <errno.h>
 
@@ -16,13 +28,7 @@ int	ft_putstrplus_fd(int fd, const char *str)
 	while ((size_t)total_written < len)
 	{
 		bytes_written = write(fd, str + total_written, len - total_written);
-		if (bytes_written == -1)
-		{
-			if (errno == EINTR)
-				continue ;
-			return (-1);
-		}
-		if (bytes_written == 0)
+		if (bytes_written == -1 || bytes_written == 0)
 			return (-1);
 		total_written += bytes_written;
 	}

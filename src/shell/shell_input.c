@@ -6,7 +6,7 @@ char	*get_user_input(void)
 
 	if (isatty(STDIN_FILENO))
 	{
-		input = readline(PROMPT);
+		input = readline(CORAL_BOLD "MiniShell" RESET_COLOR " $ ");
 		if (!input)
 			return (/*ft_putstr_fd("exit\n", STDOUT_FILENO), */NULL);
 	}

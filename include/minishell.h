@@ -1,5 +1,5 @@
 #ifndef MINISHELL_H
-# define  MINISHELL_H
+# define MINISHELL_H
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -15,9 +15,9 @@
 # include <termios.h>
 # include <dirent.h>
 
-#define CORAL_BOLD "\001\033[1;38;5;203m\002"
-#define RESET_COLOR "\001\033[0m\002"
-#define PROMPT CORAL_BOLD "MiniShell" RESET_COLOR " $ "
+# define CORAL_BOLD "\001\033[1;38;5;203m\002"
+# define RESET_COLOR "\001\033[0m\002"
+//# define PROMPT CORAL_BOLD "MiniShell" RESET_COLOR " $ "
 
 // The only allowed global variable, used for signal state.
 // 'volatile' prevents the compiler from optimizing it incorrectly.
@@ -26,17 +26,17 @@ extern volatile sig_atomic_t	g_signal_status;
 
 typedef enum e_token_type
 {
-	TOKEN_WORD,				// 0 - Words
-	TOKEN_PIPE,				// 1 - |
-	TOKEN_REDIRECT_IN,		// 2 - <
-	TOKEN_REDIRECT_OUT,		// 3 - >
-	TOKEN_REDIRECT_APPEND,	// 4 - >>
-	TOKEN_HEREDOC,			// 5 - <<
-	TOKEN_AND,				// 6 - &&
-	TOKEN_OR,				// 7 - ||
-	TOKEN_LPAREN,			// 8 - (
-	TOKEN_RPAREN,			// 9 - )
-	TOKEN_EOF				// 10 - End of Tokens
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_REDIRECT_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_AND,
+	TOKEN_OR,
+	TOKEN_LPAREN,
+	TOKEN_RPAREN,
+	TOKEN_EOF
 }	t_token_type;
 
 typedef struct s_token
@@ -50,23 +50,23 @@ typedef struct s_token
 
 typedef enum e_node_type
 {
-	NODE_COMMAND,			// 0 - Simple comand
-	NODE_PIPE,				// 1 - Pipe
-	NODE_REDIRECT_IN,		// 2 - Input redirection
-	NODE_REDIRECT_OUT,		// 3 - Output redirection
-	NODE_REDIRECT_APPEND,	// 4 - Append redirection
-	NODE_HEREDOC,			// 5 - Here document
-	NODE_AND,				// 6 - Logic AND
-	NODE_OR					// 7 - Logic OR
+	NODE_COMMAND,
+	NODE_PIPE,
+	NODE_REDIRECT_IN,
+	NODE_REDIRECT_OUT,
+	NODE_REDIRECT_APPEND,
+	NODE_HEREDOC,
+	NODE_AND,
+	NODE_OR
 }	t_node_type;
 
 typedef struct s_ast_node
 {
 	t_node_type			type;
-	char				**args;		// For comands: ["echo", "hello", NULL]
-	char				*file;		// For redirects: "output.txt"
-	struct s_ast_node	*left;		// Left child
-	struct s_ast_node	*right;		// Right child
+	char				**args;
+	char				*file;
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
 }	t_ast_node;
 
 typedef struct s_parser
@@ -95,12 +95,12 @@ typedef struct s_pipe_state
 
 typedef struct s_shell_context
 {
-	int				exit_status;	// Shell exit status
-	t_list			*heredoc_files;	// Parsing heredoc files list
-	char			**envp_cpy;		// Shell enviroment copy
-	t_list			*local_vars;	// Local variables list
+	int				exit_status;
+	t_list			*heredoc_files;
+	char			**envp_cpy;
+	t_list			*local_vars;
 	int				error_flag;
-} t_shell_context;
+}	t_shell_context;
 
 typedef struct s_child_context
 {
@@ -148,7 +148,7 @@ t_ast_node		*parse_redirect_expression(t_parser *parser);
 
 char			**convert_arg_list_to_array(t_list *arg_list);
 int				process_tokens_loop(t_parser *parser, t_list **arg_list,
-				t_ast_node **node);
+					t_ast_node **node);
 
 /* PARSER REDIRECT UTILS */
 int				is_redirect_token(t_token_type type);
@@ -167,7 +167,7 @@ t_token			*expand_wildcards(t_token *tokens);
 int				match_wildcard(const char *str, const char *pattern);
 
 /* EXPANDER */
-void			is_expand_needed (char *s, int quoted, t_token *token);
+void			is_expand_needed(char *s, int quoted, t_token *token);
 void			expander_var(t_token *token_list,
 					t_shell_context *shell_context);
 char			*expander_line_content(char *line,

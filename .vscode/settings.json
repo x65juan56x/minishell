@@ -10,7 +10,10 @@
 		"termios.h": "c",
 		"cstdlib": "c",
 		"type_traits": "c",
-		"utility": "c"
+		"utility": "c",
+		"readline.h": "c",
+		"get_next_line.h": "c",
+		"dirent.h": "c"
 	},
     "makefile.configureOnOpen": false
 }
