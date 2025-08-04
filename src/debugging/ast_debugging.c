@@ -6,9 +6,10 @@ static void	print_node_args(const t_ast_node *node)
 
 	i = 0;
 	printf("  args: ");
-	if (!node->args) {
+	if (!node->args)
+	{
 		printf("(NULL)\n");
-		return;
+		return ;
 	}
 	while (node->args[i])
 	{

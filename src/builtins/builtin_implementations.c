@@ -81,18 +81,22 @@ int	get_exit_status_from_args(t_token *args_token)
 	return ((unsigned char)ft_atoi(args_token->value));
 }
 
-int	builtin_exit(char **args)
+int	builtin_exit(char **args, t_shell_context *shell_context)
 {
 	int	exit_code;
 
 	if (!args[1])
-		exit(0);
+	{
+		shell_context->should_exit = 1;
+		return (shell_context->exit_status = 0, 0);
+	}
 	if (!ft_isnumstr(args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		exit(2);
+		shell_context->should_exit = 1;
+		return (shell_context->exit_status = 2, 2);
 	}
 	if (args[2])
 	{
@@ -100,7 +104,9 @@ int	builtin_exit(char **args)
 		return (1);
 	}
 	exit_code = ft_atoi(args[1]);
-	exit((unsigned char)exit_code);
+	shell_context->should_exit = 1;
+	shell_context->exit_status = (unsigned char)exit_code;
+	return ((unsigned char)exit_code);
 }
 // 1. Primero, validar si el primer argumento es numérico.
 // 2. Si es numérico, entonces comprobar si hay demasiados argumentos.

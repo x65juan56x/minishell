@@ -77,15 +77,13 @@ int	add_new_env_var(const char *arg, t_shell_context *shell_context)
 	i = -1;
 	while (++i < count)
 	{
-		new_envp[i] = ft_strdup(shell_context->envp_cpy[i]);
-		if (!new_envp[i])
-			return (ft_freearr(new_envp), 1);
+		new_envp[i] = shell_context->envp_cpy[i];
 	}
 	new_envp[i] = ft_strdup(arg);
 	if (!new_envp[i])
-		return (ft_freearr(new_envp), 1);
+		return (free(new_envp), 1);
 	new_envp[i + 1] = NULL;
-	ft_freearr(shell_context->envp_cpy);
+	free(shell_context->envp_cpy);
 	shell_context->envp_cpy = new_envp;
 	return (0);
 }

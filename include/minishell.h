@@ -17,7 +17,6 @@
 
 # define CORAL_BOLD "\001\033[1;38;5;203m\002"
 # define RESET_COLOR "\001\033[0m\002"
-//# define PROMPT CORAL_BOLD "MiniShell" RESET_COLOR " $ "
 
 // The only allowed global variable, used for signal state.
 // 'volatile' prevents the compiler from optimizing it incorrectly.
@@ -96,6 +95,7 @@ typedef struct s_pipe_state
 typedef struct s_shell_context
 {
 	int				exit_status;
+	int				should_exit;
 	t_list			*heredoc_files;
 	char			**envp_cpy;
 	t_list			*local_vars;
@@ -229,7 +229,7 @@ int				execute_builtin(char **args, t_shell_context *shell_context);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int				builtin_env(char **envp, char **args);
-int				builtin_exit(char **args);
+int				builtin_exit(char **args, t_shell_context *shell_context);
 int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);
 int				builtin_unset(char **args, t_shell_context *shell_context);

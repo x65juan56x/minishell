@@ -23,6 +23,7 @@ int	main(int ac, char **av, char **envp)
 	if (!shell_context)
 		return (1);
 	shell_context->exit_status = 0;
+	shell_context->should_exit = 0;
 	shell_context->heredoc_files = NULL;
 	shell_context->local_vars = NULL;
 	shell_context->envp_cpy = init_shell_environment(envp, shell_context);

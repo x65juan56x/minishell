@@ -29,13 +29,13 @@ int	are_parentheses_unclosed(const char *s)
 	in_quote = 0;
 	while (s[i])
 	{
-		if (s[i] == '\'' && in_quote == 0)
-			in_quote = '\'';
-		else if (s[i] == '"' && in_quote == 0)
-			in_quote = '"';
-		else if (s[i] == in_quote)
-			in_quote = 0;
-		else if (s[i] == '(' && in_quote == 0)
+		// if (s[i] == '\'' && in_quote == 0)
+		// 	in_quote = '\'';
+		// else if (s[i] == '"' && in_quote == 0)
+		// 	in_quote = '"';
+		// else if (s[i] == in_quote)
+		// 	in_quote = 0;
+		if (s[i] == '(' && in_quote == 0)
 			paren_level++;
 		else if (s[i] == ')' && in_quote == 0)
 			paren_level--;
