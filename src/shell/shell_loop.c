@@ -56,14 +56,14 @@ int	run_shell_loop(t_shell_context *shell_context)
 		if (!input)
 			break ;
 		multiline_status = handle_multiline_input(&input);
-		if (multiline_status == 1)
-			return (1);
 		if (g_signal_status == SIGINT)
-		{
 			shell_context->exit_status = 130;
+		if (multiline_status == 1)
+			return (free(input), 1);
+		if (multiline_status == 2)
 			free(input);
+		if (multiline_status == 2)
 			continue ;
-		}
 		process_input(input, shell_context);
 		free(input);
 		if (shell_context->should_exit)

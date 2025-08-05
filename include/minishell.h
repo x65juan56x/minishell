@@ -264,6 +264,11 @@ int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
 void			cleanup_shell_context(t_shell_context *shell_context);
 
+/* SHELL MULTILINE UTILS */
+void			cancel_multiline_input(char **input_ptr);
+int				needs_multiline(char *input);
+int				should_handle_logical_ops(char *input);
+
 /* DEBUGGING */
 void			debug_print_local_vars(t_shell_context *ctx);
 void			debug_print_token_list(t_token *head);
