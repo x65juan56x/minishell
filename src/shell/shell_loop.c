@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell_loop.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/06 17:20:43 by jmondon           #+#    #+#             */
+/*   Updated: 2025/08/06 17:28:02 by jmondon          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 static int	check_for_exit_command(t_token *tokens,
@@ -56,11 +68,12 @@ static void	process_input(char *input, t_shell_context *shell_context)
 	else
 		cleanup_tokens(tokens);
 }
-int check_noisatty()
+
+int check_noisatty(void)
 {
 	char	*cleanup_line;
 
-	if (!isatty(STDIN_FILENO))	
+	if (!isatty(STDIN_FILENO))
 	{
 		cleanup_line = get_next_line(STDIN_FILENO);
 		if (cleanup_line)
@@ -74,7 +87,7 @@ void	check_sigint(t_shell_context *shell_context)
 {
 	if (g_signal_status == SIGINT)
 		shell_context->exit_status = 130;
-	return ;	
+	return ;
 }
 
 int	run_shell_loop(t_shell_context *shell_context)
