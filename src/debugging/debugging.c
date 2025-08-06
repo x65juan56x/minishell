@@ -6,10 +6,9 @@
 /*   By: anagarri <anagarri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:21:40 by anagarri          #+#    #+#             */
-/*   Updated: 2025/08/06 17:21:41 by anagarri         ###   ########.fr       */
+/*   Updated: 2025/08/06 17:36:38 by anagarri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/minishell.h"
 
