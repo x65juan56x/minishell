@@ -5,11 +5,10 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/06 17:23:17 by anagarri          #+#    #+#             */
-/*   Updated: 2025/08/06 17:32:06 by jmondon          ###   ########.fr       */
+/*   Created: 2025/08/06 17:44:17 by jmondon           #+#    #+#             */
+/*   Updated: 2025/08/06 17:46:45 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -206,7 +205,8 @@ int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr,
 					t_shell_context *shell_context);
 int				execute_simple_command(t_ast_node *node,
 					t_shell_context *shell_context);
-void			launch_command(char **args, char **envp, t_shell_context *shell_context);
+void			launch_command(char **args, char **envp,
+					t_shell_context *shell_context);
 int				handle_variable_assignment(char **args,
 					t_shell_context *context);
 void			print_signal_message(int signal_num);
@@ -282,11 +282,12 @@ void			cleanup_shell_context(t_shell_context *shell_context);
 void			cleanup_child_process(t_shell_context *shell_context);
 void			cleanup_child_process_basic(t_shell_context *shell_context);
 void			cleanup_child_process_deep(t_shell_context *shell_context);
-void			cleanup_child_process_with_parsing(t_shell_context *shell_context,
+void			cleanup_child_process_with_parsing(
+					t_shell_context *shell_context,
 					t_ast_node *ast, t_token *tokens);
 void			force_global_cleanup(void);
 void			check_sigint(t_shell_context *shell_context);
-int 			check_noisatty(void);
+int				check_noisatty(void);
 
 /* SHELL MULTILINE UTILS */
 void			cancel_multiline_input(char **input_ptr);

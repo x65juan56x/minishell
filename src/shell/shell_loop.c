@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:20:43 by jmondon           #+#    #+#             */
-/*   Updated: 2025/08/06 17:35:19 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/08/06 17:42:44 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,3 @@ int	run_shell_loop(t_shell_context *shell_context)
 	}
 	return (shell_context->exit_status);
 }
-
