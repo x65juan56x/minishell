@@ -20,12 +20,26 @@ static int	check_for_exit_command(t_token *tokens,
 	return (exit_code);
 }
 
+static int	is_only_whitespace(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != '\r')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 static void	process_input(char *input, t_shell_context *shell_context)
 {
 	t_token	*tokens;
 	int		exit_code;
 
-	if (!*input)
+	if (!*input || is_only_whitespace(input))
 		return ;
 	handle_input_line(input);
 	tokens = tokenize(input);
