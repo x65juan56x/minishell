@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell_loop.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/06 17:20:43 by jmondon           #+#    #+#             */
+/*   Updated: 2025/08/06 17:35:19 by jmondon          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 static int	check_for_exit_command(t_token *tokens,
@@ -13,7 +25,7 @@ static int	check_for_exit_command(t_token *tokens,
 		current = current->next;
 	if (current && current->type != TOKEN_EOF)
 		return (-1);
-//	ft_putendl_fd("exit", STDOUT_FILENO);
+	ft_putendl_fd("exit", STDOUT_FILENO);
 	exit_code = get_exit_status_from_args(tokens->next);
 	shell_context->should_exit = 1;
 	shell_context->exit_status = exit_code;
@@ -55,26 +67,6 @@ static void	process_input(char *input, t_shell_context *shell_context)
 	}
 	else
 		cleanup_tokens(tokens);
-}
-int check_noisatty()
-{
-	char	*cleanup_line;
-
-	if (!isatty(STDIN_FILENO))	
-	{
-		cleanup_line = get_next_line(STDIN_FILENO);
-		if (cleanup_line)
-			free(cleanup_line);
-		return (1);
-	}
-	return (0);
-}
-
-void	check_sigint(t_shell_context *shell_context)
-{
-	if (g_signal_status == SIGINT)
-		shell_context->exit_status = 130;
-	return ;	
 }
 
 int	run_shell_loop(t_shell_context *shell_context)
