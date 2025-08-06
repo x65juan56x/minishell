@@ -6,7 +6,7 @@
 /*   By: jmondon <jmondon@student.42malaga.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:20:51 by jmondon           #+#    #+#             */
-/*   Updated: 2025/08/06 17:29:33 by jmondon          ###   ########.fr       */
+/*   Updated: 2025/08/06 17:35:12 by jmondon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*get_user_input(void)
 	{
 		input = readline(CORAL_BOLD "MiniShell" RESET_COLOR " $ ");
 		if (!input)
-			return (/*ft_putstr_fd("exit\n", STDOUT_FILENO), */NULL);
+			return (ft_putstr_fd("exit\n", STDOUT_FILENO), NULL);
 	}
 	else
 		input = get_next_line(STDIN_FILENO);
@@ -56,7 +56,7 @@ int	get_exit_status_from_args(t_token *args_token)
 	return ((unsigned char)ft_atoi(args_token->value));
 }
 
-int check_noisatty(void)
+int	check_noisatty(void)
 {
 	char	*cleanup_line;
 
