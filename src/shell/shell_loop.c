@@ -56,12 +56,31 @@ static void	process_input(char *input, t_shell_context *shell_context)
 	else
 		cleanup_tokens(tokens);
 }
+int check_noisatty()
+{
+	char	*cleanup_line;
+
+	if (!isatty(STDIN_FILENO))	
+	{
+		cleanup_line = get_next_line(STDIN_FILENO);
+		if (cleanup_line)
+			free(cleanup_line);
+		return (1);
+	}
+	return (0);
+}
+
+void	check_sigint(t_shell_context *shell_context)
+{
+	if (g_signal_status == SIGINT)
+		shell_context->exit_status = 130;
+	return ;	
+}
 
 int	run_shell_loop(t_shell_context *shell_context)
 {
 	char	*input;
 	int		multiline_status;
-	char	*cleanup_line;
 
 	while (1)
 	{
@@ -71,25 +90,19 @@ int	run_shell_loop(t_shell_context *shell_context)
 		if (!input)
 			break ;
 		multiline_status = handle_multiline_input(&input);
-		if (g_signal_status == SIGINT)
-			shell_context->exit_status = 130;
+		check_sigint(shell_context);
 		if (multiline_status == 1)
 			return (free(input), 1);
 		if (multiline_status == 2)
+		{
 			free(input);
-		if (multiline_status == 2)
 			continue ;
+		}
 		process_input(input, shell_context);
 		free(input);
-		if (shell_context->should_exit)
+		if (shell_context->should_exit || check_noisatty())
 			break ;
-		if (!isatty(STDIN_FILENO))
-		{
-			cleanup_line = get_next_line(STDIN_FILENO);
-			if (cleanup_line)
-				free(cleanup_line);
-			break ;
-		}
 	}
 	return (shell_context->exit_status);
 }
+
