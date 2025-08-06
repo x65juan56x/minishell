@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   create_pipe_child.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anagarri <anagarri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/06 17:21:55 by anagarri          #+#    #+#             */
+/*   Updated: 2025/08/06 17:21:56 by anagarri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "../../include/minishell.h"
 
 static void	child_process_routine(t_ast_node *node,	t_pipe_config *config,

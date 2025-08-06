@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_env_utils.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anagarri <anagarri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/06 17:20:56 by anagarri          #+#    #+#             */
+/*   Updated: 2025/08/06 17:20:57 by anagarri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "../../include/minishell.h"
 
 char	*get_env_value(const char *var_name, t_shell_context *shell_context)

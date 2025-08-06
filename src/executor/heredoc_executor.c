@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_executor.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anagarri <anagarri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/06 17:22:23 by anagarri          #+#    #+#             */
+/*   Updated: 2025/08/06 17:22:24 by anagarri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "../../include/minishell.h"
 
 static void	heredoc_child_routine(const char *filename, char *delimiter,
