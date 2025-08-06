@@ -97,6 +97,6 @@ int	execute_simple_command(t_ast_node *node, t_shell_context *shell_context)
 		return (0);
 	if (is_builtin(cmd_node->args[0]))
 		return (execute_builtin(cmd_node->args, shell_context));
-	launch_command(cmd_node->args, shell_context->envp_cpy);
+	launch_command(cmd_node->args, shell_context->envp_cpy, shell_context);
 	return (127);
 }

@@ -28,17 +28,35 @@ static int	printnget_command_error(char *cmd)
 	return (127);
 }
 
-void	launch_command(char **args, char **envp)
+void	launch_command(char **args, char **envp, t_shell_context *shell_context)
 {
 	char	*path;
+	char	*cmd_name_copy;
+	int		error_code;
 
 	if (!args || !args[0] || args[0][0] == '\0')
+	{
+		cleanup_child_process_deep(shell_context);
 		exit(127);
+	}
+	cmd_name_copy = ft_strdup(args[0]);
+	if (!cmd_name_copy)
+	{
+		cleanup_child_process_deep(shell_context);
+		exit(127);
+	}
 	path = find_command_path(args[0], envp);
 	if (!path)
-		exit(printnget_command_error(args[0]));
+	{
+		error_code = printnget_command_error(cmd_name_copy);
+		free(cmd_name_copy);
+		cleanup_child_process_deep(shell_context);
+		exit(error_code);
+	}
+	free(cmd_name_copy);
 	execve(path, args, envp);
 	perror("minishell: execve");
 	free(path);
+	cleanup_child_process_deep(shell_context);
 	exit(126);
 }

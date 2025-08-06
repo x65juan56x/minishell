@@ -19,6 +19,7 @@ static void	child_process_routine(t_ast_node *node,	t_pipe_config *config,
 	if (config->heredoc_fd != -1)
 		close(config->heredoc_fd);
 	exit_code = execute_ast(node, heredoc_id_ptr, shell_context);
+	cleanup_child_process_deep(shell_context);
 	exit(exit_code);
 }
 

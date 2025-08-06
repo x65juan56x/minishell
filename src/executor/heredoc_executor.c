@@ -3,8 +3,12 @@
 static void	heredoc_child_routine(const char *filename, char *delimiter,
 			t_shell_context *shell_context)
 {
+	int	result;
+
 	setup_heredoc_signals();
-	if (create_heredoc_file(filename, delimiter, shell_context) != 0)
+	result = create_heredoc_file(filename, delimiter, shell_context);
+	cleanup_child_process_deep(shell_context);
+	if (result != 0)
 		exit(1);
 	exit(0);
 }

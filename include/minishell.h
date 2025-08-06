@@ -100,6 +100,9 @@ typedef struct s_shell_context
 	char			**envp_cpy;
 	t_list			*local_vars;
 	int				error_flag;
+	/* Temporary references for child process cleanup */
+	t_ast_node		*current_ast;
+	t_token			*current_tokens;
 }	t_shell_context;
 
 typedef struct s_child_context
@@ -190,7 +193,7 @@ int				execute_ast(t_ast_node *ast, int *heredoc_id_ptr,
 					t_shell_context *shell_context);
 int				execute_simple_command(t_ast_node *node,
 					t_shell_context *shell_context);
-void			launch_command(char **args, char **envp);
+void			launch_command(char **args, char **envp, t_shell_context *shell_context);
 int				handle_variable_assignment(char **args,
 					t_shell_context *context);
 void			print_signal_message(int signal_num);
@@ -263,6 +266,12 @@ int				process_command_line(t_token *tokens,
 int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
 void			cleanup_shell_context(t_shell_context *shell_context);
+void			cleanup_child_process(t_shell_context *shell_context);
+void			cleanup_child_process_basic(t_shell_context *shell_context);
+void			cleanup_child_process_deep(t_shell_context *shell_context);
+void			cleanup_child_process_with_parsing(t_shell_context *shell_context,
+					t_ast_node *ast, t_token *tokens);
+void			force_global_cleanup(void);
 
 /* SHELL MULTILINE UTILS */
 void			cancel_multiline_input(char **input_ptr);

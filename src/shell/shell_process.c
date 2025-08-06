@@ -22,9 +22,13 @@ int	process_command_line(t_token *tokens, t_shell_context *shell_context)
 	ast = parse(tokens, shell_context);
 	if (!ast)
 		return (handle_parsing_error(tokens, ast));
+	shell_context->current_ast = ast;
+	shell_context->current_tokens = tokens;
 	ignore_signals();
 	exit_status = execute_ast(ast, &heredoc_id, shell_context);
 	setup_interactive_signals();
+	shell_context->current_ast = NULL;
+	shell_context->current_tokens = NULL;
 	cleanup_heredoc_files(shell_context);
 	cleanup_ast(ast);
 	cleanup_tokens(tokens);

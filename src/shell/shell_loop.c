@@ -13,7 +13,7 @@ static int	check_for_exit_command(t_token *tokens,
 		current = current->next;
 	if (current && current->type != TOKEN_EOF)
 		return (-1);
-	ft_putendl_fd("exit", STDOUT_FILENO);
+//	ft_putendl_fd("exit", STDOUT_FILENO);
 	exit_code = get_exit_status_from_args(tokens->next);
 	shell_context->should_exit = 1;
 	shell_context->exit_status = exit_code;
@@ -47,6 +47,7 @@ int	run_shell_loop(t_shell_context *shell_context)
 {
 	char	*input;
 	int		multiline_status;
+	char	*cleanup_line;
 
 	while (1)
 	{
@@ -68,6 +69,13 @@ int	run_shell_loop(t_shell_context *shell_context)
 		free(input);
 		if (shell_context->should_exit)
 			break ;
+		if (!isatty(STDIN_FILENO))
+		{
+			cleanup_line = get_next_line(STDIN_FILENO);
+			if (cleanup_line)
+				free(cleanup_line);
+			break ;
+		}
 	}
 	return (shell_context->exit_status);
 }

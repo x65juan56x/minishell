@@ -50,6 +50,7 @@ SRC_FILES = minishell.c \
 			shell/shell_loop.c \
 			shell/handle_multiline.c \
 			shell/multiline_utils.c \
+			shell/cleanup.c \
 			debugging/debugging.c \
 			debugging/ast_debugging.c
 

@@ -167,3 +167,5 @@ Esto no tiene que ejecutar (minishell no tiene que ejecutar archivos binarios, B
 
 Probar
 $? luego de hacer Ctrl+C
+
+valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./minishell

@@ -17,7 +17,9 @@ static int	handle_simple_command_fork(t_ast_node *ast,
 	if (pid == 0)
 	{
 		setup_child_signals();
-		exit(execute_simple_command(ast, shell_context));
+		exit_code = execute_simple_command(ast, shell_context);
+		cleanup_child_process_deep(shell_context);
+		exit(exit_code);
 	}
 	waitpid(pid, &status, 0);
 	setup_interactive_signals();
