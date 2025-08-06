@@ -34,7 +34,8 @@ void	child_process_logic(t_pipe_state *st, int pipe_fd[2],
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
-		exit_status = execute_ast(st->curr->left, ctx->hd_id_ptr, ctx->shell_context);
+		exit_status = execute_ast(st->curr->left,
+				ctx->hd_id_ptr, ctx->shell_context);
 	}
 	else
 		exit_status = execute_ast(st->curr, ctx->hd_id_ptr, ctx->shell_context);
