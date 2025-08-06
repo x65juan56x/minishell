@@ -33,5 +33,6 @@ pid_t	create_pipe_child(t_ast_node *node, t_pipe_config *config,
 		return (perror("fork"), -1);
 	if (pid == 0)
 		child_process_routine(node, config, heredoc_id_ptr, shell_context);
+		/*limpiar*/
 	return (pid);
 }
