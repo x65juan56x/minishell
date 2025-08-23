@@ -26,7 +26,6 @@ t_token	*create_token(t_token_type type, char *value)
 	token->type = type;
 	token->value = value;
 	token->expand = 0;
-	token->in_quotes = 0;
 	token->next = NULL;
 	return (token);
 }
@@ -49,9 +48,7 @@ void	cleanup_tokens(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;
-	int		count;
 
-	count = 0;
 	current = tokens;
 	while (current)
 	{
@@ -60,6 +57,5 @@ void	cleanup_tokens(t_token *tokens)
 			free(current->value);
 		free(current);
 		current = next;
-		count++;
 	}
 }

@@ -56,7 +56,6 @@ typedef struct s_token
 	char			*value;
 	struct s_token	*next;
 	int				expand;
-	int				in_quotes;
 }	t_token;
 
 typedef enum e_node_type
@@ -87,14 +86,6 @@ typedef struct s_parser
 	int			error;
 }	t_parser;
 
-typedef struct s_pipe_config
-{
-	int		*pipe_fd;
-	int		is_left;
-	int		heredoc_fd;
-	char	***envp_ptr;
-}	t_pipe_config;
-
 typedef struct s_pipe_state
 {
 	pid_t		*pids;
@@ -111,7 +102,6 @@ typedef struct s_shell_context
 	t_list			*heredoc_files;
 	char			**envp_cpy;
 	t_list			*local_vars;
-	int				error_flag;
 	/* Temporary references for child process cleanup */
 	t_ast_node		*current_ast;
 	t_token			*current_tokens;
@@ -140,7 +130,7 @@ char			*process_quoted_string(const char *s, int start, int end,
 					int *quoted);
 
 /* PARSER AST */
-t_ast_node		*parse(t_token *tokens, t_shell_context *shell_context);
+t_ast_node		*parse(t_token *tokens);
 void			cleanup_ast(t_ast_node *node);
 t_ast_node		*create_ast_node(t_node_type type);
 t_ast_node		*create_binary_node(t_token_type op_type, t_ast_node *left,
@@ -170,9 +160,6 @@ int				is_redirect_token(t_token_type type);
 int				is_redirect_node(t_node_type type);
 
 /* PARSER UTILS */
-int				handle_word_token(t_token **tp, char **args, int *idx);
-void			skip_redirect_token(t_token **tp);
-int				extract_args(char **args, int max, t_token **tp);
 t_token			*consume_token_type(t_parser *parser, t_token_type tp);
 int				are_quotes_unclosed(const char *s);
 int				are_parentheses_unclosed(const char *s);
@@ -221,8 +208,6 @@ int				count_pipe_commands(t_ast_node *ast);
 void			child_process_logic(t_pipe_state *st, int pipe_fd[2],
 					int is_last, t_child_context *ctx);
 int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
-pid_t			create_pipe_child(t_ast_node *node, t_pipe_config *config,
-					int *heredoc_id_ptr, t_shell_context *shell_context);
 
 /* HEREDOC */
 int				execute_heredoc(const char *filename, char *delimiter,
@@ -272,7 +257,7 @@ void			sort_and_print_export(char **envp_cpy);
 char			**init_shell_environment(char **envp,
 					t_shell_context *shell_context);
 char			*get_user_input(void);
-int				handle_input_line(char *input);
+void			handle_input_line(char *input);
 int				handle_multiline_input(char **input_ptr);
 int				process_command_line(t_token *tokens,
 					t_shell_context *shell_context);
@@ -280,11 +265,7 @@ int				run_shell_loop(t_shell_context *shell_context);
 void			cleanup_heredoc_files(t_shell_context *shell_context);
 void			cleanup_shell_context(t_shell_context *shell_context);
 void			cleanup_child_process(t_shell_context *shell_context);
-void			cleanup_child_process_basic(t_shell_context *shell_context);
 void			cleanup_child_process_deep(t_shell_context *shell_context);
-void			cleanup_child_process_with_parsing(
-					t_shell_context *shell_context,
-					t_ast_node *ast, t_token *tokens);
 void			force_global_cleanup(void);
 void			check_sigint(t_shell_context *shell_context);
 int				check_noisatty(void);

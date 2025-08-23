@@ -27,14 +27,14 @@ char	*get_user_input(void)
 	return (input);
 }
 
-int	handle_input_line(char *input)
+void	handle_input_line(char *input)
 {
 	if (!input)
-		return (0);
+		return ;
 	if (*input)
 		if (isatty(STDIN_FILENO))
 			add_history(input);
-	return (0);
+	return ;
 }
 
 int	get_exit_status_from_args(t_token *args_token)

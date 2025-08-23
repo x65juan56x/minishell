@@ -10,7 +10,6 @@ SRC_FILES = minishell.c \
 			executor/execute_command.c \
 			executor/pipe_executor.c \
 			executor/pipe_executor_utils.c \
-			executor/create_pipe_child.c \
 			executor/wait_pipe_children.c \
 			executor/heredoc_executor.c \
 			executor/heredoc_utils.c \

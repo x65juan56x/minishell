@@ -12,44 +12,6 @@
 
 #include "../../include/minishell.h"
 
-int	handle_word_token(t_token **token, char **args, int *i)
-{
-	t_token	*temp;
-
-	temp = *token;
-	args[*i] = ft_strdup(temp->value);
-	if (!args[*i])
-		return (-1);
-	(*i)++;
-	*token = temp->next;
-	return (0);
-}
-
-void	skip_redirect_token(t_token **token)
-{
-	t_token	*temp_token;
-
-	temp_token = *token;
-	temp_token = temp_token->next;
-	if (temp_token && temp_token->type == TOKEN_WORD)
-		temp_token = temp_token->next;
-	*token = temp_token;
-}
-
-int	extract_args(char **args, int max, t_token **token)
-{
-	int		i;
-	t_token	*temp_token;
-
-	i = 0;
-	temp_token = *token;
-	while (i < max && temp_token && temp_token->type == TOKEN_WORD)
-		if (handle_word_token(&temp_token, args, &i) < 0)
-			return (-1);
-	*token = temp_token;
-	return (i);
-}
-
 t_token	*consume_token_type(t_parser *parser, t_token_type type)
 {
 	t_token	*temp;

@@ -38,8 +38,6 @@ static t_token	*process_word(const char *input, int *i)
 	if (!value)
 		return (NULL);
 	token = create_token(TOKEN_WORD, value);
-	if (quoted > 0)
-		token->in_quotes = 1;
 	is_expand_needed (value, quoted, token);
 	return (token);
 }

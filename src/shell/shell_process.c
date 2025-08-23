@@ -31,7 +31,7 @@ int	process_command_line(t_token *tokens, t_shell_context *shell_context)
 	shell_context->heredoc_files = NULL;
 	expander_var(tokens, shell_context);
 	tokens = expand_wildcards(tokens);
-	ast = parse(tokens, shell_context);
+	ast = parse(tokens);
 	if (!ast)
 		return (handle_parsing_error(tokens, ast));
 	shell_context->current_ast = ast;

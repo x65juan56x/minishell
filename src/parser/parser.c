@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
+t_ast_node	*parse(t_token *tokens)
 {
 	t_parser	parser;
 	t_ast_node	*ast;
@@ -25,12 +25,8 @@ t_ast_node	*parse(t_token *tokens, t_shell_context *shell_context)
 	ast = parse_logical_expression(&parser);
 	if (parser.error)
 	{
-		if (tokens == NULL)
-		{
-			shell_context->error_flag = 1;
-			cleanup_ast(ast);
-			return (NULL);
-		}
+		cleanup_ast(ast);
+		return (NULL);
 	}
 	if (parser.current->type != TOKEN_EOF)
 	{

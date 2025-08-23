@@ -42,9 +42,7 @@ int	main(int ac, char **av, char **envp)
 	shell_context->current_tokens = NULL;
 	shell_context->envp_cpy = init_shell_environment(envp, shell_context);
 	update_shell_level(shell_context);
-	shell_context->error_flag = 0;
 	exit_status = run_shell_loop(shell_context);
-	rl_clear_history();
 	cleanup_shell_context(shell_context);
 	force_global_cleanup();
 	return (exit_status);
