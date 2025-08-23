@@ -1,4 +1,4 @@
-# Minishell Flowcharts (Mermaid)
+# Minishell Flowcharts
 
 These flowcharts reflect the minishell logic from input to execution, including tokenization, expansion, parsing/AST, heredoc preprocessing, and execution (commands, pipelines, logical operators), as well as redirections and child status translation.
 
@@ -81,14 +81,14 @@ flowchart TD
 ```mermaid
 flowchart TD
     A[parse&#40;tokens&#41;] --> B[parse_logical_expr]
-    B --> C{next is &amp;&amp; or &#124;&#124;?}
+    B --> C{next is &amp;&amp; or #124;#124;?}
     C -->|Yes| D[build AND/OR node; parse next pipeline]
     C -->|No| E[return pipeline]
     D --> C
 
     subgraph Pipeline
         P1[parse_pipeline] --> P2[parse_command]
-    P2 --> P3{next is &#124; ?}
+    P2 --> P3{next is #124; ?}
         P3 -->|Yes| P4[build PIPE node; parse next command]
         P3 -->|No| P5[return command]
         P4 --> P3

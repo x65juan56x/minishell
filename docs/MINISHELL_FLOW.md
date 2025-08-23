@@ -543,7 +543,7 @@ When running builtins in the parent, always backup and restore stdio around redi
 
 ---
 
-## Mermaid: High-level flow
+## High-level flow
 
 ```mermaid
 flowchart TD
