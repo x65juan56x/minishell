@@ -2,6 +2,10 @@
 
 A simple shell implementation in C, built as part of the 42 curriculum.
 
+This project was implemented by:
+- Ana Isabel Garrido - https://github.com/BelGarrido
+- Juan Mondón - https://github.com/x65juan56x
+
 ## Requirements
 
 This shell should:
