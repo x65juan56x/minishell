@@ -56,7 +56,8 @@ int	create_heredoc_file(const char *filename, char *delimiter,
 	fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd < 0)
 		return (perror("minishell: heredoc"), -1);
-	read_heredoc_input(delimiter, fd, shell_context);
+	if (read_heredoc_input(delimiter, fd, shell_context) != 0)
+		return (close(fd), 1);
 	close(fd);
 	return (0);
 }

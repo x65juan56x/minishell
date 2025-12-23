@@ -12,7 +12,7 @@
 
 #include "../../include/minishell.h"
 
-static void	heredoc_child_routine(const char *filename, char *delimiter,
+static void	heredoc_child_routine(char *filename, char *delimiter,
 			t_shell_context *shell_context)
 {
 	int	result;
@@ -20,6 +20,7 @@ static void	heredoc_child_routine(const char *filename, char *delimiter,
 	setup_heredoc_signals();
 	result = create_heredoc_file(filename, delimiter, shell_context);
 	cleanup_child_process_deep(shell_context);
+	free(filename);
 	if (result != 0)
 		exit(1);
 	exit(0);
@@ -43,12 +44,13 @@ static int	heredoc_parent_routine(pid_t pid, struct termios *orig_termios)
 	return (0);
 }
 
-int	execute_heredoc(const char *filename, char *delimiter,
+int	execute_heredoc(char *filename, char *delimiter,
 	t_shell_context *shell_context)
 {
 	pid_t			pid;
 	struct termios	orig_termios;
 
+	ft_bzero(&orig_termios, sizeof(orig_termios));
 	tcgetattr(STDIN_FILENO, &orig_termios);
 	ignore_signals();
 	pid = fork();

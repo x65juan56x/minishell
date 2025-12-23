@@ -21,6 +21,7 @@ void	cleanup_shell_context(t_shell_context *shell_context)
 	if (shell_context->local_vars)
 		ft_lstclear(&shell_context->local_vars, free);
 	cleanup_heredoc_files(shell_context);
+	get_next_line(-1);
 	free(shell_context);
 }
 
@@ -40,6 +41,7 @@ int	main(int ac, char **av, char **envp)
 	shell_context->local_vars = NULL;
 	shell_context->current_ast = NULL;
 	shell_context->current_tokens = NULL;
+	shell_context->current_input = NULL;
 	shell_context->envp_cpy = init_shell_environment(envp, shell_context);
 	update_shell_level(shell_context);
 	exit_status = run_shell_loop(shell_context);

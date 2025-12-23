@@ -34,7 +34,6 @@ void	handle_input_line(char *input)
 	if (*input)
 		if (isatty(STDIN_FILENO))
 			add_history(input);
-	return ;
 }
 
 int	get_exit_status_from_args(t_token *args_token)

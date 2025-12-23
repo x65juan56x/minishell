@@ -68,7 +68,7 @@ char	*expand_curly(int *i, t_shell_context *shell_context, t_token *token)
 	(*i)++;
 	env_value = expand_var(i, shell_context, token);
 	if (token->value[*i] != '}')
-		return (ft_strdup(""));
+		return (free(env_value), ft_strdup(""));
 	else
 		(*i)++;
 	return (env_value);

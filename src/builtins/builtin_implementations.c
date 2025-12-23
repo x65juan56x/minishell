@@ -113,6 +113,3 @@ int	builtin_exit(char **args, t_shell_context *shell_context)
 	shell_context->exit_status = (unsigned char)exit_code;
 	return ((unsigned char)exit_code);
 }
-// 1. Primero, validar si el primer argumento es numérico.
-// 2. Si es numérico, entonces comprobar si hay demasiados argumentos.
-// 3. Si todo está bien, salir con el código correcto.

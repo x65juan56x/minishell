@@ -120,6 +120,12 @@ char	*get_next_line(int fd)
 	int					rd_chr;
 	t_list_gnl			*new_tail;
 
+	if (fd == -1)
+	{
+		ft_free_lst(list_static);
+		list_static = NULL;
+		return (NULL);
+	}
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	rd_chr = ft_read_til_nl(&nl_pos_in_cur_node, &frst_nd_cur_line, fd,

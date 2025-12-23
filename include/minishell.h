@@ -105,6 +105,7 @@ typedef struct s_shell_context
 	/* Temporary references for child process cleanup */
 	t_ast_node		*current_ast;
 	t_token			*current_tokens;
+	char			*current_input;
 }	t_shell_context;
 
 typedef struct s_child_context
@@ -210,7 +211,7 @@ void			child_process_logic(t_pipe_state *st, int pipe_fd[2],
 int				parent_process_logic(t_pipe_state *st, int pipe_fd[2]);
 
 /* HEREDOC */
-int				execute_heredoc(const char *filename, char *delimiter,
+int				execute_heredoc(char *filename, char *delimiter,
 					t_shell_context *shell_context);
 int				create_heredoc_file(const char *filename, char *delimiter,
 					t_shell_context *shell_context);
@@ -236,7 +237,6 @@ int				builtin_cd(char **args, t_shell_context *shell_context);
 int				builtin_export(char **args, t_shell_context *shell_context);
 int				builtin_unset(char **args, t_shell_context *shell_context);
 int				get_exit_status_from_args(t_token *args_token);
-int				find_local_var(const char *name, t_list *local_vars);
 void			remove_local_var(const char *name, t_list **local_vars);
 
 /* BUILTINS UTILS */

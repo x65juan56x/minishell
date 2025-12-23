@@ -43,8 +43,13 @@ static int	process_heredoc_node(t_ast_node *node, int *heredoc_id_ptr,
 	if (execute_heredoc(temp_filename, node->file, shell_context) != 0)
 		return (free(temp_filename), -1);
 	new_list_node = ft_lstnew(ft_strdup(temp_filename));
-	if (!new_list_node || !new_list_node->content)
+	if (!new_list_node)
 		return (free(temp_filename), -1);
+	if (!new_list_node->content)
+	{
+		free(new_list_node);
+		return (free(temp_filename), -1);
+	}
 	ft_lstadd_back(&shell_context->heredoc_files, new_list_node);
 	(*heredoc_id_ptr)++;
 	free(node->file);

@@ -85,12 +85,11 @@ int	run_shell_loop(t_shell_context *shell_context)
 		check_sigint(shell_context);
 		if (multiline_status == 1)
 			return (free(input), 1);
-		if (multiline_status == 2)
-		{
-			free(input);
+		if (multiline_status == 2 && (free(input), 1))
 			continue ;
-		}
+		shell_context->current_input = input;
 		process_input(input, shell_context);
+		shell_context->current_input = NULL;
 		free(input);
 		if (shell_context->should_exit || check_noisatty())
 			break ;

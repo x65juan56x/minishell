@@ -74,8 +74,6 @@ void	update_tokens_values(t_shell_context *shell_context, t_token *tmp)
 	{
 		if (original_value[i] == '$' && original_value[1 + i] != '\0')
 			expand_dollar(shell_context, &tmp, &i, &var_expanded);
-		else if (original_value[i] == '$' && original_value[1 + i] == '\0')
-			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 		else
 			var_expanded = copy_non_expanded(original_value, &i, var_expanded);
 	}

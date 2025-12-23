@@ -42,7 +42,13 @@ void	cleanup_child_process_deep(t_shell_context *shell_context)
 		cleanup_tokens(shell_context->current_tokens);
 		shell_context->current_tokens = NULL;
 	}
+	if (shell_context && shell_context->current_input)
+	{
+		free(shell_context->current_input);
+		shell_context->current_input = NULL;
+	}
 	cleanup_child_process(shell_context);
+	get_next_line(-1);
 	clear_history();
 	force_global_cleanup();
 	if (shell_context)
@@ -52,6 +58,5 @@ void	cleanup_child_process_deep(t_shell_context *shell_context)
 void	force_global_cleanup(void)
 {
 	rl_clear_history();
-	clear_history();
 	rl_cleanup_after_signal();
 }
